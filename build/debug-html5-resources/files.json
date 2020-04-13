@@ -109,6 +109,18 @@
 			]
 		},
 		{
+			"name": "ball",
+			"files": [
+				"ball.png"
+			],
+			"file_sizes": [
+				469
+			],
+			"type": "image",
+			"original_width": 40,
+			"original_height": 40
+		},
+		{
 			"name": "blurFragmentShader_frag",
 			"files": [
 				"blurFragmentShader.frag.essl",
@@ -195,6 +207,50 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "cuarentena",
+			"files": [
+				"cuarentena.png"
+			],
+			"file_sizes": [
+				1586
+			],
+			"type": "image",
+			"original_width": 40,
+			"original_height": 40
+		},
+		{
+			"name": "femalePlayer",
+			"files": [
+				"femalePlayer.png"
+			],
+			"file_sizes": [
+				28328
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
+		},
+		{
+			"name": "femalePlayer_json",
+			"files": [
+				"femalePlayer.json"
+			],
+			"file_sizes": [
+				7665
+			],
+			"type": "blob"
+		},
+		{
+			"name": "femalePlayer_xml",
+			"files": [
+				"femalePlayer.xml"
+			],
+			"file_sizes": [
+				3741
+			],
+			"type": "blob"
 		},
 		{
 			"name": "filmGrain_frag",
@@ -447,6 +503,16 @@
 			"type": "image",
 			"original_width": 237,
 			"original_height": 167
+		},
+		{
+			"name": "julia_1_xml",
+			"files": [
+				"julia.1.xml"
+			],
+			"file_sizes": [
+				3771
+			],
+			"type": "blob"
 		},
 		{
 			"name": "julia_xml",

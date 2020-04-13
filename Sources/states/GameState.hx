@@ -2,6 +2,7 @@ package states;
 
 import kha.Color;
 import kha.math.FastVector2;
+import gameObjects.Ball;
 import kha.math.FastMatrix3;
 import kha.Canvas;
 import kha.Assets;
@@ -34,9 +35,12 @@ class GameState extends State {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
 		atlas.add(new SparrowLoader("jason", "jason_xml"));
 		atlas.add(new SparrowLoader("julia", "julia_xml"));
+		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
 		atlas.add(new ImageLoader("grass"));
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
+        resources.add(new ImageLoader("ball"));
+        resources.add(new ImageLoader("cuarentena"));
 	}
 
 	var julia:Player;
@@ -46,6 +50,10 @@ class GameState extends State {
 	var timeDisplay:Text;
 	var score:Int = 0;
 	var hudLayer:Layer;
+	var time:Float=0;
+	var added:Bool=false;
+	var survivedTime:String;
+	var ballsAlive:Int = 1;
 
 	override function init() {
 		enemyCollisions = new CollisionGroup();
@@ -57,7 +65,7 @@ class GameState extends State {
 		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
 
-        julia = new Player(1280/2, 720/2, simulationLayer);
+        julia = new Player(250, 650, simulationLayer);
 		addChild(julia);
 
 		GGD.player = julia;
@@ -75,44 +83,46 @@ class GameState extends State {
 		timeDisplay.y = 80;
 		hudLayer.addChild(timeDisplay);
 		scoreDisplay.text = "0";
-
-		GGD.camera.scaleX = 2 ;
-		GGD.camera.scaleY = 2 ;
-
-		addChild(new Jason(simulationLayer, enemyCollisions));
+		var ball = new Ball(simulationLayer, 400, 400, Math.random()*500-Math.random()*500, 500, enemyCollisions, 2);
+		addChild(ball);
 	}
-	var time:Float=0;
-	var added:Bool=false;
-	var survivedTime:String;
-	var survivedMinutes:Int = 0;
-	var survivedSeconds:Int = 0;
+
 	override function update(dt:Float) {
 		time+=dt;
 		super.update(dt);
-		survivedSeconds = Math.floor(time)%60;
-		survivedMinutes = Math.floor(time/60);
-		stage.defaultCamera().setTarget(julia.x,julia.y);
 		if (Math.floor(time)%2 == 0 && !added){
-			added = true;
-			addChild(new Jason(simulationLayer, enemyCollisions));
+			
 		}
 		if (Math.floor(time)%2 != 0) {
 			added = false;
 		} 
-		enemyCollisions.overlap(julia.gun.bulletsCollisions, jasonVsBullet);
+		enemyCollisions.overlap(julia.gun.bulletsCollisions, ballVsBullet);
 		julia.collision.overlap(enemyCollisions, juliaVSJason);
-		survivedTime = " " + (survivedMinutes + "m " + survivedSeconds +"s");
+		survivedTime = " " + (Math.floor(time/60) + "m " + Math.floor(time)%60 +"s");
 		timeDisplay.text = survivedTime;
 		scoreDisplay.text = score + "";
-		trace (scoreDisplay.text);
+		CollisionEngine.overlap(julia.collision,enemyCollisions);
 	}
 
-	function jasonVsBullet(aJason:ICollider, aBullet:ICollider) {
-        var jason:Jason = (cast aJason.userData);
-        jason.damage();
+	function ballVsBullet(aBall:ICollider, aBullet:ICollider) {
+        var ball:Ball = (cast aBall.userData);
+        ball.damage();
+		if (ball.get_hp() > 0) {
+			var speed:Float = Math.random()*500;
+			var childBall1:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), speed, -speed-250, enemyCollisions, ball.get_hp()-1);
+			var childBall2:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), -speed, -speed-250, enemyCollisions, ball.get_hp()-1);
+			addChild(childBall1);
+			addChild(childBall2);
+			ballsAlive = ballsAlive + 2;
+		}
+		ballsAlive = ballsAlive - 1;
         var bullet:Bullet = (cast  aBullet.userData);
 		bullet.die();
         score++;
+		if (ballsAlive == 0) {
+			julia.die();
+			changeState(new GameOver(""+score,survivedTime));
+		}
     }
 
 	function juliaVSJason(aJulia:ICollider, aJason:ICollider) {

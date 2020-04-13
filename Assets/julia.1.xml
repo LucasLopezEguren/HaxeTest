@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:913b3433a2a76c43bf5c03b8123130c6:7465a6fed1f7e8c247ffc6ce36eb87a9:f8e6586571e2b7973b79d0cf64d09324$ -->
+<TextureAtlas imagePath="femalePlayer.png" width="327" height="381">
+    <SubTexture name="womandeath_0" x="63" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
+    <SubTexture name="womandeath_1" x="125" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
+    <SubTexture name="womandeath_2" x="187" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
+    <SubTexture name="womandeath_3" x="249" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
+    <SubTexture name="womandeath_4" x="311" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
+    <SubTexture name="womanattack_0" x="0" y="0" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_1" x="64" y="0" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_2" x="0" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_3" x="64" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_4" x="128" y="0" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_5" x="128" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_6" x="0" y="138" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_7" x="64" y="138" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_8" x="128" y="138" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_9" x="192" y="0" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_10" x="192" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanattack_11" x="192" y="138" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
+    <SubTexture name="womanwalk_0" x="0" y="207" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_1" x="63" y="207" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_2" x="126" y="207" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_3" x="189" y="207" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_4" x="252" y="207" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_5" x="256" y="0" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_6" x="256" y="60" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_7" x="256" y="120" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+    <SubTexture name="womanwalk_8" x="0" y="267" width="63" height="60" frameX="0" frameY="0" frameWidth="63" fr4meHeight="60"/>
+</TextureAtlas>

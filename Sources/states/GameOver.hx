@@ -24,6 +24,7 @@ class GameOver extends State {
     var timeSurvived:String;
     var julia:Player;
 	var simulationLayer:Layer;
+    var time:Float = 0;
 
     public function new(score:String,timeSurvived:String) {
         super();
@@ -33,7 +34,7 @@ class GameOver extends State {
     override function load(resources:Resources) {
         var atlas:JoinAtlas = new JoinAtlas(1024,1024);
         atlas.add(new ImageLoader("gameOver"));
-		atlas.add(new SparrowLoader("julia", "julia_xml"));
+		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
         atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
         resources.add(atlas);
     }
@@ -42,9 +43,9 @@ class GameOver extends State {
         var image = new Sprite("gameOver");
 		simulationLayer  =  new Layer();
 		stage.addChild(simulationLayer);
-        julia  =  new Player(1280/2, 720/4*3, simulationLayer);
+        julia  =  new Player(200, 720/4*3, simulationLayer);
 		addChild(julia);
-        image.x = GEngine.virtualWidth*0.5-image.width()*0.5;
+        image.x = GEngine.virtualWidth * 0.5 - image.width() * 0.5;
         image.y = 100;
         stage.addChild(image);
         var scoreDisplay = new Text(Assets.fonts.Kenney_ThickName);
@@ -56,9 +57,6 @@ class GameOver extends State {
         stage.addChild(scoreDisplay);
         julia.die();
     }
-
-    var time:Float = 0;
-    var targetPosition:FastVector2;
 
     override function update(dt:Float) {
         super.update(dt);

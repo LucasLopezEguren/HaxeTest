@@ -1,11 +1,11 @@
 -cp /Users/lucas.lopez/Documents/Haxe/ProgVJ/Empty/Kha/Sources
 -cp /Users/lucas.lopez/Documents/Haxe/ProgVJ/Empty/Kha/Backends/HTML5
--cp /Users/lucas.lopez/Documents/Haxe/clase2/Sources
--cp /Users/lucas.lopez/Documents/Haxe/clase2/khawy/Libraries/hxGeomAlgo/Sources
--cp /Users/lucas.lopez/Documents/Haxe/clase2/khawy/Libraries/Format/Sources
--cp /Users/lucas.lopez/Documents/Haxe/clase2/khawy/Sources
--cp /Users/lucas.lopez/Documents/Haxe/clase2/khawy/Libraries/hxGeomAlgo
--cp /Users/lucas.lopez/Documents/Haxe/clase2/khawy/Libraries/Format
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/Sources
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/hxGeomAlgo/Sources
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/Format/Sources
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Sources
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/hxGeomAlgo
+-cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/Format
 -D hxcpp_smart_strings
 -D debugInfo
 -D DEBUGDRAW

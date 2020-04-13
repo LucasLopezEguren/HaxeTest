@@ -95,15 +95,6 @@ class Jason extends Entity
 		collision.removeFromParent();
 	}
 
-	public function respawn() {
-		if (dead){
-			dead = false;
-			randomPos();
-			display.timeline.playAnimation("right_");
-			display.offsetY = -14;
-		}
-	}
-
 	override function render() {
 		display.x = collision.x + collision.width * 0.5;
 		display.y = collision.y;
