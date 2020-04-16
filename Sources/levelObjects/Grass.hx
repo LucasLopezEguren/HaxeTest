@@ -5,6 +5,6 @@ import com.gEngine.display.Camera;
 
 class Grass extends LoopBackground {
     public function new(layer:Layer,camera:Camera) {
-        super("grass",layer,camera);
+        super("forest",layer,camera);
     }
 }

@@ -103,9 +103,9 @@ var Main = function() { };
 $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
 Main.main = function() {
-	var windowsOptions = new kha_WindowOptions("JuliaVSJason",0,0,500,720,null,true,1,0);
+	var windowsOptions = new kha_WindowOptions("Defend Antathaan",0,0,500,720,null,true,1,0);
 	var frameBufferOptions = new kha_FramebufferOptions();
-	kha_System.start(new kha_SystemOptions("JuliaVSJason",500,720,windowsOptions,frameBufferOptions),function(w) {
+	kha_System.start(new kha_SystemOptions("Defend Antathaan",500,720,windowsOptions,frameBufferOptions),function(w) {
 		new com_framework_Simulation(states_GameState,500,720);
 	});
 };
@@ -2324,6 +2324,7 @@ var com_gEngine_display_Layer = function() {
 	this.mulB = 1;
 	this.mulG = 1;
 	this.mulR = 1;
+	this.colorTransform = false;
 	this.billboard = false;
 	this.scaleArea = new com_helpers_MinMax();
 	this.visible = true;
@@ -2346,7 +2347,14 @@ $hxClasses["com.gEngine.display.Layer"] = com_gEngine_display_Layer;
 com_gEngine_display_Layer.__name__ = "com.gEngine.display.Layer";
 com_gEngine_display_Layer.__interfaces__ = [com_gEngine_display_IContainer,com_gEngine_display_IDraw];
 com_gEngine_display_Layer.prototype = {
-	render: function(paintMode,transform) {
+	setColorMultiply: function(r,g,b,a) {
+		this.mulR = r;
+		this.mulB = b;
+		this.mulG = g;
+		this.mulA = a;
+		this.colorTransform = true;
+	}
+	,render: function(paintMode,transform) {
 		var x = -this.pivotX;
 		var y = -this.pivotY;
 		var model__00 = 1;
@@ -3217,6 +3225,11 @@ com_gEngine_display_Layer.prototype = {
 	}
 	,destroy: function() {
 		this.children.splice(0,this.children.length);
+	}
+	,removeFromParent: function() {
+		if(this.parent != null) {
+			this.parent.remove(this);
+		}
 	}
 	,set_rotation: function(value) {
 		if(value != this.rotation) {
@@ -4276,10 +4289,7 @@ com_gEngine_helper_RectangleDisplay.init = function(textureID) {
 };
 com_gEngine_helper_RectangleDisplay.__super__ = com_gEngine_display_Sprite;
 com_gEngine_helper_RectangleDisplay.prototype = $extend(com_gEngine_display_Sprite.prototype,{
-	setColor: function(r,g,b) {
-		this.colorMultiplication(r / 255,g / 255,b / 255,1);
-	}
-	,__class__: com_gEngine_helper_RectangleDisplay
+	__class__: com_gEngine_helper_RectangleDisplay
 });
 var com_gEngine_helper_Timeline = function(frameRate,totalFrames,labels) {
 	this.currentTime = 0;
@@ -5663,18 +5673,12 @@ com_soundLib_SoundManager.reset = function() {
 var gameObjects_Ball = function(layer,x,y,spdX,spdY,collisions,maxHp) {
 	com_framework_utils_Entity.call(this);
 	this.hp = maxHp;
+	this.hpTotal = maxHp;
 	this.screenWidth = com_gEngine_GEngine.get_i().width;
 	this.screenHeight = com_gEngine_GEngine.get_i().height;
 	this.ball = new com_gEngine_display_Sprite("ball");
-	this.tapaboca = new com_gEngine_display_Sprite("cuarentena");
-	this.ball.offsetX = -20;
-	this.ball.offsetY = -20;
-	this.ball.x = x;
-	this.ball.y = y;
-	this.tapaboca.offsetX = -20;
-	this.tapaboca.offsetY = -20;
-	this.tapaboca.x = x;
-	this.tapaboca.y = y;
+	this.ball.scaleX = maxHp;
+	this.ball.scaleY = maxHp;
 	this.velocity = new kha_math_FastVector2(spdX,spdY);
 	this.colorRed = Math.random();
 	this.colorBlue = Math.random();
@@ -5683,13 +5687,16 @@ var gameObjects_Ball = function(layer,x,y,spdX,spdY,collisions,maxHp) {
 	this.collision = new com_collision_platformer_CollisionBox();
 	this.collision.userData = this;
 	collisions.add(this.collision);
-	this.collision.width = 40;
-	this.collision.height = 40;
+	this.collision.width = 40 * maxHp;
+	this.collision.height = 40 * maxHp;
 	this.collision.x = x;
 	this.collision.y = y;
 	this.thisLayer = layer;
 	layer.addChild(this.ball);
-	layer.addChild(this.tapaboca);
+	this.hpDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+	this.hpDisplay.set_text(this.hp + "");
+	this.hpDisplay.setColorMultiply(0,0,0,1);
+	layer.addChild(this.hpDisplay);
 };
 $hxClasses["gameObjects.Ball"] = gameObjects_Ball;
 gameObjects_Ball.__name__ = "gameObjects.Ball";
@@ -5698,24 +5705,29 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	update: function(dt) {
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
+		this.time += dt;
 		this.velocity.y += 2000 * dt;
-		if(this.collision.x < 0 || this.collision.x + 40 > this.screenWidth) {
+		if(this.collision.x < 0 || this.collision.x + 40 * this.hpTotal > this.screenWidth) {
 			this.velocity.x *= -1;
 		}
 		this.collision.x += this.velocity.x * dt;
 		this.collision.y += this.velocity.y * dt;
-		if(this.collision.y + 40 >= this.screenHeight && this.velocity.y > 0) {
+		if(this.collision.y + 40 * this.hpTotal >= this.screenHeight && this.velocity.y > 0) {
 			this.velocity.y *= -1;
 		}
 		this.collision.velocityY = this.velocity.y;
 		this.collision.velocityX = this.velocity.x;
-		this.tapaboca.x = this.collision.x + 20;
-		this.tapaboca.y = this.collision.y + 20;
-		this.ball.x = this.collision.x + 20;
-		this.ball.y = this.collision.y + 20;
+		this.hpDisplay.x = this.collision.x + 20 * this.hpTotal - 10;
+		this.hpDisplay.y = this.collision.y + 20 * this.hpTotal - 10;
+		this.ball.x = this.collision.x;
+		this.ball.y = this.collision.y;
+		this.hpDisplay.set_text(this.hp + "");
 	}
 	,get_hp: function() {
 		return this.hp;
+	}
+	,get_hpTotal: function() {
+		return this.hpTotal;
 	}
 	,get_x: function() {
 		return this.ball.x;
@@ -5723,11 +5735,18 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,get_y: function() {
 		return this.ball.y;
 	}
-	,damage: function() {
-		this.dead = true;
-		this.ball.removeFromParent();
-		this.tapaboca.removeFromParent();
-		this.collision.removeFromParent();
+	,damage: function(dmg) {
+		this.hp -= dmg;
+		var newRed = (1 - this.colorRed) / this.hpTotal * (this.hpTotal - this.hp);
+		var newBlue = (1 - this.colorBlue) / this.hpTotal * (this.hpTotal - this.hp);
+		var newGreen = (1 - this.colorGreen) / this.hpTotal * (this.hpTotal - this.hp);
+		this.ball.colorMultiplication(this.colorRed + newRed,this.colorGreen + newGreen,this.colorBlue + newBlue);
+		if(this.hp <= 0) {
+			this.dead = true;
+			this.ball.removeFromParent();
+			this.hpDisplay.removeFromParent();
+			this.collision.removeFromParent();
+		}
 	}
 	,render: function() {
 		com_framework_utils_Entity.prototype.render.call(this);
@@ -5735,15 +5754,16 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,__class__: gameObjects_Ball
 });
 var gameObjects_Bullet = function() {
+	this.currentTime = 2.5;
+	this.lifeTime = 3;
 	com_framework_utils_Entity.call(this);
 	this.collision = new com_collision_platformer_CollisionBox();
 	this.collision.width = 5;
 	this.collision.height = 5;
 	this.collision.userData = this;
-	this.display = new com_gEngine_helper_RectangleDisplay();
-	this.display.setColor(255,0,0);
-	this.display.scaleX = 5;
-	this.display.scaleY = 5;
+	this.display = new com_gEngine_display_Sprite("arrow");
+	this.display.scaleX = 0.5;
+	this.display.scaleY = 0.5;
 };
 $hxClasses["gameObjects.Bullet"] = gameObjects_Bullet;
 gameObjects_Bullet.__name__ = "gameObjects.Bullet";
@@ -5751,7 +5771,6 @@ gameObjects_Bullet.__super__ = com_framework_utils_Entity;
 gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 	die: function() {
 		com_framework_utils_Entity.prototype.die.call(this);
-		this.dead = true;
 		this.limboStart();
 	}
 	,limboStart: function() {
@@ -5759,18 +5778,17 @@ gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.collision.removeFromParent();
 	}
 	,update: function(dt) {
-		if(this.dead) {
-			return;
-		}
+		this.currentTime += dt;
+		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.collision.update(dt);
 		this.display.x = this.collision.x;
 		this.display.y = this.collision.y;
-		com_framework_utils_Entity.prototype.update.call(this,dt);
+		if(this.currentTime >= this.lifeTime) {
+			this.die();
+		}
 	}
 	,shoot: function(x,y,dirX,dirY,bulletsCollision) {
-		if(this.dead) {
-			return;
-		}
+		this.currentTime = 2.5;
 		this.collision.x = x;
 		this.collision.y = y;
 		this.collision.velocityX = 1000 * dirX;
@@ -5801,17 +5819,16 @@ var gameObjects_Player = function(X,Y,layer) {
 	this.display = new com_gEngine_display_Sprite("femalePlayer");
 	this.gun = new gameObjects_Gun();
 	this.addChild(this.gun);
-	this.display.timeline.playAnimation("womanattack_");
-	this.display.timeline.gotoAndStop(10);
+	this.display.timeline.playAnimation("womanidle");
 	this.display.x = X;
 	this.display.y = Y;
 	this.display.timeline.frameRate = 0.1;
 	this.collision = new com_collision_platformer_CollisionBox();
-	this.collision.width = 30;
+	this.collision.width = 31;
 	this.collision.height = 55;
 	this.collision.x = X;
 	this.collision.y = Y;
-	this.display.offsetX = -15;
+	this.display.offsetX = -10;
 	this.display.offsetY = -15;
 	layer.addChild(this.display);
 };
@@ -5820,50 +5837,14 @@ gameObjects_Player.__name__ = "gameObjects.Player";
 gameObjects_Player.__super__ = com_framework_utils_Entity;
 gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 	update: function(dt) {
+		if(this.isDead()) {
+			return;
+		}
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.collision.velocityX = 0;
 		this.collision.velocityY = 0;
 		this.movement(this.collision,250);
-		if(this.collision.velocityX != 0 || this.collision.velocityY != 0) {
-			var _this = this.direction;
-			var x = this.collision.velocityX;
-			var y = this.collision.velocityY;
-			if(y == null) {
-				y = 0;
-			}
-			if(x == null) {
-				x = 0;
-			}
-			var v_x = x;
-			var v_y = y;
-			_this.x = v_x;
-			_this.y = v_y;
-			var _this1 = this.direction;
-			var _this2 = this.direction;
-			var x1 = _this2.x;
-			var y1 = _this2.y;
-			if(y1 == null) {
-				y1 = 0;
-			}
-			if(x1 == null) {
-				x1 = 0;
-			}
-			var v_x1 = x1;
-			var v_y1 = y1;
-			var currentLength = Math.sqrt(v_x1 * v_x1 + v_y1 * v_y1);
-			if(currentLength != 0) {
-				var mul = 1 / currentLength;
-				v_x1 *= mul;
-				v_y1 *= mul;
-			}
-			_this1.x = v_x1;
-			_this1.y = v_y1;
-		} else if(Math.abs(this.direction.x) > Math.abs(this.direction.y)) {
-			this.direction.y = 0;
-		} else {
-			this.direction.x = 0;
-		}
 		if(com_framework_utils_Input.i.isKeyCodePressed(65)) {
 			this.gun.shoot(this.get_x(),this.get_y() - this.get_height() * 0.75,0,-1);
 			this.display.offsetY = -15;
@@ -5873,10 +5854,14 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,movement: function(collision,SPEED) {
 		this.display.offsetY = -5;
 		if(com_framework_utils_Input.i.isKeyCodeDown(37)) {
-			collision.velocityX = -SPEED;
+			if(collision.x > 0) {
+				collision.velocityX = -SPEED;
+			}
 		}
 		if(com_framework_utils_Input.i.isKeyCodeDown(39)) {
-			collision.velocityX = SPEED;
+			if(collision.x < 500 - collision.width) {
+				collision.velocityX = SPEED;
+			}
 		}
 	}
 	,get_x: function() {
@@ -5907,49 +5892,18 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 		var _this = this.display.timeline;
 		if(!(!_this.playing && !_this.loop) && this.display.timeline.currentAnimation == "womanattack_") {
+			this.display.offsetY = -15;
 			return;
 		}
-		if(this.collision.velocityX == 0 && this.collision.velocityY == 0) {
-			if(this.direction.x != 0 && this.direction.y == 0) {
-				this.display.timeline.playAnimation("womanwalk_");
-			}
-			if(this.direction.x == 0 && this.direction.y != 0) {
-				if(this.direction.y > 0) {
-					this.display.timeline.playAnimation("womanwalk_");
-				} else {
-					this.display.timeline.playAnimation("womanwalk_");
-				}
-			}
-		} else if(this.collision.velocityX != 0 && this.collision.velocityY != 0) {
-			if(this.collision.velocityX >= 0) {
-				this.display.scaleX = 1;
-			}
-			if(this.collision.velocityX < 0) {
-				this.display.scaleX = -1;
-			}
-			if(this.collision.velocityY > 0) {
-				this.display.timeline.playAnimation("womanwalk_");
-			} else {
-				this.display.timeline.playAnimation("womanwalk_");
-			}
-		} else if(this.collision.velocityX == 0 && this.collision.velocityY != 0) {
-			if(this.collision.velocityY > 0) {
-				this.display.timeline.playAnimation("womanwalk_");
-			} else {
-				this.display.timeline.playAnimation("womanwalk_");
-			}
-		} else if(this.collision.velocityX != 0) {
-			this.display.scaleX = 1;
+		if(this.collision.velocityX != 0) {
 			this.display.timeline.playAnimation("womanwalk_");
-		} else if(this.collision.velocityX == 0 && this.collision.velocityY != 0) {
-			if(this.collision.velocityY > 0) {
-				this.display.timeline.playAnimation("womanwalk_");
-			} else {
-				this.display.timeline.playAnimation("womanwalk_");
-			}
+		}
+		if(this.collision.velocityX == 0) {
+			this.display.offsetY = -15;
+			this.display.timeline.playAnimation("womanidle");
 		}
 		if(com_framework_utils_Input.i.isKeyCodePressed(65)) {
-			this.display.offsetY = 5;
+			this.display.offsetY = -15;
 			this.display.timeline.playAnimation("womanattack_",false);
 		}
 	}
@@ -7585,12 +7539,18 @@ var kha__$Assets_ImageList = function() {
 	this.grass = null;
 	this.gameOverDescription = { name : "gameOver", original_height : 244, file_sizes : [17088], original_width : 231, files : ["gameOver.png"], type : "image"};
 	this.gameOver = null;
+	this.forestDescription = { name : "forest", original_height : 720, file_sizes : [64059], original_width : 500, files : ["forest.jpg"], type : "image"};
+	this.forest = null;
 	this.femalePlayerDescription = { name : "femalePlayer", original_height : 327, file_sizes : [28328], original_width : 381, files : ["femalePlayer.png"], type : "image"};
 	this.femalePlayer = null;
+	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnailDescription = { name : "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail", original_height : 175, file_sizes : [61692], original_width : 350, files : ["epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"], type : "image"};
+	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail = null;
 	this.cuarentenaDescription = { name : "cuarentena", original_height : 40, file_sizes : [1586], original_width : 40, files : ["cuarentena.png"], type : "image"};
 	this.cuarentena = null;
 	this.ballDescription = { name : "ball", original_height : 40, file_sizes : [469], original_width : 40, files : ["ball.png"], type : "image"};
 	this.ball = null;
+	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
+	this.arrow = null;
 };
 $hxClasses["kha._Assets.ImageList"] = kha__$Assets_ImageList;
 kha__$Assets_ImageList.__name__ = "kha._Assets.ImageList";
@@ -7607,7 +7567,7 @@ var kha__$Assets_BlobList = function() {
 	this.julia_1_xml = null;
 	this.jason_xmlDescription = { name : "jason_xml", file_sizes : [3260], files : ["jason.xml"], type : "blob"};
 	this.jason_xml = null;
-	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3741], files : ["femalePlayer.xml"], type : "blob"};
+	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3479], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
 	this.femalePlayer_jsonDescription = { name : "femalePlayer_json", file_sizes : [7665], files : ["femalePlayer.json"], type : "blob"};
 	this.femalePlayer_json = null;
@@ -20010,7 +19970,7 @@ levelObjects_LoopBackground.prototype = $extend(com_framework_utils_Entity.proto
 	,__class__: levelObjects_LoopBackground
 });
 var levelObjects_Grass = function(layer,camera) {
-	levelObjects_LoopBackground.call(this,"grass",layer,camera);
+	levelObjects_LoopBackground.call(this,"forest",layer,camera);
 };
 $hxClasses["levelObjects.Grass"] = levelObjects_Grass;
 levelObjects_Grass.__name__ = "levelObjects.Grass";
@@ -20038,8 +19998,8 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		var image = new com_gEngine_display_Sprite("gameOver");
 		this.simulationLayer = new com_gEngine_display_Layer();
 		this.stage.addChild(this.simulationLayer);
-		this.julia = new gameObjects_Player(200,540.,this.simulationLayer);
-		this.addChild(this.julia);
+		this.player = new gameObjects_Player(200,540.,this.simulationLayer);
+		this.addChild(this.player);
 		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
 		image.y = 100;
 		this.stage.addChild(image);
@@ -20050,7 +20010,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2;
 		scoreDisplay.set_color(-65536);
 		this.stage.addChild(scoreDisplay);
-		this.julia.die();
+		this.player.die();
 	}
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
@@ -20073,10 +20033,9 @@ states_GameState.__super__ = com_framework_utils_State;
 states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
-		atlas.add(new com_loading_basicResources_SparrowLoader("jason","jason_xml"));
-		atlas.add(new com_loading_basicResources_SparrowLoader("julia","julia_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
-		atlas.add(new com_loading_basicResources_ImageLoader("grass"));
+		atlas.add(new com_loading_basicResources_ImageLoader("forest"));
+		atlas.add(new com_loading_basicResources_ImageLoader("arrow"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
 		resources.add(new com_loading_basicResources_ImageLoader("ball"));
@@ -20105,7 +20064,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.timeDisplay.y = 80;
 		this.hudLayer.addChild(this.timeDisplay);
 		this.scoreDisplay.set_text("0");
-		var ball = new gameObjects_Ball(this.simulationLayer,400,400,Math.random() * 500 - Math.random() * 500,500,this.enemyCollisions,2);
+		var ball = new gameObjects_Ball(this.simulationLayer,10,10,Math.random() * 500 - Math.random() * 500,0,this.enemyCollisions,3);
 		this.addChild(ball);
 	}
 	,update: function(dt) {
@@ -20115,7 +20074,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			this.added = false;
 		}
 		this.enemyCollisions.overlap(this.julia.gun.bulletsCollisions,$bind(this,this.ballVsBullet));
-		this.julia.collision.overlap(this.enemyCollisions,$bind(this,this.juliaVSJason));
+		this.julia.collision.overlap(this.enemyCollisions,$bind(this,this.playerVsBall));
 		this.survivedTime = " " + (Math.floor(this.time / 60) + "m " + Math.floor(this.time) % 60 + "s");
 		this.timeDisplay.set_text(this.survivedTime);
 		this.scoreDisplay.set_text(this.score + "");
@@ -20123,25 +20082,28 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,ballVsBullet: function(aBall,aBullet) {
 		var ball = aBall.userData;
-		ball.damage();
-		if(ball.get_hp() > 0) {
-			var speed = Math.random() * 500;
-			var childBall1 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),speed,-speed - 250,this.enemyCollisions,ball.get_hp() - 1);
-			var childBall2 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),-speed,-speed - 250,this.enemyCollisions,ball.get_hp() - 1);
-			this.addChild(childBall1);
-			this.addChild(childBall2);
-			this.ballsAlive += 2;
+		ball.damage(1);
+		if(ball.get_hp() <= 0) {
+			this.score += ball.get_hpTotal();
+			if(ball.get_hpTotal() <= 1) {
+				this.ballsAlive -= 1;
+			} else {
+				var speed = Math.random() * 500;
+				var childBall1 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),speed,-speed - 250,this.enemyCollisions,ball.get_hpTotal() - 1);
+				var childBall2 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),-speed,-speed - 250,this.enemyCollisions,ball.get_hpTotal() - 1);
+				this.addChild(childBall1);
+				this.addChild(childBall2);
+				this.ballsAlive += 1;
+			}
 		}
-		this.ballsAlive -= 1;
 		var bullet = aBullet.userData;
 		bullet.die();
-		this.score++;
 		if(this.ballsAlive == 0) {
 			this.julia.die();
 			this.changeState(new states_GameOver("" + this.score,this.survivedTime));
 		}
 	}
-	,juliaVSJason: function(aJulia,aJason) {
+	,playerVsBall: function(aJulia,aJason) {
 		this.julia.die();
 		this.changeState(new states_GameOver("" + this.score,this.survivedTime));
 	}

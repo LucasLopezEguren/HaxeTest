@@ -12,9 +12,9 @@ import states.GameState;
 class Main {
     public static function main() {
 		#if hotml new hotml.Client(); #end
-		var windowsOptions=new WindowOptions("JuliaVSJason",0,0,500,720,null,true,WindowFeatures.FeatureResizable,WindowMode.Windowed);
+		var windowsOptions=new WindowOptions("Defend Antathaan",0,0,500,720,null,true,WindowFeatures.FeatureResizable,WindowMode.Windowed);
 		var frameBufferOptions=new FramebufferOptions();
-		System.start(new SystemOptions("JuliaVSJason",500,720,windowsOptions,frameBufferOptions), function (w) {
+		System.start(new SystemOptions("Defend Antathaan",500,720,windowsOptions,frameBufferOptions), function (w) {
 			new Simulation(GameState,500,720);
         });
     }

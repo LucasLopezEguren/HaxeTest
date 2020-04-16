@@ -109,6 +109,18 @@
 			]
 		},
 		{
+			"name": "arrow",
+			"files": [
+				"arrow.png"
+			],
+			"file_sizes": [
+				1505
+			],
+			"type": "image",
+			"original_width": 19,
+			"original_height": 67
+		},
+		{
 			"name": "ball",
 			"files": [
 				"ball.png"
@@ -221,6 +233,18 @@
 			"original_height": 40
 		},
 		{
+			"name": "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail",
+			"files": [
+				"epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"
+			],
+			"file_sizes": [
+				61692
+			],
+			"type": "image",
+			"original_width": 350,
+			"original_height": 175
+		},
+		{
 			"name": "femalePlayer",
 			"files": [
 				"femalePlayer.png"
@@ -248,7 +272,7 @@
 				"femalePlayer.xml"
 			],
 			"file_sizes": [
-				3741
+				3479
 			],
 			"type": "blob"
 		},
@@ -285,6 +309,18 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "forest",
+			"files": [
+				"forest.jpg"
+			],
+			"file_sizes": [
+				64059
+			],
+			"type": "image",
+			"original_width": 500,
+			"original_height": 720
 		},
 		{
 			"name": "fov_frag",

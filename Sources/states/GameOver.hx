@@ -22,7 +22,7 @@ import com.framework.utils.State;
 class GameOver extends State {
     var score:String;
     var timeSurvived:String;
-    var julia:Player;
+    var player:Player;
 	var simulationLayer:Layer;
     var time:Float = 0;
 
@@ -41,10 +41,10 @@ class GameOver extends State {
 
     override function init() {
         var image = new Sprite("gameOver");
-		simulationLayer  =  new Layer();
+		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
-        julia  =  new Player(200, 720/4*3, simulationLayer);
-		addChild(julia);
+        player = new Player(200, 720/4*3, simulationLayer);
+		addChild(player);
         image.x = GEngine.virtualWidth * 0.5 - image.width() * 0.5;
         image.y = 100;
         stage.addChild(image);
@@ -55,7 +55,7 @@ class GameOver extends State {
         scoreDisplay.y = GEngine.virtualHeight/2;
         scoreDisplay.color = Color.Red;
         stage.addChild(scoreDisplay);
-        julia.die();
+        player.die();
     }
 
     override function update(dt:Float) {

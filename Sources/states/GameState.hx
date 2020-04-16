@@ -33,10 +33,9 @@ class GameState extends State {
 
 	override function load(resources:Resources) {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
-		atlas.add(new SparrowLoader("jason", "jason_xml"));
-		atlas.add(new SparrowLoader("julia", "julia_xml"));
 		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
-		atlas.add(new ImageLoader("grass"));
+		atlas.add(new ImageLoader("forest"));
+		atlas.add(new ImageLoader("arrow"));
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
         resources.add(new ImageLoader("ball"));
@@ -83,7 +82,7 @@ class GameState extends State {
 		timeDisplay.y = 80;
 		hudLayer.addChild(timeDisplay);
 		scoreDisplay.text = "0";
-		var ball = new Ball(simulationLayer, 400, 400, Math.random()*500-Math.random()*500, 500, enemyCollisions, 2);
+		var ball = new Ball(simulationLayer, 10, 10, Math.random()*500-Math.random()*500, 0, enemyCollisions, 3);
 		addChild(ball);
 	}
 
@@ -97,7 +96,7 @@ class GameState extends State {
 			added = false;
 		} 
 		enemyCollisions.overlap(julia.gun.bulletsCollisions, ballVsBullet);
-		julia.collision.overlap(enemyCollisions, juliaVSJason);
+		julia.collision.overlap(enemyCollisions, playerVsBall);
 		survivedTime = " " + (Math.floor(time/60) + "m " + Math.floor(time)%60 +"s");
 		timeDisplay.text = survivedTime;
 		scoreDisplay.text = score + "";
@@ -106,26 +105,29 @@ class GameState extends State {
 
 	function ballVsBullet(aBall:ICollider, aBullet:ICollider) {
         var ball:Ball = (cast aBall.userData);
-        ball.damage();
-		if (ball.get_hp() > 0) {
-			var speed:Float = Math.random()*500;
-			var childBall1:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), speed, -speed-250, enemyCollisions, ball.get_hp()-1);
-			var childBall2:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), -speed, -speed-250, enemyCollisions, ball.get_hp()-1);
-			addChild(childBall1);
-			addChild(childBall2);
-			ballsAlive = ballsAlive + 2;
+        ball.damage(1);
+		if (ball.get_hp() <= 0) {
+			score = score + ball.get_hpTotal();
+			if (ball.get_hpTotal() <= 1){
+				ballsAlive = ballsAlive - 1;
+			} else {
+				var speed:Float = Math.random()*500;
+				var childBall1:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), speed, -speed-250, enemyCollisions, ball.get_hpTotal()-1);
+				var childBall2:Ball = new Ball(simulationLayer, ball.get_x(), ball.get_y(), -speed, -speed-250, enemyCollisions, ball.get_hpTotal()-1);
+				addChild(childBall1);
+				addChild(childBall2);
+				ballsAlive = ballsAlive + 1;
+			}
 		}
-		ballsAlive = ballsAlive - 1;
         var bullet:Bullet = (cast  aBullet.userData);
 		bullet.die();
-        score++;
 		if (ballsAlive == 0) {
 			julia.die();
 			changeState(new GameOver(""+score,survivedTime));
 		}
     }
 
-	function juliaVSJason(aJulia:ICollider, aJason:ICollider) {
+	function playerVsBall(aJulia:ICollider, aJason:ICollider) {
         julia.die();
 		changeState(new GameOver(""+score,survivedTime));
     }
