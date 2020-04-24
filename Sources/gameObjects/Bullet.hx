@@ -7,16 +7,13 @@ import com.gEngine.helper.RectangleDisplay;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
-/**
- * ...
- * @author 
- */
+/* @author Lucas */
 class Bullet extends Entity
 {
 	public var collision:CollisionBox;
 	var display:Sprite;
-	var lifeTime:Float=3;
-	var currentTime:Float=5/2;
+	var lifeTime:Float=1;
+	var currentTime:Float=0;
 
 	public function new() 
 	{
@@ -53,7 +50,7 @@ class Bullet extends Entity
 	}
 	public function shoot(x:Float, y:Float,dirX:Float,dirY:Float,bulletsCollision:CollisionGroup):Void
 	{
-		currentTime = 5/2;
+		currentTime = 0;
 		collision.x = x;
 		collision.y = y;
 		collision.velocityX = 1000 * dirX;

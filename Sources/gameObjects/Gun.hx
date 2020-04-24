@@ -3,10 +3,7 @@ package gameObjects;
 import com.framework.utils.Entity;
 import com.collision.platformer.CollisionGroup;
 
-/**
- * ...
- * @author 
- */
+/* @author Lucas */
 class Gun extends Entity
 {
 	public var bulletsCollisions:CollisionGroup;

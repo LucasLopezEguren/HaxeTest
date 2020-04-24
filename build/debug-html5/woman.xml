@@ -6,7 +6,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_0</filename>
+         <filename>attack_0</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -19,7 +19,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_1</filename>
+         <filename>attack_1</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -32,7 +32,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_2</filename>
+         <filename>attack_2</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -45,7 +45,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_3</filename>
+         <filename>attack_3</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -58,7 +58,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_4</filename>
+         <filename>attack_4</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -71,7 +71,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_5</filename>
+         <filename>attack_5</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -84,7 +84,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_6</filename>
+         <filename>attack_6</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -97,7 +97,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_7</filename>
+         <filename>attack_7</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -110,7 +110,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_8</filename>
+         <filename>attack_8</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -123,7 +123,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_9</filename>
+         <filename>attack_9</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -136,7 +136,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_10</filename>
+         <filename>attack_10</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -149,7 +149,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanattack_11</filename>
+         <filename>attack_11</filename>
          <frame>
             <h>69</h>
             <w>64</w>
@@ -162,7 +162,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_0</filename>
+         <filename>walk_0</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -175,7 +175,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_1</filename>
+         <filename>walk_1</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -188,7 +188,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_2</filename>
+         <filename>walk_2</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -201,7 +201,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_3</filename>
+         <filename>walk_3</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -214,7 +214,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_4</filename>
+         <filename>walk_4</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -227,7 +227,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_5</filename>
+         <filename>walk_5</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -240,7 +240,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_6</filename>
+         <filename>walk_6</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -253,7 +253,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_7</filename>
+         <filename>walk_7</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -266,7 +266,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womanwalk_8</filename>
+         <filename>walk_8</filename>
          <frame>
             <h>60</h>
             <w>63</w>
@@ -279,7 +279,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womandeath_0</filename>
+         <filename>death_0</filename>
          <frame>
             <h>60</h>
             <w>62</w>
@@ -292,7 +292,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womandeath_1</filename>
+         <filename>death_1</filename>
          <frame>
             <h>60</h>
             <w>62</w>
@@ -305,7 +305,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womandeath_2</filename>
+         <filename>death_2</filename>
          <frame>
             <h>60</h>
             <w>62</w>
@@ -318,7 +318,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womandeath_3</filename>
+         <filename>death_3</filename>
          <frame>
             <h>60</h>
             <w>62</w>
@@ -331,7 +331,7 @@
             <x>0.5</x>
             <y>0.5</y>
          </anchor>
-         <filename>womandeath_4</filename>
+         <filename>death_4</filename>
          <frame>
             <h>60</h>
             <w>62</w>

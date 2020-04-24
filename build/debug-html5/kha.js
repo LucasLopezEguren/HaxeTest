@@ -106,7 +106,7 @@ Main.main = function() {
 	var windowsOptions = new kha_WindowOptions("Defend Antathaan",0,0,500,720,null,true,1,0);
 	var frameBufferOptions = new kha_FramebufferOptions();
 	kha_System.start(new kha_SystemOptions("Defend Antathaan",500,720,windowsOptions,frameBufferOptions),function(w) {
-		new com_framework_Simulation(states_GameState,500,720);
+		new com_framework_Simulation(states_IntroScreen,500,720);
 	});
 };
 Math.__name__ = "Math";
@@ -1144,6 +1144,9 @@ com_framework_utils_Input.prototype = {
 	}
 	,isKeyCodePressed: function(keyCode) {
 		return this.keysPressed.indexOf(keyCode) != -1;
+	}
+	,isMousePressed: function() {
+		return this.mousePressed;
 	}
 	,__class__: com_framework_utils_Input
 };
@@ -3245,6 +3248,9 @@ com_gEngine_display_Layer.prototype = {
 		value.max.x = value.max.x;
 		value.max.y = value.max.y;
 		return this.drawArea = value;
+	}
+	,get_length: function() {
+		return this.children.length;
 	}
 	,__class__: com_gEngine_display_Layer
 };
@@ -5670,7 +5676,7 @@ com_soundLib_SoundManager.init = function() {
 com_soundLib_SoundManager.reset = function() {
 	com_soundLib_SoundManager.map = new haxe_ds_StringMap();
 };
-var gameObjects_Ball = function(layer,x,y,spdX,spdY,collisions,maxHp) {
+var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	com_framework_utils_Entity.call(this);
 	this.hp = maxHp;
 	this.hpTotal = maxHp;
@@ -5679,6 +5685,8 @@ var gameObjects_Ball = function(layer,x,y,spdX,spdY,collisions,maxHp) {
 	this.ball = new com_gEngine_display_Sprite("ball");
 	this.ball.scaleX = maxHp;
 	this.ball.scaleY = maxHp;
+	var ballLayer = new com_gEngine_display_Layer();
+	ballLayer.addChild(this.ball);
 	this.velocity = new kha_math_FastVector2(spdX,spdY);
 	this.colorRed = Math.random();
 	this.colorBlue = Math.random();
@@ -5691,12 +5699,16 @@ var gameObjects_Ball = function(layer,x,y,spdX,spdY,collisions,maxHp) {
 	this.collision.height = 40 * maxHp;
 	this.collision.x = x;
 	this.collision.y = y;
-	this.thisLayer = layer;
-	layer.addChild(this.ball);
+	this.hpLayer = new com_gEngine_display_Layer();
 	this.hpDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
 	this.hpDisplay.set_text(this.hp + "");
 	this.hpDisplay.setColorMultiply(0,0,0,1);
-	layer.addChild(this.hpDisplay);
+	this.hpDisplay.x = -10;
+	this.hpDisplay.y = -13;
+	this.hpLayer.addChild(this.hpDisplay);
+	this.hpLayer.set_rotation(0);
+	stage.addChild(ballLayer);
+	stage.addChild(this.hpLayer);
 };
 $hxClasses["gameObjects.Ball"] = gameObjects_Ball;
 gameObjects_Ball.__name__ = "gameObjects.Ball";
@@ -5706,7 +5718,7 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.time += dt;
-		this.velocity.y += 2000 * dt;
+		this.velocity.y += 500 * dt;
 		if(this.collision.x < 0 || this.collision.x + 40 * this.hpTotal > this.screenWidth) {
 			this.velocity.x *= -1;
 		}
@@ -5715,10 +5727,12 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 		if(this.collision.y + 40 * this.hpTotal >= this.screenHeight && this.velocity.y > 0) {
 			this.velocity.y *= -1;
 		}
+		var _g = this.hpLayer;
+		_g.set_rotation(_g.rotation + Math.abs(this.velocity.x) / (this.velocity.x * 10) * (Math.abs(this.velocity.x) / (25 * this.hpTotal)));
 		this.collision.velocityY = this.velocity.y;
 		this.collision.velocityX = this.velocity.x;
-		this.hpDisplay.x = this.collision.x + 20 * this.hpTotal - 10;
-		this.hpDisplay.y = this.collision.y + 20 * this.hpTotal - 10;
+		this.hpLayer.x = this.collision.x + 20 * this.hpTotal;
+		this.hpLayer.y = this.collision.y + 20 * this.hpTotal;
 		this.ball.x = this.collision.x;
 		this.ball.y = this.collision.y;
 		this.hpDisplay.set_text(this.hp + "");
@@ -5728,6 +5742,9 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	}
 	,get_hpTotal: function() {
 		return this.hpTotal;
+	}
+	,get_speedX: function() {
+		return this.velocity.x;
 	}
 	,get_x: function() {
 		return this.ball.x;
@@ -5754,8 +5771,8 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,__class__: gameObjects_Ball
 });
 var gameObjects_Bullet = function() {
-	this.currentTime = 2.5;
-	this.lifeTime = 3;
+	this.currentTime = 0;
+	this.lifeTime = 1;
 	com_framework_utils_Entity.call(this);
 	this.collision = new com_collision_platformer_CollisionBox();
 	this.collision.width = 5;
@@ -5788,7 +5805,7 @@ gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 	}
 	,shoot: function(x,y,dirX,dirY,bulletsCollision) {
-		this.currentTime = 2.5;
+		this.currentTime = 0;
 		this.collision.x = x;
 		this.collision.y = y;
 		this.collision.velocityX = 1000 * dirX;
@@ -5813,13 +5830,13 @@ gameObjects_Gun.prototype = $extend(com_framework_utils_Entity.prototype,{
 	}
 	,__class__: gameObjects_Gun
 });
-var gameObjects_Player = function(X,Y,layer) {
+var gameObjects_Player = function(X,Y,layer,sprite) {
 	com_framework_utils_Entity.call(this);
 	this.direction = new kha_math_FastVector2(0,1);
-	this.display = new com_gEngine_display_Sprite("femalePlayer");
+	this.display = new com_gEngine_display_Sprite(sprite);
 	this.gun = new gameObjects_Gun();
 	this.addChild(this.gun);
-	this.display.timeline.playAnimation("womanidle");
+	this.display.timeline.playAnimation("idle");
 	this.display.x = X;
 	this.display.y = Y;
 	this.display.timeline.frameRate = 0.1;
@@ -5848,7 +5865,7 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		if(com_framework_utils_Input.i.isKeyCodePressed(65)) {
 			this.gun.shoot(this.get_x(),this.get_y() - this.get_height() * 0.75,0,-1);
 			this.display.offsetY = -15;
-			this.display.timeline.playAnimation("womanattack_",false);
+			this.display.timeline.playAnimation("attack_",false);
 		}
 	}
 	,movement: function(collision,SPEED) {
@@ -5877,7 +5894,7 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		if(!this.dead) {
 			this.display.scaleX = 3;
 			this.display.scaleY = 3;
-			this.display.timeline.playAnimation("womandeath_",false);
+			this.display.timeline.playAnimation("death_",false);
 		}
 		this.dead = true;
 		this.collision.removeFromParent();
@@ -5887,24 +5904,24 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		com_framework_utils_Entity.prototype.render.call(this);
 		this.display.x = this.collision.x;
 		this.display.y = this.collision.y;
-		if(this.display.timeline.currentAnimation == "womandeath_") {
+		if(this.display.timeline.currentAnimation == "death_") {
 			return;
 		}
 		var _this = this.display.timeline;
-		if(!(!_this.playing && !_this.loop) && this.display.timeline.currentAnimation == "womanattack_") {
+		if(!(!_this.playing && !_this.loop) && this.display.timeline.currentAnimation == "attack_") {
 			this.display.offsetY = -15;
 			return;
 		}
 		if(this.collision.velocityX != 0) {
-			this.display.timeline.playAnimation("womanwalk_");
+			this.display.timeline.playAnimation("walk_");
 		}
 		if(this.collision.velocityX == 0) {
 			this.display.offsetY = -15;
-			this.display.timeline.playAnimation("womanidle");
+			this.display.timeline.playAnimation("idle");
 		}
 		if(com_framework_utils_Input.i.isKeyCodePressed(65)) {
 			this.display.offsetY = -15;
-			this.display.timeline.playAnimation("womanattack_",false);
+			this.display.timeline.playAnimation("attack_",false);
 		}
 	}
 	,__class__: gameObjects_Player
@@ -7531,6 +7548,10 @@ js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
 var kha__$Assets_ImageList = function() {
+	this.testDescription = { name : "test", original_height : 327, file_sizes : [22958], original_width : 381, files : ["test.png"], type : "image"};
+	this.test = null;
+	this.malePlayerDescription = { name : "malePlayer", original_height : 327, file_sizes : [33061], original_width : 381, files : ["malePlayer.png"], type : "image"};
+	this.malePlayer = null;
 	this.juliaDescription = { name : "julia", original_height : 167, file_sizes : [14731], original_width : 237, files : ["julia.png"], type : "image"};
 	this.julia = null;
 	this.jasonDescription = { name : "jason", original_height : 362, file_sizes : [14448], original_width : 120, files : ["jason.png"], type : "image"};
@@ -7541,7 +7562,7 @@ var kha__$Assets_ImageList = function() {
 	this.gameOver = null;
 	this.forestDescription = { name : "forest", original_height : 720, file_sizes : [64059], original_width : 500, files : ["forest.jpg"], type : "image"};
 	this.forest = null;
-	this.femalePlayerDescription = { name : "femalePlayer", original_height : 327, file_sizes : [28328], original_width : 381, files : ["femalePlayer.png"], type : "image"};
+	this.femalePlayerDescription = { name : "femalePlayer", original_height : 327, file_sizes : [27208], original_width : 381, files : ["femalePlayer.png"], type : "image"};
 	this.femalePlayer = null;
 	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnailDescription = { name : "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail", original_height : 175, file_sizes : [61692], original_width : 350, files : ["epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"], type : "image"};
 	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail = null;
@@ -7549,8 +7570,26 @@ var kha__$Assets_ImageList = function() {
 	this.cuarentena = null;
 	this.ballDescription = { name : "ball", original_height : 40, file_sizes : [469], original_width : 40, files : ["ball.png"], type : "image"};
 	this.ball = null;
+	this.asdfmalePlayerDescription = { name : "asdfmalePlayer", original_height : 327, file_sizes : [92042], original_width : 381, files : ["asdfmalePlayer.png"], type : "image"};
+	this.asdfmalePlayer = null;
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrow = null;
+	this.alePlayerDescription = { name : "alePlayer", original_height : 327, file_sizes : [103705], original_width : 381, files : ["alePlayer.png"], type : "image"};
+	this.alePlayer = null;
+	this._2walkDescription = { name : "_2walk", original_height : 67, file_sizes : [5941], original_width : 568, files : ["2walk.png"], type : "image"};
+	this._2walk = null;
+	this._2malePlayerDescription = { name : "_2malePlayer", original_height : 1344, file_sizes : [151249], original_width : 832, files : ["2malePlayer.png"], type : "image"};
+	this._2malePlayer = null;
+	this._2deathDescription = { name : "_2death", original_height : 61, file_sizes : [8921], original_width : 374, files : ["2death.png"], type : "image"};
+	this._2death = null;
+	this._2attackDescription = { name : "_2attack", original_height : 63, file_sizes : [8620], original_width : 816, files : ["2attack.png"], type : "image"};
+	this._2attack = null;
+	this._123Description = { name : "_123", original_height : 331, file_sizes : [33048], original_width : 369, files : ["123.png"], type : "image"};
+	this._123 = null;
+	this._12Description = { name : "_12", original_height : 327, file_sizes : [33070], original_width : 381, files : ["12.png"], type : "image"};
+	this._12 = null;
+	this._1Description = { name : "_1", original_height : 331, file_sizes : [32377], original_width : 369, files : ["1.png"], type : "image"};
+	this._1 = null;
 };
 $hxClasses["kha._Assets.ImageList"] = kha__$Assets_ImageList;
 kha__$Assets_ImageList.__name__ = "kha._Assets.ImageList";
@@ -7560,17 +7599,26 @@ kha__$Assets_ImageList.prototype = {
 	}
 	,__class__: kha__$Assets_ImageList
 };
+var kha__$Assets_SoundList = function() {
+	this.KhazixDescription = { name : "Khazix", file_sizes : [1406547], files : ["Khazix.ogg"], type : "sound"};
+	this.Khazix = null;
+};
+$hxClasses["kha._Assets.SoundList"] = kha__$Assets_SoundList;
+kha__$Assets_SoundList.__name__ = "kha._Assets.SoundList";
+kha__$Assets_SoundList.prototype = {
+	__class__: kha__$Assets_SoundList
+};
 var kha__$Assets_BlobList = function() {
+	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
+	this.malePlayer_xml = null;
 	this.julia_xmlDescription = { name : "julia_xml", file_sizes : [4883], files : ["julia.xml"], type : "blob"};
 	this.julia_xml = null;
-	this.julia_1_xmlDescription = { name : "julia_1_xml", file_sizes : [3771], files : ["julia.1.xml"], type : "blob"};
-	this.julia_1_xml = null;
 	this.jason_xmlDescription = { name : "jason_xml", file_sizes : [3260], files : ["jason.xml"], type : "blob"};
 	this.jason_xml = null;
-	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3479], files : ["femalePlayer.xml"], type : "blob"};
+	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3359], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
-	this.femalePlayer_jsonDescription = { name : "femalePlayer_json", file_sizes : [7665], files : ["femalePlayer.json"], type : "blob"};
-	this.femalePlayer_json = null;
+	this.femalePlayer1_jsonDescription = { name : "femalePlayer1_json", file_sizes : [7535], files : ["femalePlayer1.json"], type : "blob"};
+	this.femalePlayer1_json = null;
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
 kha__$Assets_BlobList.__name__ = "kha._Assets.BlobList";
@@ -19978,10 +20026,11 @@ levelObjects_Grass.__super__ = levelObjects_LoopBackground;
 levelObjects_Grass.prototype = $extend(levelObjects_LoopBackground.prototype,{
 	__class__: levelObjects_Grass
 });
-var states_GameOver = function(score,timeSurvived) {
+var states_GameOver = function(score,timeSurvived,sprite) {
 	com_framework_utils_State.call(this);
 	this.score = score;
 	this.timeSurvived = timeSurvived;
+	this.sprite = sprite;
 };
 $hxClasses["states.GameOver"] = states_GameOver;
 states_GameOver.__name__ = "states.GameOver";
@@ -19990,7 +20039,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_ImageLoader("gameOver"));
-		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
+		atlas.add(new com_loading_basicResources_SparrowLoader(this.sprite,this.sprite + "_xml"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
 	}
@@ -19998,34 +20047,54 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		var image = new com_gEngine_display_Sprite("gameOver");
 		this.simulationLayer = new com_gEngine_display_Layer();
 		this.stage.addChild(this.simulationLayer);
-		this.player = new gameObjects_Player(200,540.,this.simulationLayer);
-		this.addChild(this.player);
+		this.display = new com_gEngine_display_Sprite(this.sprite);
+		this.display.x = 170;
+		this.display.y = 505.;
+		this.display.scaleX = 3;
+		this.display.scaleY = 3;
+		this.display.timeline.playAnimation("idle",false);
+		this.simulationLayer.addChild(this.display);
 		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
 		image.y = 100;
 		this.stage.addChild(image);
 		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		scoreDisplay.set_text(" Your score is " + this.score + " \n \n ");
-		scoreDisplay.set_text(scoreDisplay.text + ("survived for " + this.timeSurvived));
-		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5;
+		var timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		scoreDisplay.set_text("Your score is " + this.score);
+		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 - 7;
 		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2;
 		scoreDisplay.set_color(-65536);
+		timeDisplay.set_text("survived for " + this.timeSurvived);
+		timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - timeDisplay.width() * 0.5;
+		timeDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 50;
+		timeDisplay.set_color(-65536);
 		this.stage.addChild(scoreDisplay);
-		this.player.die();
+		this.stage.addChild(timeDisplay);
+	}
+	,playDeadAnimation: function() {
+		this.display.scaleX = 3;
+		this.display.scaleY = 3;
+		this.display.timeline.frameRate = 0.1;
+		this.display.timeline.playAnimation("death_",false);
 	}
 	,update: function(dt) {
+		if(this.display.timeline.currentAnimation != "death_") {
+			this.playDeadAnimation();
+		}
 		com_framework_utils_State.prototype.update.call(this,dt);
 		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
-			this.changeState(new states_GameState());
+			this.changeState(new states_IntroScreen());
 		}
 	}
 	,__class__: states_GameOver
 });
-var states_GameState = function() {
+var states_GameState = function(character) {
+	this.isDebug = false;
 	this.ballsAlive = 1;
 	this.added = false;
 	this.time = 0;
 	this.score = 0;
 	com_framework_utils_State.call(this);
+	this.character = character;
 };
 $hxClasses["states.GameState"] = states_GameState;
 states_GameState.__name__ = "states.GameState";
@@ -20034,6 +20103,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
+		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
 		atlas.add(new com_loading_basicResources_ImageLoader("forest"));
 		atlas.add(new com_loading_basicResources_ImageLoader("arrow"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
@@ -20048,11 +20118,10 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.stage.addChild(groundLayer);
 		this.simulationLayer = new com_gEngine_display_Layer();
 		this.stage.addChild(this.simulationLayer);
-		this.julia = new gameObjects_Player(250,650,this.simulationLayer);
-		this.addChild(this.julia);
-		GlobalGameData.player = this.julia;
+		this.playerChar = new gameObjects_Player(250,650,this.simulationLayer,this.character);
+		this.addChild(this.playerChar);
+		GlobalGameData.player = this.playerChar;
 		GlobalGameData.simulationLayer = this.simulationLayer;
-		GlobalGameData.camera = this.stage.cameras[0];
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
 		this.scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
@@ -20064,7 +20133,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.timeDisplay.y = 80;
 		this.hudLayer.addChild(this.timeDisplay);
 		this.scoreDisplay.set_text("0");
-		var ball = new gameObjects_Ball(this.simulationLayer,10,10,Math.random() * 500 - Math.random() * 500,0,this.enemyCollisions,3);
+		var ball = new gameObjects_Ball(this.stage,10,10,50,0,this.enemyCollisions,3);
 		this.addChild(ball);
 	}
 	,update: function(dt) {
@@ -20073,12 +20142,17 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		if(Math.floor(this.time) % 2 != 0) {
 			this.added = false;
 		}
-		this.enemyCollisions.overlap(this.julia.gun.bulletsCollisions,$bind(this,this.ballVsBullet));
-		this.julia.collision.overlap(this.enemyCollisions,$bind(this,this.playerVsBall));
+		this.enemyCollisions.overlap(this.playerChar.gun.bulletsCollisions,$bind(this,this.ballVsBullet));
+		this.playerChar.collision.overlap(this.enemyCollisions,$bind(this,this.playerVsBall));
 		this.survivedTime = " " + (Math.floor(this.time / 60) + "m " + Math.floor(this.time) % 60 + "s");
 		this.timeDisplay.set_text(this.survivedTime);
 		this.scoreDisplay.set_text(this.score + "");
-		com_collision_platformer_CollisionEngine.overlap(this.julia.collision,this.enemyCollisions);
+		if(com_framework_utils_Input.i.isKeyCodePressed(84)) {
+			this.isDebug = !this.isDebug;
+		}
+		if(this.isDebug) {
+			com_collision_platformer_CollisionEngine.overlap(this.playerChar.collision,this.enemyCollisions);
+		}
 	}
 	,ballVsBullet: function(aBall,aBullet) {
 		var ball = aBall.userData;
@@ -20088,9 +20162,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			if(ball.get_hpTotal() <= 1) {
 				this.ballsAlive -= 1;
 			} else {
-				var speed = Math.random() * 500;
-				var childBall1 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),speed,-speed - 250,this.enemyCollisions,ball.get_hpTotal() - 1);
-				var childBall2 = new gameObjects_Ball(this.simulationLayer,ball.get_x(),ball.get_y(),-speed,-speed - 250,this.enemyCollisions,ball.get_hpTotal() - 1);
+				var childBall1 = new gameObjects_Ball(this.stage,ball.get_x() + 10 * ball.get_hpTotal(),ball.get_y(),125 + Math.abs(ball.get_speedX()),-175,this.enemyCollisions,ball.get_hpTotal() - 1);
+				var childBall2 = new gameObjects_Ball(this.stage,ball.get_x() - 10 * ball.get_hpTotal(),ball.get_y(),-125 - Math.abs(ball.get_speedX()),-175,this.enemyCollisions,ball.get_hpTotal() - 1);
 				this.addChild(childBall1);
 				this.addChild(childBall2);
 				this.ballsAlive += 1;
@@ -20099,13 +20172,12 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var bullet = aBullet.userData;
 		bullet.die();
 		if(this.ballsAlive == 0) {
-			this.julia.die();
-			this.changeState(new states_GameOver("" + this.score,this.survivedTime));
+			this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
 		}
 	}
-	,playerVsBall: function(aJulia,aJason) {
-		this.julia.die();
-		this.changeState(new states_GameOver("" + this.score,this.survivedTime));
+	,playerVsBall: function(aPlayerChar,aBall) {
+		this.playerChar.die();
+		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
 	}
 	,destroy: function() {
 		com_framework_utils_State.prototype.destroy.call(this);
@@ -20113,58 +20185,123 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,draw: function(framebuffer) {
 		com_framework_utils_State.prototype.draw.call(this,framebuffer);
-		var camera = this.stage.cameras[0];
-		var x = camera.x;
-		var y = camera.y;
-		var translation__00 = 1;
-		var translation__10 = 0;
-		var translation__01 = 0;
-		var translation__11 = 1;
-		var translation__02 = 0;
-		var translation__12 = 0;
-		var translation__22 = 1;
-		var x1 = camera.scaleX;
-		var y1 = camera.scaleY;
-		var scale__10 = 0;
-		var scale__20 = 0;
-		var scale__01 = 0;
-		var scale__21 = 0;
-		var scale__02 = 0;
-		var scale__12 = 0;
-		var scale__22 = 1;
-		var _this = framebuffer.get_g2();
-		var _this1 = _this.transformations[_this.transformationIndex];
-		var x2 = -camera.width * (0.5 + camera.scaleX - 1);
-		var y2 = -camera.height * (0.5 + camera.scaleY - 1);
-		var _this__00 = 1;
-		var _this__10 = 0;
-		var _this__01 = 0;
-		var _this__11 = 1;
-		var _this__02 = 0;
-		var _this__12 = 0;
-		var _this__22 = 1;
-		var _00 = _this__00 * x1 + _this__10 * scale__01 + x2 * scale__02;
-		var _10 = _this__00 * scale__10 + _this__10 * y1 + x2 * scale__12;
-		var _20 = _this__00 * scale__20 + _this__10 * scale__21 + x2 * scale__22;
-		var _01 = _this__01 * x1 + _this__11 * scale__01 + y2 * scale__02;
-		var _11 = _this__01 * scale__10 + _this__11 * y1 + y2 * scale__12;
-		var _21 = _this__01 * scale__20 + _this__11 * scale__21 + y2 * scale__22;
-		var _02 = _this__02 * x1 + _this__12 * scale__01 + _this__22 * scale__02;
-		var _12 = _this__02 * scale__10 + _this__12 * y1 + _this__22 * scale__12;
-		var _22 = _this__02 * scale__20 + _this__12 * scale__21 + _this__22 * scale__22;
-		_this1._00 = _00 * translation__00 + _10 * translation__01 + _20 * translation__02;
-		_this1._10 = _00 * translation__10 + _10 * translation__11 + _20 * translation__12;
-		_this1._20 = _00 * x + _10 * y + _20 * translation__22;
-		_this1._01 = _01 * translation__00 + _11 * translation__01 + _21 * translation__02;
-		_this1._11 = _01 * translation__10 + _11 * translation__11 + _21 * translation__12;
-		_this1._21 = _01 * x + _11 * y + _21 * translation__22;
-		_this1._02 = _02 * translation__00 + _12 * translation__01 + _22 * translation__02;
-		_this1._12 = _02 * translation__10 + _12 * translation__11 + _22 * translation__12;
-		_this1._22 = _02 * x + _12 * y + _22 * translation__22;
 		framebuffer.get_g2().set_color(-256);
 		com_collision_platformer_CollisionEngine.renderDebug(framebuffer);
 	}
 	,__class__: states_GameState
+});
+var states_IntroScreen = function() {
+	com_framework_utils_State.call(this);
+};
+$hxClasses["states.IntroScreen"] = states_IntroScreen;
+states_IntroScreen.__name__ = "states.IntroScreen";
+states_IntroScreen.__super__ = com_framework_utils_State;
+states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
+	load: function(resources) {
+		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
+		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
+		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		resources.add(atlas);
+	}
+	,init: function() {
+		this.simulationLayer = new com_gEngine_display_Layer();
+		this.stage.addChild(this.simulationLayer);
+		this.maleCharacter = new com_gEngine_display_Sprite("malePlayer");
+		this.maleCharacter.x = 55.5555555555555571;
+		this.maleCharacter.y = 400.;
+		this.maleCharacter.scaleX = 3;
+		this.maleCharacter.scaleY = 3;
+		this.maleCharacter.timeline.playAnimation("walk_",true);
+		this.femaleCharacter = new com_gEngine_display_Sprite("femalePlayer");
+		this.femaleCharacter.x = 277.777777777777771;
+		this.femaleCharacter.y = 400.;
+		this.femaleCharacter.scaleX = 3;
+		this.femaleCharacter.scaleY = 3;
+		this.femaleCharacter.timeline.playAnimation("walk_",true);
+		this.simulationLayer.addChild(this.femaleCharacter);
+		this.simulationLayer.addChild(this.maleCharacter);
+		this.hudLayer = new com_gEngine_display_StaticLayer();
+		this.stage.addChild(this.hudLayer);
+		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		this.selectCharacter.y = 30;
+		this.selectCharacter.set_text("Select character");
+		this.selectCharacter.x = 50;
+		this.male = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		this.female = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		this.male.set_text("male");
+		this.male.y = 600;
+		this.male.x = 75;
+		this.female.set_text("female");
+		this.female.y = 600;
+		this.female.x = 270;
+		this.femaleCharacter.timeline.frameRate = 0.1;
+		this.maleCharacter.timeline.frameRate = 0.1;
+		haxe_Log.trace(this.selectCharacter.get_length(),{ fileName : "states/IntroScreen.hx", lineNumber : 78, className : "states.IntroScreen", methodName : "init"});
+		this.hudLayer.addChild(this.male);
+		this.hudLayer.addChild(this.female);
+		this.hudLayer.addChild(this.selectCharacter);
+	}
+	,update: function(dt) {
+		com_framework_utils_State.prototype.update.call(this,dt);
+		var tmp;
+		var tmp1;
+		var _this = com_framework_utils_Input.i;
+		if(_this.mousePosition.x * _this.screenScale.x > 60) {
+			var _this1 = com_framework_utils_Input.i;
+			tmp1 = _this1.mousePosition.x * _this1.screenScale.x < 190;
+		} else {
+			tmp1 = false;
+		}
+		if(tmp1) {
+			var _this2 = com_framework_utils_Input.i;
+			if(_this2.mousePosition.y * _this2.screenScale.y > 400) {
+				var _this3 = com_framework_utils_Input.i;
+				tmp = _this3.mousePosition.y * _this3.screenScale.y < 580;
+			} else {
+				tmp = false;
+			}
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			this.maleCharacter.timeline.playAnimation("attack_");
+			if(com_framework_utils_Input.i.isMousePressed()) {
+				this.changeState(new states_GameState("malePlayer"));
+			}
+		} else {
+			this.maleCharacter.timeline.playAnimation("walk_");
+		}
+		var tmp2;
+		var tmp3;
+		var _this4 = com_framework_utils_Input.i;
+		if(_this4.mousePosition.x * _this4.screenScale.x > 277.777777777777771) {
+			var _this5 = com_framework_utils_Input.i;
+			tmp3 = _this5.mousePosition.x * _this5.screenScale.x < 457.777777777777771;
+		} else {
+			tmp3 = false;
+		}
+		if(tmp3) {
+			var _this6 = com_framework_utils_Input.i;
+			if(_this6.mousePosition.y * _this6.screenScale.y > 400) {
+				var _this7 = com_framework_utils_Input.i;
+				tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 580;
+			} else {
+				tmp2 = false;
+			}
+		} else {
+			tmp2 = false;
+		}
+		if(tmp2) {
+			this.femaleCharacter.timeline.playAnimation("attack_");
+			if(com_framework_utils_Input.i.isMousePressed()) {
+				this.changeState(new states_GameState("femalePlayer"));
+			}
+		} else {
+			this.femaleCharacter.timeline.playAnimation("walk_");
+		}
+	}
+	,__class__: states_IntroScreen
 });
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;

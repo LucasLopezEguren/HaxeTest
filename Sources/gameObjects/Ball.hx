@@ -27,19 +27,20 @@ class Ball extends Entity {
     private static inline var RADIO = 20;
     var ball:Sprite;
     var velocity:FastVector2;
-    private static inline var gravity:Float = 2000;
+    private static inline var gravity:Float = 500;
     public var colorRed:Float;
     public var colorGreen:Float;
     public var colorBlue:Float;
 	var collisionGroup:CollisionGroup;
-	var collision:CollisionBox;
+	public var collision:CollisionBox;
     var hp:Int;
     var hpTotal:Int;
-    var thisLayer:Layer;
+    var hpLayer:Layer;
 	var hpDisplay:Text;
     var time:Float;
     
-    public function new(layer:Layer, x:Float, y:Float, spdX:Float, spdY:Float, collisions:CollisionGroup, maxHp:Int) {
+    public function new(stage:Stage, x:Float, y:Float, spdX:Float, spdY:Float,
+                             collisions:CollisionGroup, maxHp:Int) {
         super();
         hp = maxHp;
         hpTotal = maxHp;
@@ -48,7 +49,9 @@ class Ball extends Entity {
         ball = new Sprite("ball");
         ball.scaleX = (maxHp);
         ball.scaleY = (maxHp);
-        velocity=new FastVector2(spdX,spdY);
+        var ballLayer = new Layer();
+        ballLayer.addChild(ball);
+        velocity = new FastVector2(spdX,spdY);
         colorRed = Math.random();
         colorBlue = Math.random();
         colorGreen = Math.random();
@@ -60,12 +63,16 @@ class Ball extends Entity {
 		collision.height = RADIO * 2 * (maxHp);
         collision.x = x;
         collision.y = y;
-        thisLayer = layer;
-        layer.addChild(ball);
+        hpLayer = new Layer();
 		hpDisplay = new Text(Assets.fonts.Kenney_ThickName);
         hpDisplay.text = hp + "";
         hpDisplay.setColorMultiply(0,0,0,1);
-		layer.addChild(hpDisplay);
+        hpDisplay.x = -10;
+        hpDisplay.y = -13;
+		hpLayer.addChild(hpDisplay);
+        hpLayer.rotation = 0;
+        stage.addChild(ballLayer);
+        stage.addChild(hpLayer);
     }
     override function update(dt:Float) {
         collision.update(dt);
@@ -80,10 +87,11 @@ class Ball extends Entity {
         if(collision.y + (RADIO * 2 * hpTotal) >= screenHeight && velocity.y > 0){
             velocity.y *= -1;
         }
-		collision.velocityY = velocity.y;
+        hpLayer.rotation += (Math.abs(velocity.x)/(velocity.x * 10)) * (Math.abs(velocity.x)/(25*hpTotal));
+        collision.velocityY = velocity.y;
 		collision.velocityX = velocity.x;
-        hpDisplay.x = collision.x + (RADIO * hpTotal) - 10;
-        hpDisplay.y = collision.y + (RADIO * hpTotal) - 10;
+        hpLayer.x = collision.x + (RADIO * hpTotal);
+        hpLayer.y = collision.y + (RADIO * hpTotal);
         ball.x = collision.x;
         ball.y = collision.y;
         hpDisplay.text = hp + "";
@@ -95,8 +103,8 @@ class Ball extends Entity {
     public function get_hpTotal():Int{
 		return hpTotal;
 	}
-    public function get_speedY():Float{
-		return velocity.y;
+    public function get_speedX():Float{
+		return velocity.x;
 	}
     public function get_x():Float{
 		return ball.x;
@@ -104,6 +112,20 @@ class Ball extends Entity {
     public function get_y():Float{
 		return ball.y;
 	}
+
+    
+    public function ballVSball(ballCollided:CollisionBox):Void {
+        trace('aca tambien');
+            collision.velocityX *= -1;
+        var aBall:Ball = (cast ballCollided.userData);
+        var center:FastVector2 = new FastVector2((collision.x + (RADIO * hpTotal)), (collision.y + (RADIO * hpTotal)));
+        var aBallCenter:FastVector2 = new FastVector2((aBall.get_x() + (RADIO * aBall.get_hpTotal())), (aBall.get_y() + (RADIO * aBall.get_hpTotal())));
+        if (Math.abs(center.x - aBallCenter.x) <= (RADIO * hpTotal) + RADIO * aBall.get_hpTotal()) {
+            collision.velocityY *= -1;
+        } else {
+            collision.velocityX *= -1;
+        }
+    }
 
     public function damage(dmg:Int):Void
 	{

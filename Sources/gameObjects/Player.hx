@@ -10,7 +10,7 @@ import kha.math.FastVector2;
 import com.framework.utils.Entity;
 
 
-/** @author Lucas **/
+/* @author Lucas */
 class Player extends Entity
 {
 	static private inline var SPEED:Float = 250;
@@ -25,14 +25,14 @@ class Player extends Entity
 	public var width(get,null):Float;
 	public var height(get,null):Float;
 
-	public function new(X:Float, Y:Float, layer:Layer) 
+	public function new(X:Float, Y:Float, layer:Layer, sprite:String) 
 	{
 		super();
 		direction = new FastVector2(0,1);
-		display = new Sprite("femalePlayer");
+		display = new Sprite(sprite);
 		gun = new Gun();
 		addChild(gun);
-		display.timeline.playAnimation("womanidle");
+		display.timeline.playAnimation("idle");
 		display.x = X;
 		display.y = Y;
 		display.timeline.frameRate = 1/10;
@@ -59,7 +59,7 @@ class Player extends Entity
 		if(Input.i.isKeyCodePressed(KeyCode.A)){
 			gun.shoot(x,y-height*0.75,0,-1);
 			display.offsetY = -15;
-			display.timeline.playAnimation("womanattack_",false);
+			display.timeline.playAnimation("attack_",false);
 		}
 	}
 
@@ -94,7 +94,7 @@ class Player extends Entity
 		if(!dead) {
 			display.scaleX = 3;
 			display.scaleY = 3;
-			display.timeline.playAnimation("womandeath_", false);
+			display.timeline.playAnimation("death_", false);
 		}
 		dead = true;
 		collision.removeFromParent();
@@ -105,23 +105,23 @@ class Player extends Entity
 		super.render();
 		display.x = collision.x;
 		display.y = collision.y;
-		if (display.timeline.currentAnimation == "womandeath_"){ 
+		if (display.timeline.currentAnimation == "death_"){ 
 			return;
 		}
-		if(!display.timeline.isComplete() && display.timeline.currentAnimation == "womanattack_"){
+		if(!display.timeline.isComplete() && display.timeline.currentAnimation == "attack_"){
 			display.offsetY = -15;
 			return;
 		}
 		if(collision.velocityX != 0){
-			display.timeline.playAnimation("womanwalk_");
+			display.timeline.playAnimation("walk_");
 		}
 		if(collision.velocityX == 0){
 			display.offsetY = -15;
-			display.timeline.playAnimation("womanidle");
+			display.timeline.playAnimation("idle");
 		}
 		if(Input.i.isKeyCodePressed(KeyCode.A)){
 			display.offsetY = -15;
-			display.timeline.playAnimation("womanattack_",false);
+			display.timeline.playAnimation("attack_",false);
 		}
 	}
 }

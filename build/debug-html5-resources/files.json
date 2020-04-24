@@ -41,6 +41,112 @@
 			"type": "font"
 		},
 		{
+			"name": "Khazix",
+			"files": [
+				"Khazix.ogg"
+			],
+			"file_sizes": [
+				1406547
+			],
+			"type": "sound"
+		},
+		{
+			"name": "_1",
+			"files": [
+				"1.png"
+			],
+			"file_sizes": [
+				32377
+			],
+			"type": "image",
+			"original_width": 369,
+			"original_height": 331
+		},
+		{
+			"name": "_12",
+			"files": [
+				"12.png"
+			],
+			"file_sizes": [
+				33070
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
+		},
+		{
+			"name": "_123",
+			"files": [
+				"123.png"
+			],
+			"file_sizes": [
+				33048
+			],
+			"type": "image",
+			"original_width": 369,
+			"original_height": 331
+		},
+		{
+			"name": "_2attack",
+			"files": [
+				"2attack.png"
+			],
+			"file_sizes": [
+				8620
+			],
+			"type": "image",
+			"original_width": 816,
+			"original_height": 63
+		},
+		{
+			"name": "_2death",
+			"files": [
+				"2death.png"
+			],
+			"file_sizes": [
+				8921
+			],
+			"type": "image",
+			"original_width": 374,
+			"original_height": 61
+		},
+		{
+			"name": "_2malePlayer",
+			"files": [
+				"2malePlayer.png"
+			],
+			"file_sizes": [
+				151249
+			],
+			"type": "image",
+			"original_width": 832,
+			"original_height": 1344
+		},
+		{
+			"name": "_2walk",
+			"files": [
+				"2walk.png"
+			],
+			"file_sizes": [
+				5941
+			],
+			"type": "image",
+			"original_width": 568,
+			"original_height": 67
+		},
+		{
+			"name": "alePlayer",
+			"files": [
+				"alePlayer.png"
+			],
+			"file_sizes": [
+				103705
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
+		},
+		{
 			"name": "alpha_vert",
 			"files": [
 				"alpha.vert.essl",
@@ -119,6 +225,18 @@
 			"type": "image",
 			"original_width": 19,
 			"original_height": 67
+		},
+		{
+			"name": "asdfmalePlayer",
+			"files": [
+				"asdfmalePlayer.png"
+			],
+			"file_sizes": [
+				92042
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
 		},
 		{
 			"name": "ball",
@@ -250,19 +368,19 @@
 				"femalePlayer.png"
 			],
 			"file_sizes": [
-				28328
+				27208
 			],
 			"type": "image",
 			"original_width": 381,
 			"original_height": 327
 		},
 		{
-			"name": "femalePlayer_json",
+			"name": "femalePlayer1_json",
 			"files": [
-				"femalePlayer.json"
+				"femalePlayer1.json"
 			],
 			"file_sizes": [
-				7665
+				7535
 			],
 			"type": "blob"
 		},
@@ -272,7 +390,7 @@
 				"femalePlayer.xml"
 			],
 			"file_sizes": [
-				3479
+				3359
 			],
 			"type": "blob"
 		},
@@ -541,16 +659,6 @@
 			"original_height": 167
 		},
 		{
-			"name": "julia_1_xml",
-			"files": [
-				"julia.1.xml"
-			],
-			"file_sizes": [
-				3771
-			],
-			"type": "blob"
-		},
-		{
 			"name": "julia_xml",
 			"files": [
 				"julia.xml"
@@ -569,6 +677,28 @@
 				91504
 			],
 			"type": "font"
+		},
+		{
+			"name": "malePlayer",
+			"files": [
+				"malePlayer.png"
+			],
+			"file_sizes": [
+				33061
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
+		},
+		{
+			"name": "malePlayer_xml",
+			"files": [
+				"malePlayer.xml"
+			],
+			"file_sizes": [
+				3486
+			],
+			"type": "blob"
 		},
 		{
 			"name": "meshBones_vert",
@@ -2058,6 +2188,18 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "test",
+			"files": [
+				"test.png"
+			],
+			"file_sizes": [
+				22958
+			],
+			"type": "image",
+			"original_width": 381,
+			"original_height": 327
 		},
 		{
 			"name": "vBlurVertexShader_vert",
