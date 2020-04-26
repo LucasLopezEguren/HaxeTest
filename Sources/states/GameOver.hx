@@ -1,21 +1,16 @@
 package states;
 
-import com.gEngine.display.Sprite;
 import kha.Color;
 import com.loading.basicResources.JoinAtlas;
-import com.gEngine.display.StaticLayer;
 import com.gEngine.GEngine;
 import com.gEngine.display.Text;
 import com.gEngine.display.Sprite;
 import kha.Assets;
-import gameObjects.Player;
 import com.loading.basicResources.FontLoader;
 import com.gEngine.display.Layer;
 import com.loading.basicResources.SparrowLoader;
-import com.loading.basicResources.TilesheetLoader;
 import kha.input.KeyCode;
 import com.framework.utils.Input;
-import kha.math.FastVector2;
 import com.loading.basicResources.ImageLoader;
 import com.loading.Resources;
 import com.framework.utils.State;

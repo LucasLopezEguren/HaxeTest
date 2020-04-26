@@ -1,12 +1,7 @@
 package states;
 
 import kha.Color;
-import kha.math.FastVector2;
 import gameObjects.Ball;
-import kha.Sound;
-import kha.audio1.Audio;
-import kha.audio1.AudioChannel;
-import kha.math.FastMatrix3;
 import kha.Canvas;
 import kha.Assets;
 import com.gEngine.GEngine;
@@ -23,9 +18,7 @@ import com.framework.utils.Input;
 import com.gEngine.display.Layer;
 import gameObjects.Player;
 import com.loading.basicResources.JoinAtlas;
-import com.gEngine.display.Sprite;
 import com.loading.basicResources.SparrowLoader;
-import com.loading.basicResources.TilesheetLoader;
 import com.loading.Resources;
 import com.framework.utils.State;
 import levelObjects.Grass;
@@ -57,9 +50,9 @@ class GameState extends State {
 	var score:Int = 0;
 	var hudLayer:Layer;
 	var time:Float=0;
-	var added:Bool=false;
 	var survivedTime:String;
 	var ballsAlive:Int = 1;
+	var level:Int;
 
 	override function init() {
 		enemyCollisions = new CollisionGroup();
@@ -79,15 +72,17 @@ class GameState extends State {
 
 		hudLayer = new StaticLayer();
 		stage.addChild(hudLayer);
+
 		scoreDisplay = new Text(Assets.fonts.Kenney_ThickName);
 		scoreDisplay.x = GEngine.virtualWidth/2;
 		scoreDisplay.y = 30;
+		scoreDisplay.text = "0";
 		hudLayer.addChild(scoreDisplay);
 		timeDisplay = new Text(Assets.fonts.Kenney_ThickName);
 		timeDisplay.x = GEngine.virtualWidth/2 - (60);
 		timeDisplay.y = 80;
 		hudLayer.addChild(timeDisplay);
-		scoreDisplay.text = "0";
+
 		var ball = new Ball(stage, 10, 10, 50, 0, enemyCollisions, 3);
 		addChild(ball);
 	}
@@ -95,13 +90,6 @@ class GameState extends State {
 	var isDebug:Bool = false;
 	override function update(dt:Float) {
 		time+=dt;
-		super.update(dt);
-		if (Math.floor(time)%2 == 0 && !added){
-			
-		}
-		if (Math.floor(time)%2 != 0) {
-			added = false;
-		} 
 		enemyCollisions.overlap(playerChar.gun.bulletsCollisions, ballVsBullet);
 		playerChar.collision.overlap(enemyCollisions, playerVsBall);
 		survivedTime = " " + (Math.floor(time/60) + "m " + Math.floor(time)%60 +"s");

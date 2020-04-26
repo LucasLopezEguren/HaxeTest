@@ -13,36 +13,6 @@
 			"original_height": 720
 		},
 		{
-			"name": "Breathe_Fire_otf",
-			"files": [
-				"Breathe Fire.otf"
-			],
-			"file_sizes": [
-				26264
-			],
-			"type": "blob"
-		},
-		{
-			"name": "FSLA_NonCommercial_License_html",
-			"files": [
-				"FSLA_NonCommercial_License.html"
-			],
-			"file_sizes": [
-				5428
-			],
-			"type": "blob"
-		},
-		{
-			"name": "Get_Commercial_License_url",
-			"files": [
-				"Get Commercial License.url"
-			],
-			"file_sizes": [
-				123
-			],
-			"type": "blob"
-		},
-		{
 			"name": "HighPassFilter_frag",
 			"files": [
 				"HighPassFilter.frag.essl",
@@ -73,16 +43,6 @@
 			"types": []
 		},
 		{
-			"name": "INSTALL_txt",
-			"files": [
-				"INSTALL.txt"
-			],
-			"file_sizes": [
-				13940
-			],
-			"type": "blob"
-		},
-		{
 			"name": "Kenney_Thick",
 			"files": [
 				"Kenney Thick.ttf"
@@ -91,16 +51,6 @@
 				9448
 			],
 			"type": "font"
-		},
-		{
-			"name": "Khazix",
-			"files": [
-				"Khazix.ogg"
-			],
-			"file_sizes": [
-				1406547
-			],
-			"type": "sound"
 		},
 		{
 			"name": "SPIRI___",
@@ -179,18 +129,6 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "antahanar",
-			"files": [
-				"antahanar.jpg"
-			],
-			"file_sizes": [
-				182449
-			],
-			"type": "image",
-			"original_width": 1280,
-			"original_height": 720
 		},
 		{
 			"name": "arrow",
@@ -303,48 +241,6 @@
 				}
 			],
 			"types": []
-		},
-		{
-			"name": "breathe_fire_zip",
-			"files": [
-				"breathe_fire.zip"
-			],
-			"file_sizes": [
-				16040
-			],
-			"type": "blob"
-		},
-		{
-			"name": "celtic_md_zip",
-			"files": [
-				"celtic_md.zip"
-			],
-			"file_sizes": [
-				59323
-			],
-			"type": "blob"
-		},
-		{
-			"name": "celticmd",
-			"files": [
-				"celticmd.ttf"
-			],
-			"file_sizes": [
-				79112
-			],
-			"type": "font"
-		},
-		{
-			"name": "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail",
-			"files": [
-				"epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"
-			],
-			"file_sizes": [
-				61692
-			],
-			"type": "image",
-			"original_width": 350,
-			"original_height": 175
 		},
 		{
 			"name": "femalePlayer",
@@ -585,16 +481,6 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "license_txt",
-			"files": [
-				"license.txt"
-			],
-			"file_sizes": [
-				6224
-			],
-			"type": "blob"
 		},
 		{
 			"name": "mainfont",
@@ -2116,16 +2002,6 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "spiral_initials_zip",
-			"files": [
-				"spiral_initials.zip"
-			],
-			"file_sizes": [
-				54503
-			],
-			"type": "blob"
 		},
 		{
 			"name": "vBlurVertexShader_vert",

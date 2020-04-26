@@ -7553,15 +7553,12 @@ var kha__$Assets_ImageList = function() {
 	this.forest = null;
 	this.femalePlayerDescription = { name : "femalePlayer", original_height : 327, file_sizes : [27208], original_width : 381, files : ["femalePlayer.png"], type : "image"};
 	this.femalePlayer = null;
-	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnailDescription = { name : "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail", original_height : 175, file_sizes : [61692], original_width : 350, files : ["epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"], type : "image"};
-	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail = null;
 	this.ballDescription = { name : "ball", original_height : 40, file_sizes : [469], original_width : 40, files : ["ball.png"], type : "image"};
 	this.ball = null;
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrow = null;
-	this.antahanarDescription = { name : "antahanar", original_height : 720, file_sizes : [182449], original_width : 1280, files : ["antahanar.jpg"], type : "image"};
-	this.antahanar = null;
 	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [127442], original_width : 500, files : ["Antathaan.png"], type : "image"};
+	this.AntathaanName = "Antathaan";
 	this.Antathaan = null;
 };
 $hxClasses["kha._Assets.ImageList"] = kha__$Assets_ImageList;
@@ -7572,36 +7569,11 @@ kha__$Assets_ImageList.prototype = {
 	}
 	,__class__: kha__$Assets_ImageList
 };
-var kha__$Assets_SoundList = function() {
-	this.KhazixDescription = { name : "Khazix", file_sizes : [1406547], files : ["Khazix.ogg"], type : "sound"};
-	this.Khazix = null;
-};
-$hxClasses["kha._Assets.SoundList"] = kha__$Assets_SoundList;
-kha__$Assets_SoundList.__name__ = "kha._Assets.SoundList";
-kha__$Assets_SoundList.prototype = {
-	__class__: kha__$Assets_SoundList
-};
 var kha__$Assets_BlobList = function() {
-	this.spiral_initials_zipDescription = { name : "spiral_initials_zip", file_sizes : [54503], files : ["spiral_initials.zip"], type : "blob"};
-	this.spiral_initials_zip = null;
 	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
 	this.malePlayer_xml = null;
-	this.license_txtDescription = { name : "license_txt", file_sizes : [6224], files : ["license.txt"], type : "blob"};
-	this.license_txt = null;
 	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3359], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
-	this.celtic_md_zipDescription = { name : "celtic_md_zip", file_sizes : [59323], files : ["celtic_md.zip"], type : "blob"};
-	this.celtic_md_zip = null;
-	this.breathe_fire_zipDescription = { name : "breathe_fire_zip", file_sizes : [16040], files : ["breathe_fire.zip"], type : "blob"};
-	this.breathe_fire_zip = null;
-	this.INSTALL_txtDescription = { name : "INSTALL_txt", file_sizes : [13940], files : ["INSTALL.txt"], type : "blob"};
-	this.INSTALL_txt = null;
-	this.Get_Commercial_License_urlDescription = { name : "Get_Commercial_License_url", file_sizes : [123], files : ["Get Commercial License.url"], type : "blob"};
-	this.Get_Commercial_License_url = null;
-	this.FSLA_NonCommercial_License_htmlDescription = { name : "FSLA_NonCommercial_License_html", file_sizes : [5428], files : ["FSLA_NonCommercial_License.html"], type : "blob"};
-	this.FSLA_NonCommercial_License_html = null;
-	this.Breathe_Fire_otfDescription = { name : "Breathe_Fire_otf", file_sizes : [26264], files : ["Breathe Fire.otf"], type : "blob"};
-	this.Breathe_Fire_otf = null;
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
 kha__$Assets_BlobList.__name__ = "kha._Assets.BlobList";
@@ -7611,9 +7583,6 @@ kha__$Assets_BlobList.prototype = {
 var kha__$Assets_FontList = function() {
 	this.mainfontDescription = { name : "mainfont", file_sizes : [91504], files : ["mainfont.ttf"], type : "font"};
 	this.mainfont = null;
-	this.celticmdDescription = { name : "celticmd", file_sizes : [79112], files : ["celticmd.ttf"], type : "font"};
-	this.celticmdName = "celticmd";
-	this.celticmd = null;
 	this.SPIRI___Description = { name : "SPIRI___", file_sizes : [67896], files : ["SPIRI___.ttf"], type : "font"};
 	this.SPIRI___Name = "SPIRI___";
 	this.SPIRI___ = null;
@@ -20178,6 +20147,10 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,__class__: states_GameState
 });
 var states_IntroScreen = function() {
+	this.transcparency = 0;
+	this.more = false;
+	this.isDrawn = false;
+	this.changeScreen = false;
 	com_framework_utils_State.call(this);
 };
 $hxClasses["states.IntroScreen"] = states_IntroScreen;
@@ -20188,9 +20161,8 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
-		atlas.add(new com_loading_basicResources_ImageLoader("Antathaan"));
+		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.AntathaanName));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
-		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.celticmdName,30));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.SPIRI___Name,30));
 		resources.add(atlas);
 	}
@@ -20200,18 +20172,16 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.stage.addChild(this.simulationLayer);
 		this.maleCharacter = new com_gEngine_display_Sprite("malePlayer");
 		this.maleCharacter.x = 55.5555555555555571;
-		this.maleCharacter.y = 490.;
+		this.maleCharacter.y = 490;
 		this.maleCharacter.scaleX = 3;
 		this.maleCharacter.scaleY = 3;
 		this.maleCharacter.timeline.playAnimation("walk_",true);
 		this.femaleCharacter = new com_gEngine_display_Sprite("femalePlayer");
 		this.femaleCharacter.x = 277.777777777777771;
-		this.femaleCharacter.y = 490.;
+		this.femaleCharacter.y = 490;
 		this.femaleCharacter.scaleX = 3;
 		this.femaleCharacter.scaleY = 3;
 		this.femaleCharacter.timeline.playAnimation("walk_",true);
-		this.simulationLayer.addChild(this.femaleCharacter);
-		this.simulationLayer.addChild(this.maleCharacter);
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
 		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
@@ -20220,11 +20190,11 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.selectCharacter.x = 75;
 		this.antathaan = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
 		this.antathaan.set_text("Antathaan");
-		this.antathaan.y = 50;
+		this.antathaan.y = 350;
 		this.antathaan.x = 7;
 		this.defend = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
 		this.defend.set_text("defend");
-		this.defend.y = 30;
+		this.defend.y = 330;
 		this.defend.x = 160;
 		this.antathaan.scaleX = this.antathaan.scaleY = 2;
 		this.male = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
@@ -20235,76 +20205,107 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.female.set_text("female");
 		this.female.y = 660;
 		this.female.x = 285;
+		this.pressStart = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
+		this.pressStart.set_text("press enter to play");
+		this.pressStart.y = 660;
+		this.pressStart.x = 40;
 		this.femaleCharacter.timeline.frameRate = 0.1;
 		this.maleCharacter.timeline.frameRate = 0.1;
 		this.male.setColorMultiply(1,0.66666666666666663,0,1);
 		this.female.setColorMultiply(1,0.66666666666666663,0,1);
+		this.pressStart.setColorMultiply(1,0.66666666666666663,0,1);
 		this.defend.setColorMultiply(0.86274509803921573,0.352941176470588258,0,1);
 		this.antathaan.setColorMultiply(0.86274509803921573,0.352941176470588258,0,1);
 		this.selectCharacter.setColorMultiply(1,0.66666666666666663,0,1);
-		this.hudLayer.addChild(this.male);
-		this.hudLayer.addChild(this.female);
 		this.hudLayer.addChild(this.defend);
 		this.hudLayer.addChild(this.antathaan);
-		this.hudLayer.addChild(this.selectCharacter);
+		this.hudLayer.addChild(this.pressStart);
 	}
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
-		var tmp;
-		var tmp1;
-		var _this = com_framework_utils_Input.i;
-		if(_this.mousePosition.x * _this.screenScale.x > 60) {
-			var _this1 = com_framework_utils_Input.i;
-			tmp1 = _this1.mousePosition.x * _this1.screenScale.x < 190;
-		} else {
-			tmp1 = false;
+		if(com_framework_utils_Input.i.isKeyCodePressed(13) && !this.changeScreen) {
+			this.changeScreen = true;
 		}
-		if(tmp1) {
-			var _this2 = com_framework_utils_Input.i;
-			if(_this2.mousePosition.y * _this2.screenScale.y > 490) {
-				var _this3 = com_framework_utils_Input.i;
-				tmp = _this3.mousePosition.y * _this3.screenScale.y < 670;
+		if(this.changeScreen) {
+			if(this.defend.y > 30) {
+				this.pressStart.removeFromParent();
+				this.defend.y -= 3;
+				this.antathaan.y -= 3;
+			} else if(!this.isDrawn) {
+				this.isDrawn = true;
+				this.simulationLayer.addChild(this.femaleCharacter);
+				this.simulationLayer.addChild(this.maleCharacter);
+				this.hudLayer.addChild(this.male);
+				this.hudLayer.addChild(this.female);
+				this.hudLayer.addChild(this.selectCharacter);
 			} else {
-				tmp = false;
+				var tmp;
+				var tmp1;
+				var _this = com_framework_utils_Input.i;
+				if(_this.mousePosition.x * _this.screenScale.x > 60) {
+					var _this1 = com_framework_utils_Input.i;
+					tmp1 = _this1.mousePosition.x * _this1.screenScale.x < 190;
+				} else {
+					tmp1 = false;
+				}
+				if(tmp1) {
+					var _this2 = com_framework_utils_Input.i;
+					if(_this2.mousePosition.y * _this2.screenScale.y > 490) {
+						var _this3 = com_framework_utils_Input.i;
+						tmp = _this3.mousePosition.y * _this3.screenScale.y < 670;
+					} else {
+						tmp = false;
+					}
+				} else {
+					tmp = false;
+				}
+				if(tmp) {
+					this.maleCharacter.timeline.playAnimation("attack_");
+					if(com_framework_utils_Input.i.isMousePressed()) {
+						this.changeState(new states_GameState("malePlayer"));
+					}
+				} else {
+					this.maleCharacter.timeline.playAnimation("walk_");
+				}
+				var tmp2;
+				var tmp3;
+				var _this4 = com_framework_utils_Input.i;
+				if(_this4.mousePosition.x * _this4.screenScale.x > 277.777777777777771) {
+					var _this5 = com_framework_utils_Input.i;
+					tmp3 = _this5.mousePosition.x * _this5.screenScale.x < 457.777777777777771;
+				} else {
+					tmp3 = false;
+				}
+				if(tmp3) {
+					var _this6 = com_framework_utils_Input.i;
+					if(_this6.mousePosition.y * _this6.screenScale.y > 490) {
+						var _this7 = com_framework_utils_Input.i;
+						tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 670;
+					} else {
+						tmp2 = false;
+					}
+				} else {
+					tmp2 = false;
+				}
+				if(tmp2) {
+					this.femaleCharacter.timeline.playAnimation("attack_");
+					if(com_framework_utils_Input.i.isMousePressed()) {
+						this.changeState(new states_GameState("femalePlayer"));
+					}
+				} else {
+					this.femaleCharacter.timeline.playAnimation("walk_");
+				}
 			}
 		} else {
-			tmp = false;
-		}
-		if(tmp) {
-			this.maleCharacter.timeline.playAnimation("attack_");
-			if(com_framework_utils_Input.i.isMousePressed()) {
-				this.changeState(new states_GameState("malePlayer"));
+			if(this.transcparency <= 0 || this.transcparency >= 1) {
+				this.more = !this.more;
 			}
-		} else {
-			this.maleCharacter.timeline.playAnimation("walk_");
-		}
-		var tmp2;
-		var tmp3;
-		var _this4 = com_framework_utils_Input.i;
-		if(_this4.mousePosition.x * _this4.screenScale.x > 277.777777777777771) {
-			var _this5 = com_framework_utils_Input.i;
-			tmp3 = _this5.mousePosition.x * _this5.screenScale.x < 457.777777777777771;
-		} else {
-			tmp3 = false;
-		}
-		if(tmp3) {
-			var _this6 = com_framework_utils_Input.i;
-			if(_this6.mousePosition.y * _this6.screenScale.y > 490) {
-				var _this7 = com_framework_utils_Input.i;
-				tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 670;
+			if(this.more) {
+				this.transcparency += 0.025;
 			} else {
-				tmp2 = false;
+				this.transcparency -= 0.025;
 			}
-		} else {
-			tmp2 = false;
-		}
-		if(tmp2) {
-			this.femaleCharacter.timeline.playAnimation("attack_");
-			if(com_framework_utils_Input.i.isMousePressed()) {
-				this.changeState(new states_GameState("femalePlayer"));
-			}
-		} else {
-			this.femaleCharacter.timeline.playAnimation("walk_");
+			this.pressStart.setColorMultiply(1,0.66666666666666663,0,this.transcparency);
 		}
 	}
 	,__class__: states_IntroScreen
