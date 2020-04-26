@@ -41,14 +41,12 @@ class GameState extends State {
 	
 	override function load(resources:Resources) {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
-		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
-		atlas.add(new SparrowLoader("malePlayer", "malePlayer_xml"));
+		atlas.add(new SparrowLoader(character, character+"_xml"));
 		atlas.add(new ImageLoader("forest"));
 		atlas.add(new ImageLoader("arrow"));
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
         resources.add(new ImageLoader("ball"));
-        resources.add(new ImageLoader("cuarentena"));
 	}
 
 	var playerChar:Player;

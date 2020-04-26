@@ -1,6 +1,48 @@
 {
 	"files": [
 		{
+			"name": "Antathaan",
+			"files": [
+				"Antathaan.png"
+			],
+			"file_sizes": [
+				127442
+			],
+			"type": "image",
+			"original_width": 500,
+			"original_height": 720
+		},
+		{
+			"name": "Breathe_Fire_otf",
+			"files": [
+				"Breathe Fire.otf"
+			],
+			"file_sizes": [
+				26264
+			],
+			"type": "blob"
+		},
+		{
+			"name": "FSLA_NonCommercial_License_html",
+			"files": [
+				"FSLA_NonCommercial_License.html"
+			],
+			"file_sizes": [
+				5428
+			],
+			"type": "blob"
+		},
+		{
+			"name": "Get_Commercial_License_url",
+			"files": [
+				"Get Commercial License.url"
+			],
+			"file_sizes": [
+				123
+			],
+			"type": "blob"
+		},
+		{
 			"name": "HighPassFilter_frag",
 			"files": [
 				"HighPassFilter.frag.essl",
@@ -31,6 +73,16 @@
 			"types": []
 		},
 		{
+			"name": "INSTALL_txt",
+			"files": [
+				"INSTALL.txt"
+			],
+			"file_sizes": [
+				13940
+			],
+			"type": "blob"
+		},
+		{
 			"name": "Kenney_Thick",
 			"files": [
 				"Kenney Thick.ttf"
@@ -51,100 +103,14 @@
 			"type": "sound"
 		},
 		{
-			"name": "_1",
+			"name": "SPIRI___",
 			"files": [
-				"1.png"
+				"SPIRI___.ttf"
 			],
 			"file_sizes": [
-				32377
+				67896
 			],
-			"type": "image",
-			"original_width": 369,
-			"original_height": 331
-		},
-		{
-			"name": "_12",
-			"files": [
-				"12.png"
-			],
-			"file_sizes": [
-				33070
-			],
-			"type": "image",
-			"original_width": 381,
-			"original_height": 327
-		},
-		{
-			"name": "_123",
-			"files": [
-				"123.png"
-			],
-			"file_sizes": [
-				33048
-			],
-			"type": "image",
-			"original_width": 369,
-			"original_height": 331
-		},
-		{
-			"name": "_2attack",
-			"files": [
-				"2attack.png"
-			],
-			"file_sizes": [
-				8620
-			],
-			"type": "image",
-			"original_width": 816,
-			"original_height": 63
-		},
-		{
-			"name": "_2death",
-			"files": [
-				"2death.png"
-			],
-			"file_sizes": [
-				8921
-			],
-			"type": "image",
-			"original_width": 374,
-			"original_height": 61
-		},
-		{
-			"name": "_2malePlayer",
-			"files": [
-				"2malePlayer.png"
-			],
-			"file_sizes": [
-				151249
-			],
-			"type": "image",
-			"original_width": 832,
-			"original_height": 1344
-		},
-		{
-			"name": "_2walk",
-			"files": [
-				"2walk.png"
-			],
-			"file_sizes": [
-				5941
-			],
-			"type": "image",
-			"original_width": 568,
-			"original_height": 67
-		},
-		{
-			"name": "alePlayer",
-			"files": [
-				"alePlayer.png"
-			],
-			"file_sizes": [
-				103705
-			],
-			"type": "image",
-			"original_width": 381,
-			"original_height": 327
+			"type": "font"
 		},
 		{
 			"name": "alpha_vert",
@@ -215,6 +181,18 @@
 			]
 		},
 		{
+			"name": "antahanar",
+			"files": [
+				"antahanar.jpg"
+			],
+			"file_sizes": [
+				182449
+			],
+			"type": "image",
+			"original_width": 1280,
+			"original_height": 720
+		},
+		{
 			"name": "arrow",
 			"files": [
 				"arrow.png"
@@ -225,18 +203,6 @@
 			"type": "image",
 			"original_width": 19,
 			"original_height": 67
-		},
-		{
-			"name": "asdfmalePlayer",
-			"files": [
-				"asdfmalePlayer.png"
-			],
-			"file_sizes": [
-				92042
-			],
-			"type": "image",
-			"original_width": 381,
-			"original_height": 327
 		},
 		{
 			"name": "ball",
@@ -339,16 +305,34 @@
 			"types": []
 		},
 		{
-			"name": "cuarentena",
+			"name": "breathe_fire_zip",
 			"files": [
-				"cuarentena.png"
+				"breathe_fire.zip"
 			],
 			"file_sizes": [
-				1586
+				16040
 			],
-			"type": "image",
-			"original_width": 40,
-			"original_height": 40
+			"type": "blob"
+		},
+		{
+			"name": "celtic_md_zip",
+			"files": [
+				"celtic_md.zip"
+			],
+			"file_sizes": [
+				59323
+			],
+			"type": "blob"
+		},
+		{
+			"name": "celticmd",
+			"files": [
+				"celticmd.ttf"
+			],
+			"file_sizes": [
+				79112
+			],
+			"type": "font"
 		},
 		{
 			"name": "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail",
@@ -373,16 +357,6 @@
 			"type": "image",
 			"original_width": 381,
 			"original_height": 327
-		},
-		{
-			"name": "femalePlayer1_json",
-			"files": [
-				"femalePlayer1.json"
-			],
-			"file_sizes": [
-				7535
-			],
-			"type": "blob"
 		},
 		{
 			"name": "femalePlayer_xml",
@@ -521,18 +495,6 @@
 			"original_height": 244
 		},
 		{
-			"name": "grass",
-			"files": [
-				"grass.png"
-			],
-			"file_sizes": [
-				2309
-			],
-			"type": "image",
-			"original_width": 127,
-			"original_height": 120
-		},
-		{
 			"name": "hBlurVertexShader_vert",
 			"files": [
 				"hBlurVertexShader.vert.essl",
@@ -625,46 +587,12 @@
 			]
 		},
 		{
-			"name": "jason",
+			"name": "license_txt",
 			"files": [
-				"jason.png"
+				"license.txt"
 			],
 			"file_sizes": [
-				14448
-			],
-			"type": "image",
-			"original_width": 120,
-			"original_height": 362
-		},
-		{
-			"name": "jason_xml",
-			"files": [
-				"jason.xml"
-			],
-			"file_sizes": [
-				3260
-			],
-			"type": "blob"
-		},
-		{
-			"name": "julia",
-			"files": [
-				"julia.png"
-			],
-			"file_sizes": [
-				14731
-			],
-			"type": "image",
-			"original_width": 237,
-			"original_height": 167
-		},
-		{
-			"name": "julia_xml",
-			"files": [
-				"julia.xml"
-			],
-			"file_sizes": [
-				4883
+				6224
 			],
 			"type": "blob"
 		},
@@ -2190,16 +2118,14 @@
 			]
 		},
 		{
-			"name": "test",
+			"name": "spiral_initials_zip",
 			"files": [
-				"test.png"
+				"spiral_initials.zip"
 			],
 			"file_sizes": [
-				22958
+				54503
 			],
-			"type": "image",
-			"original_width": 381,
-			"original_height": 327
+			"type": "blob"
 		},
 		{
 			"name": "vBlurVertexShader_vert",

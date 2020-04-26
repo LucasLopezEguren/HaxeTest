@@ -3249,9 +3249,6 @@ com_gEngine_display_Layer.prototype = {
 		value.max.y = value.max.y;
 		return this.drawArea = value;
 	}
-	,get_length: function() {
-		return this.children.length;
-	}
 	,__class__: com_gEngine_display_Layer
 };
 var com_gEngine_display_Camera = function() {
@@ -7548,16 +7545,8 @@ js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
 var kha__$Assets_ImageList = function() {
-	this.testDescription = { name : "test", original_height : 327, file_sizes : [22958], original_width : 381, files : ["test.png"], type : "image"};
-	this.test = null;
 	this.malePlayerDescription = { name : "malePlayer", original_height : 327, file_sizes : [33061], original_width : 381, files : ["malePlayer.png"], type : "image"};
 	this.malePlayer = null;
-	this.juliaDescription = { name : "julia", original_height : 167, file_sizes : [14731], original_width : 237, files : ["julia.png"], type : "image"};
-	this.julia = null;
-	this.jasonDescription = { name : "jason", original_height : 362, file_sizes : [14448], original_width : 120, files : ["jason.png"], type : "image"};
-	this.jason = null;
-	this.grassDescription = { name : "grass", original_height : 120, file_sizes : [2309], original_width : 127, files : ["grass.png"], type : "image"};
-	this.grass = null;
 	this.gameOverDescription = { name : "gameOver", original_height : 244, file_sizes : [17088], original_width : 231, files : ["gameOver.png"], type : "image"};
 	this.gameOver = null;
 	this.forestDescription = { name : "forest", original_height : 720, file_sizes : [64059], original_width : 500, files : ["forest.jpg"], type : "image"};
@@ -7566,30 +7555,14 @@ var kha__$Assets_ImageList = function() {
 	this.femalePlayer = null;
 	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnailDescription = { name : "epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail", original_height : 175, file_sizes : [61692], original_width : 350, files : ["epic-battle-fantasy-4-bow-and-arrow-matt-roszak-art-bow-weapon-png-clip-art-thumbnail.png"], type : "image"};
 	this.epic_battle_fantasy_4_bow_and_arrow_matt_roszak_art_bow_weapon_png_clip_art_thumbnail = null;
-	this.cuarentenaDescription = { name : "cuarentena", original_height : 40, file_sizes : [1586], original_width : 40, files : ["cuarentena.png"], type : "image"};
-	this.cuarentena = null;
 	this.ballDescription = { name : "ball", original_height : 40, file_sizes : [469], original_width : 40, files : ["ball.png"], type : "image"};
 	this.ball = null;
-	this.asdfmalePlayerDescription = { name : "asdfmalePlayer", original_height : 327, file_sizes : [92042], original_width : 381, files : ["asdfmalePlayer.png"], type : "image"};
-	this.asdfmalePlayer = null;
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrow = null;
-	this.alePlayerDescription = { name : "alePlayer", original_height : 327, file_sizes : [103705], original_width : 381, files : ["alePlayer.png"], type : "image"};
-	this.alePlayer = null;
-	this._2walkDescription = { name : "_2walk", original_height : 67, file_sizes : [5941], original_width : 568, files : ["2walk.png"], type : "image"};
-	this._2walk = null;
-	this._2malePlayerDescription = { name : "_2malePlayer", original_height : 1344, file_sizes : [151249], original_width : 832, files : ["2malePlayer.png"], type : "image"};
-	this._2malePlayer = null;
-	this._2deathDescription = { name : "_2death", original_height : 61, file_sizes : [8921], original_width : 374, files : ["2death.png"], type : "image"};
-	this._2death = null;
-	this._2attackDescription = { name : "_2attack", original_height : 63, file_sizes : [8620], original_width : 816, files : ["2attack.png"], type : "image"};
-	this._2attack = null;
-	this._123Description = { name : "_123", original_height : 331, file_sizes : [33048], original_width : 369, files : ["123.png"], type : "image"};
-	this._123 = null;
-	this._12Description = { name : "_12", original_height : 327, file_sizes : [33070], original_width : 381, files : ["12.png"], type : "image"};
-	this._12 = null;
-	this._1Description = { name : "_1", original_height : 331, file_sizes : [32377], original_width : 369, files : ["1.png"], type : "image"};
-	this._1 = null;
+	this.antahanarDescription = { name : "antahanar", original_height : 720, file_sizes : [182449], original_width : 1280, files : ["antahanar.jpg"], type : "image"};
+	this.antahanar = null;
+	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [127442], original_width : 500, files : ["Antathaan.png"], type : "image"};
+	this.Antathaan = null;
 };
 $hxClasses["kha._Assets.ImageList"] = kha__$Assets_ImageList;
 kha__$Assets_ImageList.__name__ = "kha._Assets.ImageList";
@@ -7609,16 +7582,26 @@ kha__$Assets_SoundList.prototype = {
 	__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
+	this.spiral_initials_zipDescription = { name : "spiral_initials_zip", file_sizes : [54503], files : ["spiral_initials.zip"], type : "blob"};
+	this.spiral_initials_zip = null;
 	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
 	this.malePlayer_xml = null;
-	this.julia_xmlDescription = { name : "julia_xml", file_sizes : [4883], files : ["julia.xml"], type : "blob"};
-	this.julia_xml = null;
-	this.jason_xmlDescription = { name : "jason_xml", file_sizes : [3260], files : ["jason.xml"], type : "blob"};
-	this.jason_xml = null;
+	this.license_txtDescription = { name : "license_txt", file_sizes : [6224], files : ["license.txt"], type : "blob"};
+	this.license_txt = null;
 	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3359], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
-	this.femalePlayer1_jsonDescription = { name : "femalePlayer1_json", file_sizes : [7535], files : ["femalePlayer1.json"], type : "blob"};
-	this.femalePlayer1_json = null;
+	this.celtic_md_zipDescription = { name : "celtic_md_zip", file_sizes : [59323], files : ["celtic_md.zip"], type : "blob"};
+	this.celtic_md_zip = null;
+	this.breathe_fire_zipDescription = { name : "breathe_fire_zip", file_sizes : [16040], files : ["breathe_fire.zip"], type : "blob"};
+	this.breathe_fire_zip = null;
+	this.INSTALL_txtDescription = { name : "INSTALL_txt", file_sizes : [13940], files : ["INSTALL.txt"], type : "blob"};
+	this.INSTALL_txt = null;
+	this.Get_Commercial_License_urlDescription = { name : "Get_Commercial_License_url", file_sizes : [123], files : ["Get Commercial License.url"], type : "blob"};
+	this.Get_Commercial_License_url = null;
+	this.FSLA_NonCommercial_License_htmlDescription = { name : "FSLA_NonCommercial_License_html", file_sizes : [5428], files : ["FSLA_NonCommercial_License.html"], type : "blob"};
+	this.FSLA_NonCommercial_License_html = null;
+	this.Breathe_Fire_otfDescription = { name : "Breathe_Fire_otf", file_sizes : [26264], files : ["Breathe Fire.otf"], type : "blob"};
+	this.Breathe_Fire_otf = null;
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
 kha__$Assets_BlobList.__name__ = "kha._Assets.BlobList";
@@ -7628,6 +7611,12 @@ kha__$Assets_BlobList.prototype = {
 var kha__$Assets_FontList = function() {
 	this.mainfontDescription = { name : "mainfont", file_sizes : [91504], files : ["mainfont.ttf"], type : "font"};
 	this.mainfont = null;
+	this.celticmdDescription = { name : "celticmd", file_sizes : [79112], files : ["celticmd.ttf"], type : "font"};
+	this.celticmdName = "celticmd";
+	this.celticmd = null;
+	this.SPIRI___Description = { name : "SPIRI___", file_sizes : [67896], files : ["SPIRI___.ttf"], type : "font"};
+	this.SPIRI___Name = "SPIRI___";
+	this.SPIRI___ = null;
 	this.Kenney_ThickDescription = { name : "Kenney_Thick", file_sizes : [9448], files : ["Kenney Thick.ttf"], type : "font"};
 	this.Kenney_ThickName = "Kenney_Thick";
 	this.Kenney_Thick = null;
@@ -20102,14 +20091,12 @@ states_GameState.__super__ = com_framework_utils_State;
 states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
-		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
-		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
+		atlas.add(new com_loading_basicResources_SparrowLoader(this.character,this.character + "_xml"));
 		atlas.add(new com_loading_basicResources_ImageLoader("forest"));
 		atlas.add(new com_loading_basicResources_ImageLoader("arrow"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
 		resources.add(atlas);
 		resources.add(new com_loading_basicResources_ImageLoader("ball"));
-		resources.add(new com_loading_basicResources_ImageLoader("cuarentena"));
 	}
 	,init: function() {
 		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
@@ -20201,21 +20188,25 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
+		atlas.add(new com_loading_basicResources_ImageLoader("Antathaan"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.celticmdName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.SPIRI___Name,30));
 		resources.add(atlas);
 	}
 	,init: function() {
 		this.simulationLayer = new com_gEngine_display_Layer();
+		this.background = new levelObjects_LoopBackground("Antathaan",this.simulationLayer,this.stage.cameras[0]);
 		this.stage.addChild(this.simulationLayer);
 		this.maleCharacter = new com_gEngine_display_Sprite("malePlayer");
 		this.maleCharacter.x = 55.5555555555555571;
-		this.maleCharacter.y = 400.;
+		this.maleCharacter.y = 490.;
 		this.maleCharacter.scaleX = 3;
 		this.maleCharacter.scaleY = 3;
 		this.maleCharacter.timeline.playAnimation("walk_",true);
 		this.femaleCharacter = new com_gEngine_display_Sprite("femalePlayer");
 		this.femaleCharacter.x = 277.777777777777771;
-		this.femaleCharacter.y = 400.;
+		this.femaleCharacter.y = 490.;
 		this.femaleCharacter.scaleX = 3;
 		this.femaleCharacter.scaleY = 3;
 		this.femaleCharacter.timeline.playAnimation("walk_",true);
@@ -20223,23 +20214,38 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.simulationLayer.addChild(this.maleCharacter);
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
-		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		this.selectCharacter.y = 30;
-		this.selectCharacter.set_text("Select character");
-		this.selectCharacter.x = 50;
-		this.male = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		this.female = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
+		this.selectCharacter.set_text("select character");
+		this.selectCharacter.y = 100;
+		this.selectCharacter.x = 75;
+		this.antathaan = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
+		this.antathaan.set_text("Antathaan");
+		this.antathaan.y = 50;
+		this.antathaan.x = 7;
+		this.defend = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
+		this.defend.set_text("defend");
+		this.defend.y = 30;
+		this.defend.x = 160;
+		this.antathaan.scaleX = this.antathaan.scaleY = 2;
+		this.male = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
+		this.female = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
 		this.male.set_text("male");
-		this.male.y = 600;
+		this.male.y = 660;
 		this.male.x = 75;
 		this.female.set_text("female");
-		this.female.y = 600;
-		this.female.x = 270;
+		this.female.y = 660;
+		this.female.x = 285;
 		this.femaleCharacter.timeline.frameRate = 0.1;
 		this.maleCharacter.timeline.frameRate = 0.1;
-		haxe_Log.trace(this.selectCharacter.get_length(),{ fileName : "states/IntroScreen.hx", lineNumber : 78, className : "states.IntroScreen", methodName : "init"});
+		this.male.setColorMultiply(1,0.66666666666666663,0,1);
+		this.female.setColorMultiply(1,0.66666666666666663,0,1);
+		this.defend.setColorMultiply(0.86274509803921573,0.352941176470588258,0,1);
+		this.antathaan.setColorMultiply(0.86274509803921573,0.352941176470588258,0,1);
+		this.selectCharacter.setColorMultiply(1,0.66666666666666663,0,1);
 		this.hudLayer.addChild(this.male);
 		this.hudLayer.addChild(this.female);
+		this.hudLayer.addChild(this.defend);
+		this.hudLayer.addChild(this.antathaan);
 		this.hudLayer.addChild(this.selectCharacter);
 	}
 	,update: function(dt) {
@@ -20255,9 +20261,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		}
 		if(tmp1) {
 			var _this2 = com_framework_utils_Input.i;
-			if(_this2.mousePosition.y * _this2.screenScale.y > 400) {
+			if(_this2.mousePosition.y * _this2.screenScale.y > 490) {
 				var _this3 = com_framework_utils_Input.i;
-				tmp = _this3.mousePosition.y * _this3.screenScale.y < 580;
+				tmp = _this3.mousePosition.y * _this3.screenScale.y < 670;
 			} else {
 				tmp = false;
 			}
@@ -20283,9 +20289,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		}
 		if(tmp3) {
 			var _this6 = com_framework_utils_Input.i;
-			if(_this6.mousePosition.y * _this6.screenScale.y > 400) {
+			if(_this6.mousePosition.y * _this6.screenScale.y > 490) {
 				var _this7 = com_framework_utils_Input.i;
-				tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 580;
+				tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 670;
 			} else {
 				tmp2 = false;
 			}
