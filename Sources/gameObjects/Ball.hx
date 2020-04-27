@@ -61,6 +61,10 @@ class Ball extends Entity {
 		collisions.add(collision);
 		collision.width = RADIO * 2 * (maxHp);
 		collision.height = RADIO * 2 * (maxHp);
+        if (x + (RADIO * 2 * hpTotal) > screenWidth) {
+            x = screenWidth - (RADIO * 2 * hpTotal) - 10;
+        }
+
         collision.x = x;
         collision.y = y;
         hpLayer = new Layer();
@@ -112,6 +116,10 @@ class Ball extends Entity {
     public function get_y():Float{
 		return ball.y;
 	}
+
+    public function addMaxHp(){
+        hpTotal++;
+    }
 
     
     public function ballVSball(ballCollided:CollisionBox):Void {

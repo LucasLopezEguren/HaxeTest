@@ -1,5 +1,6 @@
 package states;
 
+import gameObjects.Player;
 import kha.Color;
 import com.loading.basicResources.JoinAtlas;
 import com.gEngine.GEngine;
@@ -22,13 +23,18 @@ class SuccessScreen extends State {
     var display:Sprite;
 	var simulationLayer:Layer;
     var time:Float = 0;
+    var playerStats:Array<Float>;
+    var nextLevel:Int;
 
-    public function new(score:String, timeSurvived:String, sprite:String) {
+    public function new(score:String, timeSurvived:String, sprite:String, playerStats:Array<Float>, currentLevel:Int) {
         super();
+        this.nextLevel = currentLevel + 1;
         this.score = score;
         this.timeSurvived = timeSurvived;
         this.sprite = sprite;
+        this.playerStats = playerStats;
     }
+
     override function load(resources:Resources) {
         var atlas:JoinAtlas = new JoinAtlas(1024,1024);
         atlas.add(new ImageLoader("gameOver"));
@@ -78,7 +84,10 @@ class SuccessScreen extends State {
         }
         super.update(dt);
         if(Input.i.isKeyCodePressed(KeyCode.Return)){
-            changeState(new IntroScreen()); 
+            // playerChar = new Player(250, 650, character);
+            // playerStats[0] = 700;
+		    // playerChar.setStats(playerStats);
+            // changeState(new GameState(selectedCharacter, nextLevel, score, time, playerChar)); 
         }
     }
 }

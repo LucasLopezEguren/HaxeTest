@@ -5694,6 +5694,9 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	collisions.add(this.collision);
 	this.collision.width = 40 * maxHp;
 	this.collision.height = 40 * maxHp;
+	if(x + 40 * this.hpTotal > this.screenWidth) {
+		x = this.screenWidth - 40 * this.hpTotal - 10;
+	}
 	this.collision.x = x;
 	this.collision.y = y;
 	this.hpLayer = new com_gEngine_display_Layer();
@@ -5813,6 +5816,7 @@ gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,__class__: gameObjects_Bullet
 });
 var gameObjects_Gun = function() {
+	this.damage = 1;
 	com_framework_utils_Entity.call(this);
 	this.pool = true;
 	this.bulletsCollisions = new com_collision_platformer_CollisionGroup();
@@ -5825,9 +5829,16 @@ gameObjects_Gun.prototype = $extend(com_framework_utils_Entity.prototype,{
 		var bullet = this.recycle(gameObjects_Bullet);
 		bullet.shoot(aX,aY,dirX,dirY,this.bulletsCollisions);
 	}
+	,set_damage: function(damage) {
+		this.damage = damage;
+	}
+	,get_Damage: function() {
+		return this.damage;
+	}
 	,__class__: gameObjects_Gun
 });
-var gameObjects_Player = function(X,Y,layer,sprite) {
+var gameObjects_Player = function(X,Y,sprite) {
+	this.SPEED = 250;
 	com_framework_utils_Entity.call(this);
 	this.direction = new kha_math_FastVector2(0,1);
 	this.display = new com_gEngine_display_Sprite(sprite);
@@ -5838,19 +5849,24 @@ var gameObjects_Player = function(X,Y,layer,sprite) {
 	this.display.y = Y;
 	this.display.timeline.frameRate = 0.1;
 	this.collision = new com_collision_platformer_CollisionBox();
+	this.collision.userData = this;
 	this.collision.width = 31;
 	this.collision.height = 55;
 	this.collision.x = X;
 	this.collision.y = Y;
 	this.display.offsetX = -10;
 	this.display.offsetY = -15;
-	layer.addChild(this.display);
 };
 $hxClasses["gameObjects.Player"] = gameObjects_Player;
 gameObjects_Player.__name__ = "gameObjects.Player";
 gameObjects_Player.__super__ = com_framework_utils_Entity;
 gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
-	update: function(dt) {
+	startPlayer: function(layer,stats) {
+		this.SPEED = stats[0];
+		this.gun.set_damage(Math.ceil(stats[1]));
+		layer.addChild(this.display);
+	}
+	,update: function(dt) {
 		if(this.isDead()) {
 			return;
 		}
@@ -5858,7 +5874,7 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.collision.velocityX = 0;
 		this.collision.velocityY = 0;
-		this.movement(this.collision,250);
+		this.movement(this.collision,this.SPEED);
 		if(com_framework_utils_Input.i.isKeyCodePressed(65)) {
 			this.gun.shoot(this.get_x(),this.get_y() - this.get_height() * 0.75,0,-1);
 			this.display.offsetY = -15;
@@ -5920,6 +5936,15 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 			this.display.offsetY = -15;
 			this.display.timeline.playAnimation("attack_",false);
 		}
+	}
+	,get_damage: function() {
+		return this.gun.get_Damage();
+	}
+	,get_Stats: function() {
+		var toReturn = [];
+		toReturn[0] = this.SPEED;
+		toReturn[1] = this.gun.get_Damage();
+		return toReturn;
 	}
 	,__class__: gameObjects_Player
 });
@@ -19975,15 +20000,6 @@ levelObjects_LoopBackground.prototype = $extend(com_framework_utils_Entity.proto
 	}
 	,__class__: levelObjects_LoopBackground
 });
-var levelObjects_Grass = function(layer,camera) {
-	levelObjects_LoopBackground.call(this,"forest",layer,camera);
-};
-$hxClasses["levelObjects.Grass"] = levelObjects_Grass;
-levelObjects_Grass.__name__ = "levelObjects.Grass";
-levelObjects_Grass.__super__ = levelObjects_LoopBackground;
-levelObjects_Grass.prototype = $extend(levelObjects_LoopBackground.prototype,{
-	__class__: levelObjects_Grass
-});
 var states_GameOver = function(score,timeSurvived,sprite) {
 	com_framework_utils_State.call(this);
 	this.score = score;
@@ -20045,13 +20061,18 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,__class__: states_GameOver
 });
-var states_GameState = function(character) {
-	this.isDebug = false;
-	this.ballsAlive = 1;
+var states_GameState = function(character,level,aScore,aTime,playerChar) {
 	this.added = false;
+	this.isDebug = false;
+	this.ballsAlive = 0;
 	this.time = 0;
 	this.score = 0;
+	this.hps = [];
 	com_framework_utils_State.call(this);
+	this.currentLevel = level;
+	this.time = aTime;
+	this.score = aScore;
+	this.playerChar = playerChar;
 	this.character = character;
 };
 $hxClasses["states.GameState"] = states_GameState;
@@ -20064,38 +20085,57 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_ImageLoader("forest"));
 		atlas.add(new com_loading_basicResources_ImageLoader("arrow"));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_ImageLoader("ball"));
 		resources.add(atlas);
-		resources.add(new com_loading_basicResources_ImageLoader("ball"));
 	}
 	,init: function() {
 		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
 		var groundLayer = new com_gEngine_display_Layer();
-		this.addChild(new levelObjects_Grass(groundLayer,this.stage.cameras[0]));
+		this.addChild(new levelObjects_LoopBackground("forest",groundLayer,this.stage.cameras[0]));
 		this.stage.addChild(groundLayer);
 		this.simulationLayer = new com_gEngine_display_Layer();
 		this.stage.addChild(this.simulationLayer);
-		this.playerChar = new gameObjects_Player(250,650,this.simulationLayer,this.character);
-		this.addChild(this.playerChar);
+		var stats = this.playerChar.get_Stats();
+		this.playerChar = new gameObjects_Player(250,650,this.character);
+		this.playerChar.startPlayer(this.simulationLayer,stats);
 		GlobalGameData.player = this.playerChar;
 		GlobalGameData.simulationLayer = this.simulationLayer;
+		this.addChild(this.playerChar);
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
 		this.scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
 		this.scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2;
 		this.scoreDisplay.y = 30;
+		this.scoreDisplay.set_text("0");
 		this.hudLayer.addChild(this.scoreDisplay);
 		this.timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
 		this.timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - 60;
 		this.timeDisplay.y = 80;
 		this.hudLayer.addChild(this.timeDisplay);
-		this.scoreDisplay.set_text("0");
-		var ball = new gameObjects_Ball(this.stage,10,10,50,0,this.enemyCollisions,3);
-		this.addChild(ball);
+		this.allBalls = [];
+		this.levelCreator();
 	}
 	,update: function(dt) {
 		this.time += dt;
 		com_framework_utils_State.prototype.update.call(this,dt);
-		if(Math.floor(this.time) % 2 != 0) {
+		if((this.ballsAlive == 0 || Math.floor(this.time) % 10 == 0) && !this.added) {
+			this.added = true;
+			if(this.hps.length == 0 && this.ballsAlive == 0) {
+				haxe_Log.trace("FINISH",{ fileName : "states/GameState.hx", lineNumber : 105, className : "states.GameState", methodName : "update"});
+			} else if(this.hps.length > 0) {
+				var hpMax = this.hps.pop();
+				var left = Math.floor(Math.random() * 2);
+				if(left < 1) {
+					left = -1;
+				} else {
+					left = 1;
+				}
+				var ball = new gameObjects_Ball(this.stage,Math.random() * 450 + 15,Math.random() * 200 + 15,left * 50,0,this.enemyCollisions,hpMax);
+				this.addChild(ball);
+				this.ballsAlive++;
+			}
+		}
+		if(Math.floor(this.time) % 10 != 0) {
 			this.added = false;
 		}
 		this.enemyCollisions.overlap(this.playerChar.gun.bulletsCollisions,$bind(this,this.ballVsBullet));
@@ -20112,7 +20152,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,ballVsBullet: function(aBall,aBullet) {
 		var ball = aBall.userData;
-		ball.damage(1);
+		ball.damage(this.playerChar.get_damage());
 		if(ball.get_hp() <= 0) {
 			this.score += ball.get_hpTotal();
 			if(ball.get_hpTotal() <= 1) {
@@ -20127,13 +20167,32 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		}
 		var bullet = aBullet.userData;
 		bullet.die();
-		if(this.ballsAlive == 0) {
-			this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
-		}
 	}
 	,playerVsBall: function(aPlayerChar,aBall) {
 		this.playerChar.die();
 		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
+	}
+	,levelCreator: function() {
+		haxe_Log.trace(this.allBalls.length,{ fileName : "states/GameState.hx", lineNumber : 169, className : "states.GameState", methodName : "levelCreator"});
+		var randomGenerator = -1;
+		var difficulty = this.currentLevel + this.currentLevel * 2;
+		var retry = true;
+		while(difficulty > 0) {
+			retry = true;
+			randomGenerator = -1;
+			--difficulty;
+			while(retry || randomGenerator < 0) {
+				randomGenerator = Math.floor(Math.random() * (this.hps.length + 1));
+				if(randomGenerator == this.hps.length || this.hps[randomGenerator] < 3) {
+					retry = false;
+				}
+			}
+			if(randomGenerator == this.hps.length) {
+				this.hps.push(1);
+			} else {
+				this.hps[randomGenerator]++;
+			}
+		}
 	}
 	,destroy: function() {
 		com_framework_utils_State.prototype.destroy.call(this);
@@ -20262,7 +20321,8 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 				if(tmp) {
 					this.maleCharacter.timeline.playAnimation("attack_");
 					if(com_framework_utils_Input.i.isMousePressed()) {
-						this.changeState(new states_GameState("malePlayer"));
+						this.selectedCharacter = "malePlayer";
+						this.startGame();
 					}
 				} else {
 					this.maleCharacter.timeline.playAnimation("walk_");
@@ -20290,7 +20350,8 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 				if(tmp2) {
 					this.femaleCharacter.timeline.playAnimation("attack_");
 					if(com_framework_utils_Input.i.isMousePressed()) {
-						this.changeState(new states_GameState("femalePlayer"));
+						this.selectedCharacter = "femalePlayer";
+						this.startGame();
 					}
 				} else {
 					this.femaleCharacter.timeline.playAnimation("walk_");
@@ -20307,6 +20368,10 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			}
 			this.pressStart.setColorMultiply(1,0.66666666666666663,0,this.transcparency);
 		}
+	}
+	,startGame: function() {
+		var playerChar = new gameObjects_Player(250,650,this.selectedCharacter);
+		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar));
 	}
 	,__class__: states_IntroScreen
 });

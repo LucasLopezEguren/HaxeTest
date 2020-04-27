@@ -11,21 +11,20 @@ import com.framework.utils.Entity;
 
 
 /* @author Lucas */
-class Player extends Entity
+class Player extends Entity 
 {
-	static private inline var SPEED:Float = 250;
+	private var SPEED:Float = 250;
 	
 	public var gun:Gun;
-
 	var direction:FastVector2;
-	var display:Sprite;
+	public var display:Sprite;
 	public var collision:CollisionBox;
 	public var x(get,null):Float;
 	public var y(get,null):Float;
 	public var width(get,null):Float;
 	public var height(get,null):Float;
 
-	public function new(X:Float, Y:Float, layer:Layer, sprite:String) 
+	public function new(X:Float, Y:Float, sprite:String) 
 	{
 		super();
 		direction = new FastVector2(0,1);
@@ -37,13 +36,23 @@ class Player extends Entity
 		display.y = Y;
 		display.timeline.frameRate = 1/10;
 		collision = new CollisionBox();
+		collision.userData = this;
 		collision.width = 31;
 		collision.height = 55;
 		collision.x = X;
 		collision.y = Y;
 		display.offsetX = -10;
 		display.offsetY = -15;
+	}
+
+	public function startPlayer(layer:Layer, stats:Array<Float>){
+		setStats(stats);
 		layer.addChild(display);
+	}
+
+	public function setStats(stats:Array<Float>){
+		SPEED = stats[0];
+		gun.set_damage(Math.ceil(stats[1]));
 	}
 	
 	override function update(dt:Float ):Void
@@ -55,7 +64,7 @@ class Player extends Entity
 		super.update(dt);
 		collision.velocityX = 0;
 		collision.velocityY = 0;
-		movement(collision,SPEED);
+		movement(collision, SPEED);
 		if(Input.i.isKeyCodePressed(KeyCode.A)){
 			gun.shoot(x,y-height*0.75,0,-1);
 			display.offsetY = -15;
@@ -123,5 +132,20 @@ class Player extends Entity
 			display.offsetY = -15;
 			display.timeline.playAnimation("attack_",false);
 		}
+	}
+
+	public function get_damage():Int {
+		return gun.get_Damage();
+	}
+
+	public function add_damage() {
+		gun.add_damage();
+	}
+
+	public function get_Stats():Array<Float>{
+		var toReturn:Array<Float> = new Array<Float>();
+		toReturn[0] = SPEED;
+		toReturn[1] = gun.get_Damage();
+		return toReturn;
 	}
 }

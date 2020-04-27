@@ -1,5 +1,6 @@
 package states;
 
+import levelObjects.LoopBackground;
 import kha.Color;
 import gameObjects.Ball;
 import kha.Canvas;
@@ -21,25 +22,30 @@ import com.loading.basicResources.JoinAtlas;
 import com.loading.basicResources.SparrowLoader;
 import com.loading.Resources;
 import com.framework.utils.State;
-import levelObjects.Grass;
 import com.gEngine.display.StaticLayer;
 
 class GameState extends State {
 	var character:String;
+	var hps:Array<Int> = new Array<Int>();
+	var currentLevel:Int;
 
-	public function new(character:String) {
+	public function new(character:String, level:Int, aScore:Int, aTime:Float, playerChar:Player) {
         super();
+		currentLevel = level;
+		time = aTime;
+		score = aScore;
+		this.playerChar = playerChar;
         this.character = character;
     }
-	
+
 	override function load(resources:Resources) {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
 		atlas.add(new SparrowLoader(character, character+"_xml"));
 		atlas.add(new ImageLoader("forest"));
 		atlas.add(new ImageLoader("arrow"));
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
+        atlas.add(new ImageLoader("ball"));
 		resources.add(atlas);
-        resources.add(new ImageLoader("ball"));
 	}
 
 	var playerChar:Player;
@@ -51,24 +57,26 @@ class GameState extends State {
 	var hudLayer:Layer;
 	var time:Float=0;
 	var survivedTime:String;
-	var ballsAlive:Int = 1;
-	var level:Int;
+	var ballsAlive:Int = 0;
+	var allBalls:Array<Ball>;
 
 	override function init() {
 		enemyCollisions = new CollisionGroup();
-		
+
 		var groundLayer = new Layer();
-		addChild(new Grass(groundLayer,stage.defaultCamera()));
+		addChild(new LoopBackground("forest",groundLayer,stage.defaultCamera()));
 		stage.addChild(groundLayer);
 
 		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
 
-        playerChar = new Player(250, 650, simulationLayer, character);
-		addChild(playerChar);
+		var stats:Array<Float> = playerChar.get_Stats();
+        playerChar = new Player(250, 650, character);
+		playerChar.startPlayer(simulationLayer,stats);
 
 		GGD.player = playerChar;
 		GGD.simulationLayer = simulationLayer;
+		addChild(playerChar);
 
 		hudLayer = new StaticLayer();
 		stage.addChild(hudLayer);
@@ -82,14 +90,30 @@ class GameState extends State {
 		timeDisplay.x = GEngine.virtualWidth/2 - (60);
 		timeDisplay.y = 80;
 		hudLayer.addChild(timeDisplay);
-
-		var ball = new Ball(stage, 10, 10, 50, 0, enemyCollisions, 3);
-		addChild(ball);
+		allBalls = new Array<Ball>();
+		levelCreator();
 	}
 
 	var isDebug:Bool = false;
+	var added:Bool = false;
 	override function update(dt:Float) {
 		time+=dt;
+		super.update(dt);
+		if ((ballsAlive == 0 || Math.floor(time)%10 == 0) && !added) {
+			added = true;
+			if (hps.length == 0 && ballsAlive == 0) {
+				trace("FINISH");
+			} else {
+				if (hps.length > 0) {
+					var ball = ballCreator(hps.pop());
+					addChild(ball);
+		 			ballsAlive++;
+				}
+			}
+		} 
+		if (Math.floor(time)%10 != 0) {
+			added = false;
+		}
 		enemyCollisions.overlap(playerChar.gun.bulletsCollisions, ballVsBullet);
 		playerChar.collision.overlap(enemyCollisions, playerVsBall);
 		survivedTime = " " + (Math.floor(time/60) + "m " + Math.floor(time)%60 +"s");
@@ -105,7 +129,7 @@ class GameState extends State {
 
 	function ballVsBullet(aBall:ICollider, aBullet:ICollider) {
         var ball:Ball = (cast aBall.userData);
-        ball.damage(1);
+        ball.damage(playerChar.get_damage());
 		if (ball.get_hp() <= 0) {
 			score = score + ball.get_hpTotal();
 			if (ball.get_hpTotal() <= 1){
@@ -124,25 +148,56 @@ class GameState extends State {
 		}
         var bullet:Bullet = (cast  aBullet.userData);
 		bullet.die();
-		if (ballsAlive == 0) {
-			changeState(new GameOver(""+score, survivedTime, character));
-		}
     }
 
 	function playerVsBall(aPlayerChar:ICollider, aBall:ICollider) {
         playerChar.die();
 		changeState(new GameOver(""+score, survivedTime, character));
     }
-	
+
+	inline function ballCreator(hpMax:Int):Ball {
+		var left:Int = Math.floor(Math.random()*2);
+		if (left < 1){
+			left = -1;
+		} else {
+			left = 1;
+		}
+		return new Ball(stage, ((Math.random()*450) + 15), ((Math.random()*200) + 15), (left * 50), 0, enemyCollisions, hpMax) ;
+	}
+
+	function levelCreator(){
+		trace (allBalls.length);
+		var randomGenerator:Int = -1;
+		var difficulty:Int = (currentLevel + (currentLevel * 2) );
+		var retry:Bool = true;
+		while ( difficulty > 0){
+			retry = true;
+			randomGenerator = -1;
+			difficulty--;
+			while (retry || randomGenerator < 0) {
+				randomGenerator = Math.floor(Math.random() * (hps.length + 1));
+				if (randomGenerator == hps.length || hps[randomGenerator] < 3) {
+					retry = false;
+				}
+			}
+			if (randomGenerator == hps.length){
+				hps.push(1);
+			} else {
+				hps[randomGenerator]++;
+			}
+		}
+	}
+
+
 	override function destroy() {
 		super.destroy();
 		GGD.destroy();
 	}
-	#if DEBUGDRAW
+	
 	override function draw(framebuffer:Canvas) {
 		super.draw(framebuffer);
 		framebuffer.g2.color = Color.Yellow;
 		CollisionEngine.renderDebug(framebuffer);
 	}
-	#end
 }
+

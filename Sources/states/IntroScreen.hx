@@ -14,13 +14,14 @@ import com.framework.utils.Input;
 import com.loading.basicResources.ImageLoader;
 import com.loading.Resources;
 import com.framework.utils.State;
+import gameObjects.Player;
 
 class IntroScreen extends State {
     var femaleCharacter:Sprite;
     var maleCharacter:Sprite;
 	var simulationLayer:Layer;
     var selectCharacter:Text;
-    var selectedCharacter:Text;
+    var selectedCharacter:String;
     var male:Text;
     var female:Text;
 	var hudLayer:Layer;
@@ -45,6 +46,7 @@ class IntroScreen extends State {
 		simulationLayer = new Layer();
         background = new LoopBackground("Antathaan",simulationLayer,stage.defaultCamera());
 		stage.addChild(simulationLayer);
+        
 		maleCharacter = new Sprite("malePlayer");
         maleCharacter.x = (500/9);
         maleCharacter.y = 490;
@@ -113,8 +115,8 @@ class IntroScreen extends State {
         if(changeScreen){
             if (defend.y > 30){
                 pressStart.removeFromParent();
-                defend.y-=3;
-                antathaan.y-=3;
+                defend.y -= 3;
+                antathaan.y -= 3;
             } else {
                 if (!isDrawn){
                     isDrawn = true;
@@ -124,12 +126,12 @@ class IntroScreen extends State {
                     hudLayer.addChild(female);
                     hudLayer.addChild(selectCharacter);
                 } else {
-                    
                     if ((Input.i.getMouseX() > 60 && Input.i.getMouseX() < 190) && 
                         (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 670)) {
                             maleCharacter.timeline.playAnimation("attack_");
                             if (Input.i.isMousePressed()) {
-                                changeState(new GameState("malePlayer")); 
+                                selectedCharacter = "malePlayer";
+                                startGame();
                             }
                     } else {
                         maleCharacter.timeline.playAnimation("walk_");
@@ -138,7 +140,8 @@ class IntroScreen extends State {
                         (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 670)) {
                             femaleCharacter.timeline.playAnimation("attack_");
                             if (Input.i.isMousePressed()) {
-                                changeState(new GameState("femalePlayer")); 
+                                selectedCharacter = "femalePlayer";
+                                startGame();
                             }
                     } else {
                         femaleCharacter.timeline.playAnimation("walk_");
@@ -156,5 +159,10 @@ class IntroScreen extends State {
             }
             pressStart.setColorMultiply (1, 170/255, 0, transcparency);
         }
+    }
+
+    function startGame() {
+        var playerChar:Player = new Player(250, 650, selectedCharacter);
+        changeState(new GameState(selectedCharacter, 1, 0 ,0, playerChar)); 
     }
 }
