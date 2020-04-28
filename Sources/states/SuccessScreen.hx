@@ -17,16 +17,16 @@ import com.loading.Resources;
 import com.framework.utils.State;
 
 class SuccessScreen extends State {
-    var score:String;
+    var score:Int;
     var sprite:String;
-    var timeSurvived:String;
+    var timeSurvived:Float;
     var display:Sprite;
 	var simulationLayer:Layer;
     var time:Float = 0;
     var playerStats:Array<Float>;
     var nextLevel:Int;
 
-    public function new(score:String, timeSurvived:String, sprite:String, playerStats:Array<Float>, currentLevel:Int) {
+    public function new(score:Int, timeSurvived:Float, sprite:String, playerStats:Array<Float>, currentLevel:Int) {
         super();
         this.nextLevel = currentLevel + 1;
         this.score = score;
@@ -84,10 +84,14 @@ class SuccessScreen extends State {
         }
         super.update(dt);
         if(Input.i.isKeyCodePressed(KeyCode.Return)){
-            // playerChar = new Player(250, 650, character);
-            // playerStats[0] = 700;
-		    // playerChar.setStats(playerStats);
-            // changeState(new GameState(selectedCharacter, nextLevel, score, time, playerChar)); 
+            startNextLevel();
         }
+    }
+
+    function startNextLevel() {
+        var playerChar:Player = new Player(250, 650, sprite);
+        playerStats[0] = 700;
+        playerChar.setStats(playerStats);
+        changeState(new GameState(sprite, nextLevel, score, time, playerChar)); 
     }
 }

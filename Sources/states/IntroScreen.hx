@@ -1,6 +1,8 @@
 package states;
 
 import levelObjects.LoopBackground;
+import com.soundLib.SoundManager.SM;
+import com.loading.basicResources.SoundLoader;
 import com.loading.basicResources.JoinAtlas;
 import com.gEngine.display.StaticLayer;
 import com.gEngine.display.Text;
@@ -35,6 +37,7 @@ class IntroScreen extends State {
         atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName, 30));
         atlas.add(new FontLoader(Assets.fonts.SPIRI___Name, 30));
         resources.add(atlas);
+		// resources.add(new SoundLoader("Khazix"));
     }
 
     var background:LoopBackground;
@@ -43,10 +46,11 @@ class IntroScreen extends State {
     var pressStart:Text;
     
     override function init() {
+        // SM.playMusic("Khazix");
 		simulationLayer = new Layer();
         background = new LoopBackground("Antathaan",simulationLayer,stage.defaultCamera());
 		stage.addChild(simulationLayer);
-        
+
 		maleCharacter = new Sprite("malePlayer");
         maleCharacter.x = (500/9);
         maleCharacter.y = 490;
@@ -68,6 +72,7 @@ class IntroScreen extends State {
 		selectCharacter.x = 75;
         antathaan = new Text(Assets.fonts.SPIRI___Name);
         antathaan.text = "Antathaan";
+        trace(antathaan.fontSize);
 		antathaan.y = 350;
 		antathaan.x = 7;
         defend = new Text(Assets.fonts.SPIRI___Name);

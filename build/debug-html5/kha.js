@@ -5862,9 +5862,12 @@ gameObjects_Player.__name__ = "gameObjects.Player";
 gameObjects_Player.__super__ = com_framework_utils_Entity;
 gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 	startPlayer: function(layer,stats) {
+		this.setStats(stats);
+		layer.addChild(this.display);
+	}
+	,setStats: function(stats) {
 		this.SPEED = stats[0];
 		this.gun.set_damage(Math.ceil(stats[1]));
-		layer.addChild(this.display);
 	}
 	,update: function(dt) {
 		if(this.isDead()) {
@@ -7593,6 +7596,15 @@ kha__$Assets_ImageList.prototype = {
 		return Reflect.field(this,name);
 	}
 	,__class__: kha__$Assets_ImageList
+};
+var kha__$Assets_SoundList = function() {
+	this.KhazixDescription = { name : "Khazix", file_sizes : [1504800], files : ["Khazix.ogg"], type : "sound"};
+	this.Khazix = null;
+};
+$hxClasses["kha._Assets.SoundList"] = kha__$Assets_SoundList;
+kha__$Assets_SoundList.__name__ = "kha._Assets.SoundList";
+kha__$Assets_SoundList.prototype = {
+	__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
 	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
@@ -20067,7 +20079,7 @@ var states_GameState = function(character,level,aScore,aTime,playerChar) {
 	this.ballsAlive = 0;
 	this.time = 0;
 	this.score = 0;
-	this.hps = [];
+	this.allBallsHp = [];
 	com_framework_utils_State.call(this);
 	this.currentLevel = level;
 	this.time = aTime;
@@ -20120,10 +20132,10 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		com_framework_utils_State.prototype.update.call(this,dt);
 		if((this.ballsAlive == 0 || Math.floor(this.time) % 10 == 0) && !this.added) {
 			this.added = true;
-			if(this.hps.length == 0 && this.ballsAlive == 0) {
-				haxe_Log.trace("FINISH",{ fileName : "states/GameState.hx", lineNumber : 105, className : "states.GameState", methodName : "update"});
-			} else if(this.hps.length > 0) {
-				var hpMax = this.hps.pop();
+			if(this.allBallsHp.length == 0 && this.ballsAlive == 0) {
+				this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.currentLevel));
+			} else if(this.allBallsHp.length > 0) {
+				var hpMax = this.allBallsHp.pop();
 				var left = Math.floor(Math.random() * 2);
 				if(left < 1) {
 					left = -1;
@@ -20173,7 +20185,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
 	}
 	,levelCreator: function() {
-		haxe_Log.trace(this.allBalls.length,{ fileName : "states/GameState.hx", lineNumber : 169, className : "states.GameState", methodName : "levelCreator"});
+		haxe_Log.trace(this.allBalls.length,{ fileName : "states/GameState.hx", lineNumber : 174, className : "states.GameState", methodName : "levelCreator"});
 		var randomGenerator = -1;
 		var difficulty = this.currentLevel + this.currentLevel * 2;
 		var retry = true;
@@ -20182,15 +20194,15 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			randomGenerator = -1;
 			--difficulty;
 			while(retry || randomGenerator < 0) {
-				randomGenerator = Math.floor(Math.random() * (this.hps.length + 1));
-				if(randomGenerator == this.hps.length || this.hps[randomGenerator] < 3) {
+				randomGenerator = Math.floor(Math.random() * (this.allBallsHp.length + 1));
+				if(randomGenerator == this.allBallsHp.length || this.allBallsHp[randomGenerator] < 3) {
 					retry = false;
 				}
 			}
-			if(randomGenerator == this.hps.length) {
-				this.hps.push(1);
+			if(randomGenerator == this.allBallsHp.length) {
+				this.allBallsHp.push(1);
 			} else {
-				this.hps[randomGenerator]++;
+				this.allBallsHp[randomGenerator]++;
 			}
 		}
 	}
@@ -20249,6 +20261,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.selectCharacter.x = 75;
 		this.antathaan = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
 		this.antathaan.set_text("Antathaan");
+		haxe_Log.trace(this.antathaan.fontSize,{ fileName : "states/IntroScreen.hx", lineNumber : 75, className : "states.IntroScreen", methodName : "init"});
 		this.antathaan.y = 350;
 		this.antathaan.x = 7;
 		this.defend = new com_gEngine_display_Text(kha_Assets.fonts.SPIRI___Name);
@@ -20374,6 +20387,76 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar));
 	}
 	,__class__: states_IntroScreen
+});
+var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,currentLevel) {
+	this.time = 0;
+	com_framework_utils_State.call(this);
+	this.nextLevel = currentLevel + 1;
+	this.score = score;
+	this.timeSurvived = timeSurvived;
+	this.sprite = sprite;
+	this.playerStats = playerStats;
+};
+$hxClasses["states.SuccessScreen"] = states_SuccessScreen;
+states_SuccessScreen.__name__ = "states.SuccessScreen";
+states_SuccessScreen.__super__ = com_framework_utils_State;
+states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
+	load: function(resources) {
+		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
+		atlas.add(new com_loading_basicResources_ImageLoader("gameOver"));
+		atlas.add(new com_loading_basicResources_SparrowLoader(this.sprite,this.sprite + "_xml"));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		resources.add(atlas);
+	}
+	,init: function() {
+		var image = new com_gEngine_display_Sprite("gameOver");
+		this.simulationLayer = new com_gEngine_display_Layer();
+		this.stage.addChild(this.simulationLayer);
+		this.display = new com_gEngine_display_Sprite(this.sprite);
+		this.display.x = 170;
+		this.display.y = 505.;
+		this.display.scaleX = 3;
+		this.display.scaleY = 3;
+		this.display.timeline.playAnimation("idle",false);
+		this.simulationLayer.addChild(this.display);
+		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
+		image.y = 100;
+		this.stage.addChild(image);
+		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		var timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		scoreDisplay.set_text("Your score is " + this.score);
+		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 - 7;
+		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2;
+		scoreDisplay.set_color(-65536);
+		timeDisplay.set_text("survived for " + this.timeSurvived);
+		timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - timeDisplay.width() * 0.5;
+		timeDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 50;
+		timeDisplay.set_color(-65536);
+		this.stage.addChild(scoreDisplay);
+		this.stage.addChild(timeDisplay);
+	}
+	,playDeadAnimation: function() {
+		this.display.scaleX = 3;
+		this.display.scaleY = 3;
+		this.display.timeline.frameRate = 0.1;
+		this.display.timeline.playAnimation("death_",false);
+	}
+	,update: function(dt) {
+		if(this.display.timeline.currentAnimation != "death_") {
+			this.playDeadAnimation();
+		}
+		com_framework_utils_State.prototype.update.call(this,dt);
+		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
+			this.startNextLevel();
+		}
+	}
+	,startNextLevel: function() {
+		var playerChar = new gameObjects_Player(250,650,this.sprite);
+		this.playerStats[0] = 700;
+		playerChar.setStats(this.playerStats);
+		this.changeState(new states_GameState(this.sprite,this.nextLevel,this.score,this.time,playerChar));
+	}
+	,__class__: states_SuccessScreen
 });
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;

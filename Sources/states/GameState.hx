@@ -1,5 +1,7 @@
 package states;
 
+import com.soundLib.SoundManager.SM;
+import com.loading.basicResources.SoundLoader;
 import levelObjects.LoopBackground;
 import kha.Color;
 import gameObjects.Ball;
@@ -26,7 +28,7 @@ import com.gEngine.display.StaticLayer;
 
 class GameState extends State {
 	var character:String;
-	var hps:Array<Int> = new Array<Int>();
+	var allBallsHp:Array<Int> = new Array<Int>();
 	var currentLevel:Int;
 
 	public function new(character:String, level:Int, aScore:Int, aTime:Float, playerChar:Player) {
@@ -46,6 +48,7 @@ class GameState extends State {
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
         atlas.add(new ImageLoader("ball"));
 		resources.add(atlas);
+		// resources.add(new SoundLoader("Khazix"));
 	}
 
 	var playerChar:Player;
@@ -62,6 +65,8 @@ class GameState extends State {
 
 	override function init() {
 		enemyCollisions = new CollisionGroup();
+		// SM.playMusic("Khazix");
+
 
 		var groundLayer = new Layer();
 		addChild(new LoopBackground("forest",groundLayer,stage.defaultCamera()));
@@ -101,11 +106,11 @@ class GameState extends State {
 		super.update(dt);
 		if ((ballsAlive == 0 || Math.floor(time)%10 == 0) && !added) {
 			added = true;
-			if (hps.length == 0 && ballsAlive == 0) {
-				trace("FINISH");
+			if (allBallsHp.length == 0 && ballsAlive == 0) {
+				changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel));
 			} else {
-				if (hps.length > 0) {
-					var ball = ballCreator(hps.pop());
+				if (allBallsHp.length > 0) {
+					var ball = ballCreator(allBallsHp.pop());
 					addChild(ball);
 		 			ballsAlive++;
 				}
@@ -175,15 +180,15 @@ class GameState extends State {
 			randomGenerator = -1;
 			difficulty--;
 			while (retry || randomGenerator < 0) {
-				randomGenerator = Math.floor(Math.random() * (hps.length + 1));
-				if (randomGenerator == hps.length || hps[randomGenerator] < 3) {
+				randomGenerator = Math.floor(Math.random() * (allBallsHp.length + 1));
+				if (randomGenerator == allBallsHp.length || allBallsHp[randomGenerator] < 3) {
 					retry = false;
 				}
 			}
-			if (randomGenerator == hps.length){
-				hps.push(1);
+			if (randomGenerator == allBallsHp.length){
+				allBallsHp.push(1);
 			} else {
-				hps[randomGenerator]++;
+				allBallsHp[randomGenerator]++;
 			}
 		}
 	}

@@ -53,6 +53,16 @@
 			"type": "font"
 		},
 		{
+			"name": "Khazix",
+			"files": [
+				"Khazix.ogg"
+			],
+			"file_sizes": [
+				1504800
+			],
+			"type": "sound"
+		},
+		{
 			"name": "SPIRI___",
 			"files": [
 				"SPIRI___.ttf"
