@@ -1,8 +1,8 @@
 package states;
 
-import levelObjects.LoopBackground;
 import com.soundLib.SoundManager.SM;
 import com.loading.basicResources.SoundLoader;
+import levelObjects.LoopBackground;
 import com.loading.basicResources.JoinAtlas;
 import com.gEngine.display.StaticLayer;
 import com.gEngine.display.Text;
@@ -114,6 +114,10 @@ class IntroScreen extends State {
 
     override function update(dt:Float) {
         super.update(dt);
+        if (Input.i.isKeyCodePressed(KeyCode.Q)){
+            selectedCharacter = "femalePlayer";
+            startGame();
+        }
         if (Input.i.isKeyCodePressed(KeyCode.Return) && !changeScreen){
             changeScreen = true;
         }

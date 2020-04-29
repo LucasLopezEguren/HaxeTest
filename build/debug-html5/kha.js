@@ -5680,8 +5680,9 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.screenWidth = com_gEngine_GEngine.get_i().width;
 	this.screenHeight = com_gEngine_GEngine.get_i().height;
 	this.ball = new com_gEngine_display_Sprite("ball");
-	this.ball.scaleX = maxHp;
-	this.ball.scaleY = maxHp;
+	var size = Math.random();
+	this.ball.scaleX = size * (maxHp % 4) + 1;
+	this.ball.scaleY = size * (maxHp % 4) + 1;
 	var ballLayer = new com_gEngine_display_Layer();
 	ballLayer.addChild(this.ball);
 	this.velocity = new kha_math_FastVector2(spdX,spdY);
@@ -5692,10 +5693,10 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.collision = new com_collision_platformer_CollisionBox();
 	this.collision.userData = this;
 	collisions.add(this.collision);
-	this.collision.width = 40 * maxHp;
-	this.collision.height = 40 * maxHp;
-	if(x + 40 * this.hpTotal > this.screenWidth) {
-		x = this.screenWidth - 40 * this.hpTotal - 10;
+	this.collision.width = 40 * this.ball.scaleX;
+	this.collision.height = 40 * this.ball.scaleX;
+	if(x + this.collision.width > this.screenWidth) {
+		x = this.screenWidth - this.collision.width - 10;
 	}
 	this.collision.x = x;
 	this.collision.y = y;
@@ -5719,20 +5720,20 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.time += dt;
 		this.velocity.y += 500 * dt;
-		if(this.collision.x < 0 || this.collision.x + 40 * this.hpTotal > this.screenWidth) {
+		if(this.collision.x < 0 || this.collision.x + this.collision.width > this.screenWidth) {
 			this.velocity.x *= -1;
 		}
 		this.collision.x += this.velocity.x * dt;
 		this.collision.y += this.velocity.y * dt;
-		if(this.collision.y + 40 * this.hpTotal >= this.screenHeight && this.velocity.y > 0) {
+		if(this.collision.y + this.collision.width >= this.screenHeight && this.velocity.y > 0) {
 			this.velocity.y *= -1;
 		}
 		var _g = this.hpLayer;
 		_g.set_rotation(_g.rotation + Math.abs(this.velocity.x) / (this.velocity.x * 10) * (Math.abs(this.velocity.x) / (25 * this.hpTotal)));
 		this.collision.velocityY = this.velocity.y;
 		this.collision.velocityX = this.velocity.x;
-		this.hpLayer.x = this.collision.x + 20 * this.hpTotal;
-		this.hpLayer.y = this.collision.y + 20 * this.hpTotal;
+		this.hpLayer.x = this.collision.x + this.collision.width / 2;
+		this.hpLayer.y = this.collision.y + this.collision.height / 2;
 		this.ball.x = this.collision.x;
 		this.ball.y = this.collision.y;
 		this.hpDisplay.set_text(this.hp + "");
@@ -20073,7 +20074,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,__class__: states_GameOver
 });
-var states_GameState = function(character,level,aScore,aTime,playerChar) {
+var states_GameState = function(character,level,score,time,playerChar) {
 	this.added = false;
 	this.isDebug = false;
 	this.ballsAlive = 0;
@@ -20082,8 +20083,8 @@ var states_GameState = function(character,level,aScore,aTime,playerChar) {
 	this.allBallsHp = [];
 	com_framework_utils_State.call(this);
 	this.currentLevel = level;
-	this.time = aTime;
-	this.score = aScore;
+	this.time = time;
+	this.score = score;
 	this.playerChar = playerChar;
 	this.character = character;
 };
@@ -20136,13 +20137,13 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 				this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.currentLevel));
 			} else if(this.allBallsHp.length > 0) {
 				var hpMax = this.allBallsHp.pop();
-				var left = Math.floor(Math.random() * 2);
-				if(left < 1) {
-					left = -1;
+				var xSpeed = Math.floor(Math.random() * 2);
+				if(xSpeed < 1) {
+					xSpeed = -50 - this.currentLevel;
 				} else {
-					left = 1;
+					xSpeed = 50 + this.currentLevel;
 				}
-				var ball = new gameObjects_Ball(this.stage,Math.random() * 450 + 15,Math.random() * 200 + 15,left * 50,0,this.enemyCollisions,hpMax);
+				var ball = new gameObjects_Ball(this.stage,Math.random() * 450 + 15,Math.random() * 200 + 15,xSpeed,0,this.enemyCollisions,hpMax);
 				this.addChild(ball);
 				this.ballsAlive++;
 			}
@@ -20185,7 +20186,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character));
 	}
 	,levelCreator: function() {
-		haxe_Log.trace(this.allBalls.length,{ fileName : "states/GameState.hx", lineNumber : 174, className : "states.GameState", methodName : "levelCreator"});
+		haxe_Log.trace(this.allBalls.length,{ fileName : "states/GameState.hx", lineNumber : 178, className : "states.GameState", methodName : "levelCreator"});
 		var randomGenerator = -1;
 		var difficulty = this.currentLevel + this.currentLevel * 2;
 		var retry = true;
@@ -20195,7 +20196,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			--difficulty;
 			while(retry || randomGenerator < 0) {
 				randomGenerator = Math.floor(Math.random() * (this.allBallsHp.length + 1));
-				if(randomGenerator == this.allBallsHp.length || this.allBallsHp[randomGenerator] < 3) {
+				if(randomGenerator == this.allBallsHp.length || this.allBallsHp[randomGenerator] < 3 + this.currentLevel / 3) {
 					retry = false;
 				}
 			}
@@ -20295,6 +20296,10 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
+		if(com_framework_utils_Input.i.isKeyCodePressed(81)) {
+			this.selectedCharacter = "femalePlayer";
+			this.startGame();
+		}
 		if(com_framework_utils_Input.i.isKeyCodePressed(13) && !this.changeScreen) {
 			this.changeScreen = true;
 		}
