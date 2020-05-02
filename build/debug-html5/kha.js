@@ -5835,7 +5835,7 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.collision.x = x;
 	this.collision.y = y;
 	this.hpLayer = new com_gEngine_display_Layer();
-	this.hpDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+	this.hpDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 	this.hpDisplay.set_text(this.hp + "");
 	this.hpDisplay.setColorMultiply(0,0,0,1);
 	this.hpDisplay.x = -10;
@@ -6082,11 +6082,9 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		return this.gun.get_Damage();
 	}
 	,add_damage: function() {
-		haxe_Log.trace("damage added",{ fileName : "gameObjects/Player.hx", lineNumber : 143, className : "gameObjects.Player", methodName : "add_damage"});
 		this.gun.add_damage();
 	}
 	,add_speed: function() {
-		haxe_Log.trace("speed added",{ fileName : "gameObjects/Player.hx", lineNumber : 148, className : "gameObjects.Player", methodName : "add_speed"});
 		if(this.speed < 1000) {
 			this.speed += 50;
 		}
@@ -6105,11 +6103,14 @@ var gameObjects_PowerUp = function(x,y,powerUpCollision,layer) {
 	this.lifeTime = 10;
 	this.powerUpType = 0;
 	com_framework_utils_Entity.call(this);
-	this.powerUpType = Math.floor(Math.random() * 2);
-	if(this.powerUpType == 1) {
+	this.display = new com_gEngine_display_Sprite(kha_Assets.images.naviName);
+	this.powerUpType = Math.floor(Math.random() * 10);
+	if(this.powerUpType <= 8) {
 		this.more = true;
+		this.display.colorMultiplication(1,1,1,1);
 	} else {
 		this.more = false;
+		this.display.colorMultiplication(1,0.7,0.7,1);
 	}
 	this.collision = new com_collision_platformer_CollisionBox();
 	this.velocity = new kha_math_FastVector2();
@@ -6120,11 +6121,9 @@ var gameObjects_PowerUp = function(x,y,powerUpCollision,layer) {
 	this.collision.x = x;
 	this.collision.y = y;
 	powerUpCollision.add(this.collision);
-	this.display = new com_gEngine_display_Sprite(kha_Assets.images.naviName);
 	this.heyListen = new com_gEngine_display_Sprite(kha_Assets.images.hey_listenName);
 	this.heyListen.scaleX = 0.25;
 	this.heyListen.scaleY = 0.25;
-	this.display.colorMultiplication(1,1 - this.powerUpType / 2,1 - this.powerUpType / 2,1);
 	this.display.timeline.frameRate = 0.1;
 	this.display.timeline.playAnimation("Idle");
 	this.layer = layer;
@@ -6172,6 +6171,9 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 		if(this.collision.x <= 0) {
 			this.collision.x = 10;
+			if(this.velocity.x != 0) {
+				this.velocity.x *= -1;
+			}
 		}
 		this.display.x = this.collision.x;
 		this.display.y = this.collision.y;
@@ -7872,18 +7874,6 @@ var kha__$Assets_ImageList = function() {
 	this.naviDescription = { name : "navi", original_height : 50, file_sizes : [8819], original_width : 250, files : ["navi.png"], type : "image"};
 	this.naviName = "navi";
 	this.navi = null;
-	this.middle_ages_poster05Description = { name : "middle_ages_poster05", original_height : 720, file_sizes : [1081606], original_width : 1440, files : ["middle-ages_poster05.png"], type : "image"};
-	this.middle_ages_poster05 = null;
-	this.middle_ages_poster04Description = { name : "middle_ages_poster04", original_height : 720, file_sizes : [1349138], original_width : 1440, files : ["middle-ages_poster04.png"], type : "image"};
-	this.middle_ages_poster04 = null;
-	this.middle_ages_poster03Description = { name : "middle_ages_poster03", original_height : 720, file_sizes : [1011403], original_width : 1440, files : ["middle-ages_poster03.png"], type : "image"};
-	this.middle_ages_poster03 = null;
-	this.middle_ages_poster02Description = { name : "middle_ages_poster02", original_height : 720, file_sizes : [860631], original_width : 1440, files : ["middle-ages_poster02.png"], type : "image"};
-	this.middle_ages_poster02 = null;
-	this.middle_ages_poster01Description = { name : "middle_ages_poster01", original_height : 720, file_sizes : [944934], original_width : 1440, files : ["middle-ages_poster01.png"], type : "image"};
-	this.middle_ages_poster01 = null;
-	this.middle_ages_flagDescription = { name : "middle_ages_flag", original_height : 674, file_sizes : [545884], original_width : 674, files : ["middle-ages_flag.png"], type : "image"};
-	this.middle_ages_flag = null;
 	this.malePlayerDescription = { name : "malePlayer", original_height : 327, file_sizes : [33061], original_width : 381, files : ["malePlayer.png"], type : "image"};
 	this.malePlayer = null;
 	this.hey_listenDescription = { name : "hey_listen", original_height : 98, file_sizes : [10014], original_width : 221, files : ["hey listen.png"], type : "image"};
@@ -7902,8 +7892,6 @@ var kha__$Assets_ImageList = function() {
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrowName = "arrow";
 	this.arrow = null;
-	this._2stageCompleteDescription = { name : "_2stageComplete", original_height : 278, file_sizes : [10774], original_width : 512, files : ["2stageComplete.png"], type : "image"};
-	this._2stageComplete = null;
 	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [127442], original_width : 500, files : ["Antathaan.png"], type : "image"};
 	this.AntathaanName = "Antathaan";
 	this.Antathaan = null;
@@ -7935,12 +7923,14 @@ kha__$Assets_SoundList.prototype = {
 	,__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
+	this.www_dafontfree_net_urlDescription = { name : "www_dafontfree_net_url", file_sizes : [87], files : ["www.dafontfree.net.url"], type : "blob"};
+	this.www_dafontfree_net_url = null;
+	this.pixel_operator_8_zipDescription = { name : "pixel_operator_8_zip", file_sizes : [7331], files : ["pixel-operator-8.zip"], type : "blob"};
+	this.pixel_operator_8_zip = null;
 	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
 	this.malePlayer_xml = null;
 	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3359], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
-	this.ABSOLUTELY_VITAL_INFORMATION_txtDescription = { name : "ABSOLUTELY_VITAL_INFORMATION_txt", file_sizes : [995], files : ["ABSOLUTELY_VITAL_INFORMATION.txt"], type : "blob"};
-	this.ABSOLUTELY_VITAL_INFORMATION_txt = null;
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
 kha__$Assets_BlobList.__name__ = "kha._Assets.BlobList";
@@ -7952,13 +7942,13 @@ var kha__$Assets_FontList = function() {
 	this.mainfont = null;
 	this.SPIRI___Description = { name : "SPIRI___", file_sizes : [67896], files : ["SPIRI___.ttf"], type : "font"};
 	this.SPIRI___ = null;
-	this.MiddleAgesDeco_PERSONAL_USEDescription = { name : "MiddleAgesDeco_PERSONAL_USE", file_sizes : [595784], files : ["MiddleAgesDeco_PERSONAL_USE.ttf"], type : "font"};
-	this.MiddleAgesDeco_PERSONAL_USE = null;
+	this.PixelOperator8_BoldDescription = { name : "PixelOperator8_Bold", file_sizes : [18596], files : ["PixelOperator8-Bold.ttf"], type : "font"};
+	this.PixelOperator8_BoldName = "PixelOperator8_Bold";
+	this.PixelOperator8_Bold = null;
 	this.MiddleAgesDescription = { name : "MiddleAges", file_sizes : [130696], files : ["MiddleAges.ttf"], type : "font"};
 	this.MiddleAgesName = "MiddleAges";
 	this.MiddleAges = null;
 	this.Kenney_ThickDescription = { name : "Kenney_Thick", file_sizes : [9448], files : ["Kenney Thick.ttf"], type : "font"};
-	this.Kenney_ThickName = "Kenney_Thick";
 	this.Kenney_Thick = null;
 };
 $hxClasses["kha._Assets.FontList"] = kha__$Assets_FontList;
@@ -20888,7 +20878,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_ImageLoader("gameOver"));
 		atlas.add(new com_loading_basicResources_SparrowLoader(this.sprite,this.sprite + "_xml"));
-		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.PixelOperator8_BoldName,30));
 		resources.add(atlas);
 	}
 	,init: function() {
@@ -20905,8 +20895,8 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
 		image.y = 100;
 		this.stage.addChild(image);
-		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		var timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		var timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 		scoreDisplay.set_text("Your score is " + this.score);
 		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 - 7;
 		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2;
@@ -20962,7 +20952,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.forestName));
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.hey_listenName));
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.arrowName));
-		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.PixelOperator8_BoldName,30));
 		atlas.add(new com_loading_basicResources_SpriteSheetLoader(kha_Assets.images.naviName,50,47,0,[new com_loading_basicResources_Sequence("Idle",[0,1,2,3,4])]));
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.ballName));
 		resources.add(new com_loading_basicResources_SoundLoader(kha_Assets.sounds.fairyName));
@@ -20991,13 +20981,13 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.addChild(this.playerChar);
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
-		this.scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		this.scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2;
+		this.scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		this.scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - 105;
 		this.scoreDisplay.y = 30;
 		this.scoreDisplay.set_text("0");
 		this.hudLayer.addChild(this.scoreDisplay);
-		this.timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
-		this.timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - 60;
+		this.timeDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		this.timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - 75;
 		this.timeDisplay.y = 80;
 		this.hudLayer.addChild(this.timeDisplay);
 		this.allBalls = [];
@@ -21032,9 +21022,15 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.enemyCollisions.overlap(this.playerChar.gun.bulletsCollisions,$bind(this,this.ballVsBullet));
 		this.powerUpCollision.overlap(this.playerChar.collision,$bind(this,this.powerUpVsPlayer));
 		this.playerChar.collision.overlap(this.enemyCollisions,$bind(this,this.playerVsBall));
-		this.survivedTime = " " + (Math.floor(this.time / 60) + "m " + Math.floor(this.time) % 60 + "s");
+		this.survivedTime = Math.floor(this.time / 60) + ":" + Math.floor(this.time) % 60;
+		if(Math.floor(this.time) % 60 < 10) {
+			this.survivedTime = Math.floor(this.time / 60) + ":0" + Math.floor(this.time) % 60;
+		}
+		if(Math.floor(this.time / 60) < 10) {
+			this.survivedTime = "0" + this.survivedTime;
+		}
 		this.timeDisplay.set_text(this.survivedTime);
-		this.scoreDisplay.set_text(this.score + "");
+		this.scoreDisplay.set_text("Score: " + this.score);
 		if(com_framework_utils_Input.i.isKeyCodePressed(84)) {
 			this.isDebug = !this.isDebug;
 		}
@@ -21074,7 +21070,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,powerUpVsPlayer: function(aPowerUp,aPlayerChar) {
 		var powerUp = aPowerUp.userData;
-		if(powerUp.get_powerUpType() == 1) {
+		if(powerUp.get_powerUpType() > 8) {
 			this.playerChar.add_damage();
 		} else {
 			this.playerChar.add_speed();
@@ -21134,7 +21130,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.AntathaanName));
-		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.PixelOperator8_BoldName,30));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.MiddleAgesName,30));
 		atlas.add(new com_loading_basicResources_SpriteSheetLoader(kha_Assets.images.naviName,50,47,0,[new com_loading_basicResources_Sequence("Idle",[0,1,2,3,4])]));
 		resources.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.titleName));
@@ -21340,7 +21336,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_ImageLoader("stageComplete"));
 		atlas.add(new com_loading_basicResources_SparrowLoader(this.sprite,this.sprite + "_xml"));
-		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.Kenney_ThickName,30));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.PixelOperator8_BoldName,30));
 		resources.add(atlas);
 	}
 	,init: function() {
@@ -21359,7 +21355,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		image.scaleX = 0.5;
 		image.scaleY = 0.5;
 		this.stage.addChild(image);
-		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.Kenney_ThickName);
+		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 		scoreDisplay.set_text("Your score is " + this.score);
 		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 - 7;
 		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2;

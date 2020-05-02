@@ -51,10 +51,8 @@ class GameState extends State {
 		atlas.add(new ImageLoader(Assets.images.forestName));
 		atlas.add(new ImageLoader(Assets.images.hey_listenName));
 		atlas.add(new ImageLoader(Assets.images.arrowName));
-		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName, 30));
-		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47 , 0 , [
-			new Sequence("Idle", [0, 1, 2, 3, 4])
-		]));
+		atlas.add(new FontLoader(Assets.fonts.PixelOperator8_BoldName, 30));
+		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47, 0, [new Sequence("Idle", [0, 1, 2, 3, 4])]));
 		atlas.add(new ImageLoader(Assets.images.ballName));
 		resources.add(new SoundLoader(Assets.sounds.fairyName));
 		resources.add(new SoundLoader(Assets.sounds.heyListenName));
@@ -73,7 +71,7 @@ class GameState extends State {
 	var survivedTime:String;
 	var ballsAlive:Int = 0;
 	var allBalls:Array<Ball>;
-    var soundControll:SoundController = new SoundController();
+	var soundControll:SoundController = new SoundController();
 	var soundIcon:Sprite;
 
 	override function init() {
@@ -88,10 +86,10 @@ class GameState extends State {
 		stage.addChild(simulationLayer);
 
 		soundIcon = new Sprite(Assets.images.naviName);
-        soundIcon.x = 470;
-        soundIcon.y = 690;
-        soundIcon.scaleX = 1/2;
-        soundIcon.scaleY = 1/2;
+		soundIcon.x = 470;
+		soundIcon.y = 690;
+		soundIcon.scaleX = 1 / 2;
+		soundIcon.scaleY = 1 / 2;
 		simulationLayer.addChild(soundIcon);
 
 		var stats:Array<Float> = playerChar.get_Stats();
@@ -105,13 +103,13 @@ class GameState extends State {
 		hudLayer = new StaticLayer();
 		stage.addChild(hudLayer);
 
-		scoreDisplay = new Text(Assets.fonts.Kenney_ThickName);
-		scoreDisplay.x = GEngine.virtualWidth / 2;
+		scoreDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
+		scoreDisplay.x = GEngine.virtualWidth / 2 - 105;
 		scoreDisplay.y = 30;
 		scoreDisplay.text = "0";
 		hudLayer.addChild(scoreDisplay);
-		timeDisplay = new Text(Assets.fonts.Kenney_ThickName);
-		timeDisplay.x = GEngine.virtualWidth / 2 - (60);
+		timeDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
+		timeDisplay.x = GEngine.virtualWidth / 2 - 75;
 		timeDisplay.y = 80;
 		hudLayer.addChild(timeDisplay);
 		allBalls = new Array<Ball>();
@@ -123,12 +121,12 @@ class GameState extends State {
 
 	override function update(dt:Float) {
 		time += dt;
-        soundControll.soundControll(soundIcon);
+		soundControll.soundControll(soundIcon);
 		super.update(dt);
 		if ((ballsAlive == 0 || Math.floor(time) % 10 == 0) && !added) {
 			added = true;
 			if (allBallsHp.length == 0 && ballsAlive == 0) {
-				if(finish(dt)){
+				if (finish(dt)) {
 					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel));
 				}
 			} else {
@@ -145,9 +143,15 @@ class GameState extends State {
 		enemyCollisions.overlap(playerChar.gun.bulletsCollisions, ballVsBullet);
 		powerUpCollision.overlap(playerChar.collision, powerUpVsPlayer);
 		playerChar.collision.overlap(enemyCollisions, playerVsBall);
-		survivedTime = " " + (Math.floor(time / 60) + "m " + Math.floor(time) % 60 + "s");
+		survivedTime = (Math.floor(time / 60) + ":" + Math.floor(time) % 60);
+		if (Math.floor(time) % 60 < 10) {
+			survivedTime = (Math.floor(time / 60) + ":0" + Math.floor(time) % 60);
+		}
+		if (Math.floor(time / 60) < 10) {
+			survivedTime = "0" + survivedTime;
+		}
 		timeDisplay.text = survivedTime;
-		scoreDisplay.text = score + "";
+		scoreDisplay.text = "Score: " + score;
 		if (Input.i.isKeyCodePressed(KeyCode.T)) {
 			isDebug = !isDebug;
 		}
@@ -156,8 +160,8 @@ class GameState extends State {
 		}
 	}
 
-
 	var luckHelper:Int = 0;
+
 	function ballVsBullet(aBall:ICollider, aBullet:ICollider) {
 		var ball:Ball = (cast aBall.userData);
 		ball.damage(playerChar.get_damage());
@@ -200,7 +204,7 @@ class GameState extends State {
 
 	function powerUpVsPlayer(aPowerUp:ICollider, aPlayerChar:ICollider) {
 		var powerUp:PowerUp = (cast aPowerUp.userData);
-		if (powerUp.get_powerUpType() == 1 ){
+		if (powerUp.get_powerUpType() > 8) {
 			playerChar.add_damage();
 		} else {
 			playerChar.add_speed();
@@ -245,7 +249,8 @@ class GameState extends State {
 		GGD.destroy();
 	}
 
-	var timeToFinish:Float = 3; 
+	var timeToFinish:Float = 3;
+
 	function finish(dt:Float):Bool {
 		timeToFinish -= dt;
 		return timeToFinish <= 0;

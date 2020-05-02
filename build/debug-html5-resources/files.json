@@ -1,16 +1,6 @@
 {
 	"files": [
 		{
-			"name": "ABSOLUTELY_VITAL_INFORMATION_txt",
-			"files": [
-				"ABSOLUTELY_VITAL_INFORMATION.txt"
-			],
-			"file_sizes": [
-				995
-			],
-			"type": "blob"
-		},
-		{
 			"name": "Antathaan",
 			"files": [
 				"Antathaan.png"
@@ -73,12 +63,12 @@
 			"type": "font"
 		},
 		{
-			"name": "MiddleAgesDeco_PERSONAL_USE",
+			"name": "PixelOperator8_Bold",
 			"files": [
-				"MiddleAgesDeco_PERSONAL_USE.ttf"
+				"PixelOperator8-Bold.ttf"
 			],
 			"file_sizes": [
-				595784
+				18596
 			],
 			"type": "font"
 		},
@@ -91,18 +81,6 @@
 				67896
 			],
 			"type": "font"
-		},
-		{
-			"name": "_2stageComplete",
-			"files": [
-				"2stageComplete.png"
-			],
-			"file_sizes": [
-				10774
-			],
-			"type": "image",
-			"original_width": 512,
-			"original_height": 278
 		},
 		{
 			"name": "alpha_vert",
@@ -819,78 +797,6 @@
 			]
 		},
 		{
-			"name": "middle_ages_flag",
-			"files": [
-				"middle-ages_flag.png"
-			],
-			"file_sizes": [
-				545884
-			],
-			"type": "image",
-			"original_width": 674,
-			"original_height": 674
-		},
-		{
-			"name": "middle_ages_poster01",
-			"files": [
-				"middle-ages_poster01.png"
-			],
-			"file_sizes": [
-				944934
-			],
-			"type": "image",
-			"original_width": 1440,
-			"original_height": 720
-		},
-		{
-			"name": "middle_ages_poster02",
-			"files": [
-				"middle-ages_poster02.png"
-			],
-			"file_sizes": [
-				860631
-			],
-			"type": "image",
-			"original_width": 1440,
-			"original_height": 720
-		},
-		{
-			"name": "middle_ages_poster03",
-			"files": [
-				"middle-ages_poster03.png"
-			],
-			"file_sizes": [
-				1011403
-			],
-			"type": "image",
-			"original_width": 1440,
-			"original_height": 720
-		},
-		{
-			"name": "middle_ages_poster04",
-			"files": [
-				"middle-ages_poster04.png"
-			],
-			"file_sizes": [
-				1349138
-			],
-			"type": "image",
-			"original_width": 1440,
-			"original_height": 720
-		},
-		{
-			"name": "middle_ages_poster05",
-			"files": [
-				"middle-ages_poster05.png"
-			],
-			"file_sizes": [
-				1081606
-			],
-			"type": "image",
-			"original_width": 1440,
-			"original_height": 720
-		},
-		{
 			"name": "mirage_frag",
 			"files": [
 				"mirage.frag.essl",
@@ -1448,6 +1354,16 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "pixel_operator_8_zip",
+			"files": [
+				"pixel-operator-8.zip"
+			],
+			"file_sizes": [
+				7331
+			],
+			"type": "blob"
 		},
 		{
 			"name": "renderAreaTint_frag",
@@ -2282,6 +2198,16 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "www_dafontfree_net_url",
+			"files": [
+				"www.dafontfree.net.url"
+			],
+			"file_sizes": [
+				87
+			],
+			"type": "blob"
 		}
 	]
 }

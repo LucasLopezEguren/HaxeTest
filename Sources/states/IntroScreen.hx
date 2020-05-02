@@ -28,7 +28,7 @@ class IntroScreen extends State {
 		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
 		atlas.add(new SparrowLoader("malePlayer", "malePlayer_xml"));
         atlas.add(new ImageLoader(Assets.images.AntathaanName));
-        atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName, 30));
+        atlas.add(new FontLoader(Assets.fonts.PixelOperator8_BoldName, 30));
         atlas.add(new FontLoader(Assets.fonts.MiddleAgesName, 30));
         atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47 , 0 , [
 			new Sequence("Idle", [0, 1, 2, 3, 4])

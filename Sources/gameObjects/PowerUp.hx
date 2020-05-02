@@ -29,11 +29,14 @@ class PowerUp extends Entity {
 
 	public function new(x:Float, y:Float, powerUpCollision:CollisionGroup, layer:Layer) {
 		super();
-		powerUpType = Math.floor(Math.random() * 2);
-        if (powerUpType == 1 ){
+		display = new Sprite(Assets.images.naviName);
+		powerUpType = Math.floor(Math.random() * 10);
+        if (powerUpType <= 8 ){
             more = true;
+			display.colorMultiplication(1, 1, 1, 1);
 		} else {
             more = false;
+			display.colorMultiplication(1, 0.7, 0.7, 1);
 		}
 
 		collision = new CollisionBox();
@@ -46,11 +49,11 @@ class PowerUp extends Entity {
 		collision.y = y;
 		powerUpCollision.add(collision);
 
-		display = new Sprite(Assets.images.naviName);
+		
 		heyListen = new Sprite(Assets.images.hey_listenName);
         heyListen.scaleX = 1/4;
         heyListen.scaleY = 1/4;
-		display.colorMultiplication(1, 1 - (powerUpType / 2), 1 - (powerUpType / 2), 1);
+		
 		display.timeline.frameRate = 1 / 10;
         display.timeline.playAnimation("Idle");
         this.layer = layer;
@@ -98,6 +101,9 @@ class PowerUp extends Entity {
         }
         if (collision.x <= 0){
             collision.x = 10;
+			if (velocity.x != 0) {
+				velocity.x *= -1;
+			}
         }
 		display.x = collision.x;
 		display.y = collision.y;

@@ -140,12 +140,10 @@ class Player extends Entity {
 	}
 
 	public function add_damage() {
-		trace("damage added");
 		gun.add_damage();
 	}
 
 	public function add_speed() {
-		trace("speed added");
 		if ( speed < 1000){
 			speed += 50;
 		} 

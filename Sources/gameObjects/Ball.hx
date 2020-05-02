@@ -70,7 +70,7 @@ class Ball extends Entity {
 		collision.x = x;
 		collision.y = y;
 		hpLayer = new Layer();
-		hpDisplay = new Text(Assets.fonts.Kenney_ThickName);
+		hpDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
 		hpDisplay.text = hp + "";
 		hpDisplay.setColorMultiply(0, 0, 0, 1);
 		hpDisplay.x = -10;

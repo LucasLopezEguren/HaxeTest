@@ -33,7 +33,7 @@ class GameOver extends State {
         var atlas:JoinAtlas = new JoinAtlas(1024,1024);
         atlas.add(new ImageLoader("gameOver"));
 		atlas.add(new SparrowLoader(sprite, sprite+"_xml"));
-        atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName,30));
+        atlas.add(new FontLoader(Assets.fonts.PixelOperator8_BoldName,30));
         resources.add(atlas);
     }
 
@@ -51,8 +51,8 @@ class GameOver extends State {
         image.x = GEngine.virtualWidth * 0.5 - image.width() * 0.5;
         image.y = 100;
         stage.addChild(image);
-        var scoreDisplay = new Text(Assets.fonts.Kenney_ThickName);
-        var timeDisplay = new Text(Assets.fonts.Kenney_ThickName);
+        var scoreDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
+        var timeDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
         scoreDisplay.text = "Your score is " + score;
         scoreDisplay.x = (GEngine.virtualWidth/2-scoreDisplay.width()*0.5)-7;
         scoreDisplay.y = GEngine.virtualHeight/2;
