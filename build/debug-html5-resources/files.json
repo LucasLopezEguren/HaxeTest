@@ -1,6 +1,16 @@
 {
 	"files": [
 		{
+			"name": "ABSOLUTELY_VITAL_INFORMATION_txt",
+			"files": [
+				"ABSOLUTELY_VITAL_INFORMATION.txt"
+			],
+			"file_sizes": [
+				995
+			],
+			"type": "blob"
+		},
+		{
 			"name": "Antathaan",
 			"files": [
 				"Antathaan.png"
@@ -53,14 +63,24 @@
 			"type": "font"
 		},
 		{
-			"name": "Khazix",
+			"name": "MiddleAges",
 			"files": [
-				"Khazix.ogg"
+				"MiddleAges.ttf"
 			],
 			"file_sizes": [
-				1504800
+				130696
 			],
-			"type": "sound"
+			"type": "font"
+		},
+		{
+			"name": "MiddleAgesDeco_PERSONAL_USE",
+			"files": [
+				"MiddleAgesDeco_PERSONAL_USE.ttf"
+			],
+			"file_sizes": [
+				595784
+			],
+			"type": "font"
 		},
 		{
 			"name": "SPIRI___",
@@ -71,6 +91,18 @@
 				67896
 			],
 			"type": "font"
+		},
+		{
+			"name": "_2stageComplete",
+			"files": [
+				"2stageComplete.png"
+			],
+			"file_sizes": [
+				10774
+			],
+			"type": "image",
+			"original_width": 512,
+			"original_height": 278
 		},
 		{
 			"name": "alpha_vert",
@@ -151,6 +183,16 @@
 			"type": "image",
 			"original_width": 19,
 			"original_height": 67
+		},
+		{
+			"name": "background",
+			"files": [
+				"background.ogg"
+			],
+			"file_sizes": [
+				2443714
+			],
+			"type": "sound"
 		},
 		{
 			"name": "ball",
@@ -251,6 +293,16 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "fairy",
+			"files": [
+				"fairy.ogg"
+			],
+			"file_sizes": [
+				12858
+			],
+			"type": "sound"
 		},
 		{
 			"name": "femalePlayer",
@@ -491,6 +543,28 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "heyListen",
+			"files": [
+				"heyListen.ogg"
+			],
+			"file_sizes": [
+				14925
+			],
+			"type": "sound"
+		},
+		{
+			"name": "hey_listen",
+			"files": [
+				"hey listen.png"
+			],
+			"file_sizes": [
+				10014
+			],
+			"type": "image",
+			"original_width": 221,
+			"original_height": 98
 		},
 		{
 			"name": "mainfont",
@@ -745,6 +819,78 @@
 			]
 		},
 		{
+			"name": "middle_ages_flag",
+			"files": [
+				"middle-ages_flag.png"
+			],
+			"file_sizes": [
+				545884
+			],
+			"type": "image",
+			"original_width": 674,
+			"original_height": 674
+		},
+		{
+			"name": "middle_ages_poster01",
+			"files": [
+				"middle-ages_poster01.png"
+			],
+			"file_sizes": [
+				944934
+			],
+			"type": "image",
+			"original_width": 1440,
+			"original_height": 720
+		},
+		{
+			"name": "middle_ages_poster02",
+			"files": [
+				"middle-ages_poster02.png"
+			],
+			"file_sizes": [
+				860631
+			],
+			"type": "image",
+			"original_width": 1440,
+			"original_height": 720
+		},
+		{
+			"name": "middle_ages_poster03",
+			"files": [
+				"middle-ages_poster03.png"
+			],
+			"file_sizes": [
+				1011403
+			],
+			"type": "image",
+			"original_width": 1440,
+			"original_height": 720
+		},
+		{
+			"name": "middle_ages_poster04",
+			"files": [
+				"middle-ages_poster04.png"
+			],
+			"file_sizes": [
+				1349138
+			],
+			"type": "image",
+			"original_width": 1440,
+			"original_height": 720
+		},
+		{
+			"name": "middle_ages_poster05",
+			"files": [
+				"middle-ages_poster05.png"
+			],
+			"file_sizes": [
+				1081606
+			],
+			"type": "image",
+			"original_width": 1440,
+			"original_height": 720
+		},
+		{
 			"name": "mirage_frag",
 			"files": [
 				"mirage.frag.essl",
@@ -845,6 +991,18 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "navi",
+			"files": [
+				"navi.png"
+			],
+			"file_sizes": [
+				8819
+			],
+			"type": "image",
+			"original_width": 250,
+			"original_height": 50
 		},
 		{
 			"name": "outline_frag",
@@ -2012,6 +2170,30 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "stageComplete",
+			"files": [
+				"stageComplete.png"
+			],
+			"file_sizes": [
+				83563
+			],
+			"type": "image",
+			"original_width": 942,
+			"original_height": 382
+		},
+		{
+			"name": "title",
+			"files": [
+				"title.png"
+			],
+			"file_sizes": [
+				573485
+			],
+			"type": "image",
+			"original_width": 1012,
+			"original_height": 363
 		},
 		{
 			"name": "vBlurVertexShader_vert",

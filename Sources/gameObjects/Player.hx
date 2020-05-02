@@ -9,32 +9,31 @@ import com.gEngine.display.Sprite;
 import kha.math.FastVector2;
 import com.framework.utils.Entity;
 
-
 /* @author Lucas */
-class Player extends Entity 
-{
-	private var SPEED:Float = 250;
-	
+class Player extends Entity {
+	private var speed:Float = 250;
+
 	public var gun:Gun;
+
 	var direction:FastVector2;
+
 	public var display:Sprite;
 	public var collision:CollisionBox;
-	public var x(get,null):Float;
-	public var y(get,null):Float;
-	public var width(get,null):Float;
-	public var height(get,null):Float;
+	public var x(get, null):Float;
+	public var y(get, null):Float;
+	public var width(get, null):Float;
+	public var height(get, null):Float;
 
-	public function new(X:Float, Y:Float, sprite:String) 
-	{
+	public function new(X:Float, Y:Float, sprite:String) {
 		super();
-		direction = new FastVector2(0,1);
+		direction = new FastVector2(0, 1);
 		display = new Sprite(sprite);
 		gun = new Gun();
 		addChild(gun);
 		display.timeline.playAnimation("idle");
 		display.x = X;
 		display.y = Y;
-		display.timeline.frameRate = 1/10;
+		display.timeline.frameRate = 1 / 10;
 		collision = new CollisionBox();
 		collision.userData = this;
 		collision.width = 31;
@@ -45,62 +44,64 @@ class Player extends Entity
 		display.offsetY = -15;
 	}
 
-	public function startPlayer(layer:Layer, stats:Array<Float>){
+	public function startPlayer(layer:Layer, stats:Array<Float>) {
 		setStats(stats);
 		layer.addChild(display);
 	}
 
-	public function setStats(stats:Array<Float>){
-		SPEED = stats[0];
+	public function setStats(stats:Array<Float>) {
+		speed = stats[0];
 		gun.set_damage(Math.ceil(stats[1]));
 	}
-	
-	override function update(dt:Float ):Void
-	{
-		if (isDead()){
+
+	override function update(dt:Float):Void {
+		if (isDead()) {
 			return;
 		}
 		collision.update(dt);
 		super.update(dt);
 		collision.velocityX = 0;
 		collision.velocityY = 0;
-		movement(collision, SPEED);
-		if(Input.i.isKeyCodePressed(KeyCode.A)){
-			gun.shoot(x,y-height*0.75,0,-1);
+		movement(collision, speed);
+		if (Input.i.isKeyCodePressed(KeyCode.A)) {
+			gun.shoot(x, y - height * 0.75, 0, -1);
 			display.offsetY = -15;
-			display.timeline.playAnimation("attack_",false);
+			display.timeline.playAnimation("attack_", false);
 		}
 	}
 
-	function movement(collision:CollisionBox,SPEED:Float){
+	function movement(collision:CollisionBox, speed:Float) {
 		display.offsetY = -5;
-		if(Input.i.isKeyCodeDown(KeyCode.Left)){
+		if (Input.i.isKeyCodeDown(KeyCode.Left)) {
 			if (collision.x > 0) {
-				collision.velocityX = -SPEED;
+				collision.velocityX = -speed;
 			}
 		}
-		if(Input.i.isKeyCodeDown(KeyCode.Right)){
+		if (Input.i.isKeyCodeDown(KeyCode.Right)) {
 			if (collision.x < 500 - collision.width) {
-				collision.velocityX = SPEED;
+				collision.velocityX = speed;
 			}
 		}
 	}
 
-	public function get_x():Float{
-		return collision.x+collision.width*0.5;
+	public function get_x():Float {
+		return collision.x + collision.width * 0.5;
 	}
-	public function get_y():Float{
-		return collision.y+collision.height;
+
+	public function get_y():Float {
+		return collision.y + collision.height;
 	}
-	public function get_width():Float{
+
+	public function get_width():Float {
 		return collision.width;
 	}
-	public function get_height():Float{
+
+	public function get_height():Float {
 		return collision.height;
 	}
 
 	override public function die() {
-		if(!dead) {
+		if (!dead) {
 			display.scaleX = 3;
 			display.scaleY = 3;
 			display.timeline.playAnimation("death_", false);
@@ -109,28 +110,28 @@ class Player extends Entity
 		collision.removeFromParent();
 		super.die();
 	}
-	
+
 	override function render() {
 		super.render();
 		display.x = collision.x;
 		display.y = collision.y;
-		if (display.timeline.currentAnimation == "death_"){ 
+		if (display.timeline.currentAnimation == "death_") {
 			return;
 		}
-		if(!display.timeline.isComplete() && display.timeline.currentAnimation == "attack_"){
+		if (!display.timeline.isComplete() && display.timeline.currentAnimation == "attack_") {
 			display.offsetY = -15;
 			return;
 		}
-		if(collision.velocityX != 0){
+		if (collision.velocityX != 0) {
 			display.timeline.playAnimation("walk_");
 		}
-		if(collision.velocityX == 0){
+		if (collision.velocityX == 0) {
 			display.offsetY = -15;
 			display.timeline.playAnimation("idle");
 		}
-		if(Input.i.isKeyCodePressed(KeyCode.A)){
+		if (Input.i.isKeyCodePressed(KeyCode.A)) {
 			display.offsetY = -15;
-			display.timeline.playAnimation("attack_",false);
+			display.timeline.playAnimation("attack_", false);
 		}
 	}
 
@@ -139,12 +140,20 @@ class Player extends Entity
 	}
 
 	public function add_damage() {
+		trace("damage added");
 		gun.add_damage();
 	}
 
-	public function get_Stats():Array<Float>{
+	public function add_speed() {
+		trace("speed added");
+		if ( speed < 1000){
+			speed += 50;
+		} 
+	}
+
+	public function get_Stats():Array<Float> {
 		var toReturn:Array<Float> = new Array<Float>();
-		toReturn[0] = SPEED;
+		toReturn[0] = speed;
 		toReturn[1] = gun.get_Damage();
 		return toReturn;
 	}

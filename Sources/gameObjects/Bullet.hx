@@ -8,15 +8,14 @@ import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
 /* @author Lucas */
-class Bullet extends Entity
-{
+class Bullet extends Entity {
 	public var collision:CollisionBox;
-	var display:Sprite;
-	var lifeTime:Float=1;
-	var currentTime:Float=0;
 
-	public function new() 
-	{
+	var display:Sprite;
+	var lifeTime:Float = 1;
+	var currentTime:Float = 0;
+
+	public function new() {
 		super();
 		collision = new CollisionBox();
 		collision.width = 5;
@@ -24,8 +23,8 @@ class Bullet extends Entity
 		collision.userData = this;
 
 		display = new Sprite("arrow");
-		display.scaleX = 1/2;
-		display.scaleY = 1/2;
+		display.scaleX = 1 / 2;
+		display.scaleY = 1 / 2;
 	}
 
 	override function die() {
@@ -39,7 +38,7 @@ class Bullet extends Entity
 	}
 
 	override function update(dt:Float) {
-		currentTime+=dt;
+		currentTime += dt;
 		super.update(dt);
 		collision.update(dt);
 		display.x = collision.x;
@@ -48,8 +47,8 @@ class Bullet extends Entity
 			die();
 		}
 	}
-	public function shoot(x:Float, y:Float,dirX:Float,dirY:Float,bulletsCollision:CollisionGroup):Void
-	{
+
+	public function shoot(x:Float, y:Float, dirX:Float, dirY:Float, bulletsCollision:CollisionGroup):Void {
 		currentTime = 0;
 		collision.x = x;
 		collision.y = y;

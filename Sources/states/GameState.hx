@@ -1,6 +1,9 @@
 package states;
 
+import com.gEngine.display.Sprite;
+import com.loading.basicResources.TilesheetLoader;
 import com.soundLib.SoundManager.SM;
+import gameObjects.SoundController;
 import com.loading.basicResources.SoundLoader;
 import levelObjects.LoopBackground;
 import kha.Color;
@@ -20,11 +23,13 @@ import kha.input.KeyCode;
 import com.framework.utils.Input;
 import com.gEngine.display.Layer;
 import gameObjects.Player;
+import gameObjects.PowerUp;
 import com.loading.basicResources.JoinAtlas;
 import com.loading.basicResources.SparrowLoader;
 import com.loading.Resources;
 import com.framework.utils.State;
 import com.gEngine.display.StaticLayer;
+import com.loading.basicResources.SpriteSheetLoader;
 
 class GameState extends State {
 	var character:String;
@@ -43,17 +48,23 @@ class GameState extends State {
 	override function load(resources:Resources) {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
 		atlas.add(new SparrowLoader(character, character + "_xml"));
-		atlas.add(new ImageLoader("forest"));
-		atlas.add(new ImageLoader("arrow"));
+		atlas.add(new ImageLoader(Assets.images.forestName));
+		atlas.add(new ImageLoader(Assets.images.hey_listenName));
+		atlas.add(new ImageLoader(Assets.images.arrowName));
 		atlas.add(new FontLoader(Assets.fonts.Kenney_ThickName, 30));
-		atlas.add(new ImageLoader("ball"));
+		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47 , 0 , [
+			new Sequence("Idle", [0, 1, 2, 3, 4])
+		]));
+		atlas.add(new ImageLoader(Assets.images.ballName));
+		resources.add(new SoundLoader(Assets.sounds.fairyName));
+		resources.add(new SoundLoader(Assets.sounds.heyListenName));
 		resources.add(atlas);
-		// resources.add(new SoundLoader("Khazix"));
 	}
 
 	var playerChar:Player;
 	var simulationLayer:Layer;
 	var enemyCollisions:CollisionGroup;
+	var powerUpCollision:CollisionGroup;
 	var scoreDisplay:Text;
 	var timeDisplay:Text;
 	var score:Int = 0;
@@ -62,10 +73,12 @@ class GameState extends State {
 	var survivedTime:String;
 	var ballsAlive:Int = 0;
 	var allBalls:Array<Ball>;
+    var soundControll:SoundController = new SoundController();
+	var soundIcon:Sprite;
 
 	override function init() {
 		enemyCollisions = new CollisionGroup();
-		// SM.playMusic("Khazix");
+		powerUpCollision = new CollisionGroup();
 
 		var groundLayer = new Layer();
 		addChild(new LoopBackground("forest", groundLayer, stage.defaultCamera()));
@@ -73,6 +86,13 @@ class GameState extends State {
 
 		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
+
+		soundIcon = new Sprite(Assets.images.naviName);
+        soundIcon.x = 470;
+        soundIcon.y = 690;
+        soundIcon.scaleX = 1/2;
+        soundIcon.scaleY = 1/2;
+		simulationLayer.addChild(soundIcon);
 
 		var stats:Array<Float> = playerChar.get_Stats();
 		playerChar = new Player(250, 650, character);
@@ -103,11 +123,14 @@ class GameState extends State {
 
 	override function update(dt:Float) {
 		time += dt;
+        soundControll.soundControll(soundIcon);
 		super.update(dt);
 		if ((ballsAlive == 0 || Math.floor(time) % 10 == 0) && !added) {
 			added = true;
 			if (allBallsHp.length == 0 && ballsAlive == 0) {
-				changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel));
+				if(finish(dt)){
+					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel));
+				}
 			} else {
 				if (allBallsHp.length > 0) {
 					var ball = ballCreator(allBallsHp.pop());
@@ -120,6 +143,7 @@ class GameState extends State {
 			added = false;
 		}
 		enemyCollisions.overlap(playerChar.gun.bulletsCollisions, ballVsBullet);
+		powerUpCollision.overlap(playerChar.collision, powerUpVsPlayer);
 		playerChar.collision.overlap(enemyCollisions, playerVsBall);
 		survivedTime = " " + (Math.floor(time / 60) + "m " + Math.floor(time) % 60 + "s");
 		timeDisplay.text = survivedTime;
@@ -132,10 +156,20 @@ class GameState extends State {
 		}
 	}
 
+
+	var luckHelper:Int = 0;
 	function ballVsBullet(aBall:ICollider, aBullet:ICollider) {
 		var ball:Ball = (cast aBall.userData);
 		ball.damage(playerChar.get_damage());
 		if (ball.get_hp() <= 0) {
+			var dropChance:Int = Math.floor(Math.random() * 4);
+			if (dropChance + luckHelper >= 3) {
+				var powerUp:PowerUp = new PowerUp(ball.get_x(), ball.get_y(), powerUpCollision, simulationLayer);
+				addChild(powerUp);
+				luckHelper = 0;
+			} else {
+				luckHelper++;
+			}
 			score = score + ball.get_hpTotal();
 			if (ball.get_hpTotal() <= 1) {
 				ballsAlive = ballsAlive - 1;
@@ -164,6 +198,16 @@ class GameState extends State {
 		changeState(new GameOver("" + score, survivedTime, character));
 	}
 
+	function powerUpVsPlayer(aPowerUp:ICollider, aPlayerChar:ICollider) {
+		var powerUp:PowerUp = (cast aPowerUp.userData);
+		if (powerUp.get_powerUpType() == 1 ){
+			playerChar.add_damage();
+		} else {
+			playerChar.add_speed();
+		}
+		powerUp.die();
+	}
+
 	inline function ballCreator(hpMax:Int):Ball {
 		var xSpeed:Int = Math.floor(Math.random() * 2);
 		if (xSpeed < 1) {
@@ -175,7 +219,6 @@ class GameState extends State {
 	}
 
 	function levelCreator() {
-		trace(allBalls.length);
 		var randomGenerator:Int = -1;
 		var difficulty:Int = (currentLevel + (currentLevel * 2));
 		var retry:Bool = true;
@@ -185,7 +228,7 @@ class GameState extends State {
 			difficulty--;
 			while (retry || randomGenerator < 0) {
 				randomGenerator = Math.floor(Math.random() * (allBallsHp.length + 1));
-				if (randomGenerator == allBallsHp.length || allBallsHp[randomGenerator] < (3 + (currentLevel / 3))) {
+				if (randomGenerator == allBallsHp.length || allBallsHp[randomGenerator] < (3 + Math.floor((currentLevel / 3)))) {
 					retry = false;
 				}
 			}
@@ -202,9 +245,15 @@ class GameState extends State {
 		GGD.destroy();
 	}
 
+	var timeToFinish:Float = 3; 
+	function finish(dt:Float):Bool {
+		timeToFinish -= dt;
+		return timeToFinish <= 0;
+	}
+
 	override function draw(framebuffer:Canvas) {
 		super.draw(framebuffer);
 		framebuffer.g2.color = Color.Yellow;
-		CollisionEngine.renderDebug(framebuffer);
+		CollisionEngine.renderDebug(framebuffer, stage.defaultCamera());
 	}
 }

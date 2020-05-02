@@ -1,54 +1,120 @@
 package gameObjects;
 
+import kha.Assets;
+import com.soundLib.SoundManager.SM;
+import com.loading.basicResources.SoundLoader;
+import com.gEngine.display.Layer;
+import kha.math.FastVector2;
 import com.gEngine.display.Sprite;
+import com.gEngine.GEngine;
 import com.collision.platformer.CollisionGroup;
-import GlobalGameData.GGD;
-import com.gEngine.helper.RectangleDisplay;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
 /* @author Lucas */
 class PowerUp extends Entity {
-	
+	private static inline var gravity = 200;
+
 	public var collision:CollisionBox;
-	var display:RectangleDisplay;
-	var lifeTime:Float=1;
-	var currentTime:Float=0;
 
-	public function new() 
-	{
+	var velocity:FastVector2;
+	var display:Sprite;
+	var heyListen:Sprite;
+	var powerUpType:Int = 0;
+	var lifeTime:Float = 10;
+	var currentTime:Float = 0;
+    var more:Bool;
+    var startedX:Float;
+    var layer:Layer;
+
+	public function new(x:Float, y:Float, powerUpCollision:CollisionGroup, layer:Layer) {
 		super();
+		powerUpType = Math.floor(Math.random() * 2);
+        if (powerUpType == 1 ){
+            more = true;
+		} else {
+            more = false;
+		}
+
 		collision = new CollisionBox();
-		collision.width = 5;
-		collision.height = 5;
+		velocity = new FastVector2();
+		collision.width = 25;
+		collision.height = 25;
 		collision.userData = this;
+        startedX = x;
+		collision.x = x;
+		collision.y = y;
+		powerUpCollision.add(collision);
 
-		collision.userData=this;
-
-		display = new RectangleDisplay();
-		display.setColor(255,0,0);
-		display.scaleX=5;
-		display.scaleY=5;
+		display = new Sprite(Assets.images.naviName);
+		heyListen = new Sprite(Assets.images.hey_listenName);
+        heyListen.scaleX = 1/4;
+        heyListen.scaleY = 1/4;
+		display.colorMultiplication(1, 1 - (powerUpType / 2), 1 - (powerUpType / 2), 1);
+		display.timeline.frameRate = 1 / 10;
+        display.timeline.playAnimation("Idle");
+        this.layer = layer;
+		this.layer.addChild(display);
+        SM.playFx(Assets.sounds.fairyName, false);
 	}
 
 	override function die() {
 		super.die();
-		limboStart();
-	}
-
-	override function limboStart() {
 		display.removeFromParent();
+        heyListen.removeFromParent();
 		collision.removeFromParent();
 	}
 
+	public function get_powerUpType():Int {
+		return powerUpType;
+	}
+
+    var soundPlayed:Bool = false;
 	override function update(dt:Float) {
-		currentTime+=dt;
-		super.update(dt);
 		collision.update(dt);
-		display.x = collision.x;
-		display.y = collision.y;
+		super.update(dt);
+		currentTime += dt;
+        if (collision.x <= startedX - 20 || collision.x >= startedX + 20) {
+                more = !more;
+            }
+            if (more) {
+                velocity.x = 100;
+            } else {
+                velocity.x = -100;
+            }
 		if (currentTime >= lifeTime) {
 			die();
 		}
+		velocity.y += gravity * dt;
+		if (collision.y + collision.height >= 690 && velocity.y > 0) {
+			velocity.y = 0;
+			velocity.x = 0;
+		}
+		collision.y += velocity.y * dt;
+		collision.velocityY = velocity.y;
+		collision.velocityX = velocity.x;
+        if (collision.x >= GEngine.virtualWidth){
+            collision.x = GEngine.virtualWidth - 10;
+        }
+        if (collision.x <= 0){
+            collision.x = 10;
+        }
+		display.x = collision.x;
+		display.y = collision.y;
+        if (currentTime % 2 < 1 && velocity.y == 0 && !soundPlayed) {
+            soundPlayed = true;
+            heyListen.y = display.y - 10;
+            heyListen.x = display.x - 15;
+            layer.addChild(heyListen);
+            SM.playFx(Assets.sounds.heyListenName , false);
+        }
+        if (currentTime % 2 >= 1 && velocity.y == 0 && soundPlayed) {
+            soundPlayed = false;
+            heyListen.removeFromParent();
+        }
+	}
+
+	override function render() {
+		super.render();
 	}
 }

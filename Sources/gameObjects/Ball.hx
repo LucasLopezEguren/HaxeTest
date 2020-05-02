@@ -18,27 +18,23 @@ import com.collision.platformer.CollisionBox;
 import com.collision.platformer.CollisionEngine;
 import com.loading.basicResources.ImageLoader;
 import com.loading.Resources;
+import gameObjects.PowerUp;
 import com.framework.utils.State;
 
 class Ball extends Entity {
-	var screenWidth:Int;
-	var screenHeight:Int;
 
+	private static inline var GRAVITY:Float = 500;
 	private static inline var RADIO = 20;
 
 	var ball:Sprite;
 	var velocity:FastVector2;
-
-	private static inline var gravity:Float = 500;
-
+	var screenWidth:Int;
+	var screenHeight:Int;
+	var collisionGroup:CollisionGroup;
 	public var colorRed:Float;
 	public var colorGreen:Float;
 	public var colorBlue:Float;
-
-	var collisionGroup:CollisionGroup;
-
 	public var collision:CollisionBox;
-
 	var hp:Int;
 	var hpTotal:Int;
 	var hpLayer:Layer;
@@ -53,8 +49,8 @@ class Ball extends Entity {
 		screenHeight = GEngine.i.height;
 		ball = new Sprite("ball");
         var size = Math.random();
-		ball.scaleX = size * (maxHp % 4) + 1;
-		ball.scaleY = size * (maxHp % 4) + 1;
+		ball.scaleX = size * (maxHp % 3) + 1;
+		ball.scaleY = size * (maxHp % 3) + 1;
 		var ballLayer = new Layer();
 		ballLayer.addChild(ball);
 		velocity = new FastVector2(spdX, spdY);
@@ -89,7 +85,7 @@ class Ball extends Entity {
 		collision.update(dt);
 		super.update(dt);
 		time += dt;
-		velocity.y += gravity * dt;
+		velocity.y += GRAVITY * dt;
 		if (collision.x < 0 || collision.x + collision.width > screenWidth) {
 			velocity.x *= -1;
 		}
