@@ -7923,10 +7923,6 @@ kha__$Assets_SoundList.prototype = {
 	,__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
-	this.www_dafontfree_net_urlDescription = { name : "www_dafontfree_net_url", file_sizes : [87], files : ["www.dafontfree.net.url"], type : "blob"};
-	this.www_dafontfree_net_url = null;
-	this.pixel_operator_8_zipDescription = { name : "pixel_operator_8_zip", file_sizes : [7331], files : ["pixel-operator-8.zip"], type : "blob"};
-	this.pixel_operator_8_zip = null;
 	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3486], files : ["malePlayer.xml"], type : "blob"};
 	this.malePlayer_xml = null;
 	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3359], files : ["femalePlayer.xml"], type : "blob"};
@@ -7940,16 +7936,12 @@ kha__$Assets_BlobList.prototype = {
 var kha__$Assets_FontList = function() {
 	this.mainfontDescription = { name : "mainfont", file_sizes : [91504], files : ["mainfont.ttf"], type : "font"};
 	this.mainfont = null;
-	this.SPIRI___Description = { name : "SPIRI___", file_sizes : [67896], files : ["SPIRI___.ttf"], type : "font"};
-	this.SPIRI___ = null;
 	this.PixelOperator8_BoldDescription = { name : "PixelOperator8_Bold", file_sizes : [18596], files : ["PixelOperator8-Bold.ttf"], type : "font"};
 	this.PixelOperator8_BoldName = "PixelOperator8_Bold";
 	this.PixelOperator8_Bold = null;
 	this.MiddleAgesDescription = { name : "MiddleAges", file_sizes : [130696], files : ["MiddleAges.ttf"], type : "font"};
 	this.MiddleAgesName = "MiddleAges";
 	this.MiddleAges = null;
-	this.Kenney_ThickDescription = { name : "Kenney_Thick", file_sizes : [9448], files : ["Kenney Thick.ttf"], type : "font"};
-	this.Kenney_Thick = null;
 };
 $hxClasses["kha._Assets.FontList"] = kha__$Assets_FontList;
 kha__$Assets_FontList.__name__ = "kha._Assets.FontList";

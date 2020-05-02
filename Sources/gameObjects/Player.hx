@@ -144,9 +144,9 @@ class Player extends Entity {
 	}
 
 	public function add_speed() {
-		if ( speed < 1000){
+		if (speed < 1000) {
 			speed += 50;
-		} 
+		}
 	}
 
 	public function get_Stats():Array<Float> {

@@ -43,16 +43,6 @@
 			"types": []
 		},
 		{
-			"name": "Kenney_Thick",
-			"files": [
-				"Kenney Thick.ttf"
-			],
-			"file_sizes": [
-				9448
-			],
-			"type": "font"
-		},
-		{
 			"name": "MiddleAges",
 			"files": [
 				"MiddleAges.ttf"
@@ -69,16 +59,6 @@
 			],
 			"file_sizes": [
 				18596
-			],
-			"type": "font"
-		},
-		{
-			"name": "SPIRI___",
-			"files": [
-				"SPIRI___.ttf"
-			],
-			"file_sizes": [
-				67896
 			],
 			"type": "font"
 		},
@@ -1356,16 +1336,6 @@
 			]
 		},
 		{
-			"name": "pixel_operator_8_zip",
-			"files": [
-				"pixel-operator-8.zip"
-			],
-			"file_sizes": [
-				7331
-			],
-			"type": "blob"
-		},
-		{
 			"name": "renderAreaTint_frag",
 			"files": [
 				"renderAreaTint.frag.essl",
@@ -2198,16 +2168,6 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "www_dafontfree_net_url",
-			"files": [
-				"www.dafontfree.net.url"
-			],
-			"file_sizes": [
-				87
-			],
-			"type": "blob"
 		}
 	]
 }
