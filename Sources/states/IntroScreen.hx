@@ -34,6 +34,7 @@ class IntroScreen extends State {
 			new Sequence("Idle", [0, 1, 2, 3, 4])
 		]));
         resources.add(new ImageLoader(Assets.images.titleName));
+		resources.add(new SoundLoader("background"));
         resources.add(atlas);
     }
 

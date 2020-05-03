@@ -13,14 +13,10 @@ import com.framework.utils.State;
 import com.gEngine.GEngine;
 import kha.Assets;
 
-class LoadingScreen extends State {
-	public function new() {
-		super();
-	}
+class LoadingBar extends State {
 
 	override function load(resources:Resources) {
 		resources.add(new ImageLoader(Assets.images.titleName));
-		resources.add(new SoundLoader(Assets.sounds.backgroundName));
 	}
 
 	var allLoaded:Bool;
@@ -65,13 +61,11 @@ class LoadingScreen extends State {
         bar.setColor(255, barColor, 0);
 		if (allLoaded) {
 			Simulation.i.manualLoad = true;
-			SM.playMusic("background");
-			SM.musicVolume(1 / 100);
 			startGame();
 		}
 	}
 
 	function startGame() {
-		changeState(new IntroScreen());
+		changeState(new LoadingScreen());
 	}
 }
