@@ -1,5 +1,5 @@
--cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/Kha/Sources
--cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/Kha/Backends/HTML5
+-cp /Users/lucas.lopez/Documents/Haxe/ProgVJ/Empty/Kha/Sources
+-cp /Users/lucas.lopez/Documents/Haxe/ProgVJ/Empty/Kha/Backends/HTML5
 -cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/Sources
 -cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/hxGeomAlgo/Sources
 -cp /Users/lucas.lopez/Documents/Haxe/HaxeTest/khawy/Libraries/Format/Sources

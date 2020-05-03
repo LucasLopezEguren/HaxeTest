@@ -7,7 +7,7 @@ import kha.System;
 import kha.System.SystemOptions;
 import kha.FramebufferOptions;
 import kha.WindowOptions;
-import states.LoadingScreen;
+import states.IntroScreen;
 
 class Main {
     public static function main() {
@@ -15,7 +15,7 @@ class Main {
 		var windowsOptions=new WindowOptions("Defend Antathaan",0,0,500,720,null,true,WindowFeatures.FeatureResizable,WindowMode.Windowed);
 		var frameBufferOptions=new FramebufferOptions();
 		System.start(new SystemOptions("Defend Antathaan",500,720,windowsOptions,frameBufferOptions), function (w) {
-			new Simulation(LoadingScreen,500,720);
+			new Simulation(IntroScreen,500,720);
         });
     }
 }

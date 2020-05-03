@@ -19,7 +19,7 @@ import com.loading.Resources;
 import com.framework.utils.State;
 import gameObjects.Player;
 import com.loading.basicResources.SpriteSheetLoader;
-import gameObjects.SoundController;
+// import gameObjects.SoundController;
 
 class IntroScreen extends State {
 
@@ -34,7 +34,6 @@ class IntroScreen extends State {
 			new Sequence("Idle", [0, 1, 2, 3, 4])
 		]));
         resources.add(new ImageLoader(Assets.images.titleName));
-		// resources.add(new SoundLoader("background"));
         resources.add(atlas);
     }
 
@@ -51,7 +50,7 @@ class IntroScreen extends State {
     var title:Sprite;
     var pressStart:Text;
     var soundIcon:Sprite;
-    var soundControll:SoundController = new SoundController();
+    // var soundControll:SoundController = new SoundController();
     
     override function init() {
 	    soundIcon = new Sprite(Assets.images.naviName);
@@ -178,7 +177,7 @@ class IntroScreen extends State {
     }
 
     function sound() {
-        soundControll.soundControll(soundIcon);
+        // soundControll.soundControll(soundIcon);
     }
 
     function startGame() {
