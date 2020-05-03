@@ -3,7 +3,7 @@ package states;
 import com.gEngine.display.Sprite;
 import com.loading.basicResources.TilesheetLoader;
 import com.soundLib.SoundManager.SM;
-// import gameObjects.SoundController;
+import gameObjects.SoundController;
 import com.loading.basicResources.SoundLoader;
 import levelObjects.LoopBackground;
 import kha.Color;
@@ -71,7 +71,7 @@ class GameState extends State {
 	var survivedTime:String;
 	var ballsAlive:Int = 0;
 	var allBalls:Array<Ball>;
-	// var soundControll:SoundController = new SoundController();
+	var soundControll:SoundController = new SoundController();
 	var soundIcon:Sprite;
 
 	override function init() {
@@ -121,7 +121,7 @@ class GameState extends State {
 
 	override function update(dt:Float) {
 		time += dt;
-		// soundControll.soundControll(soundIcon);
+		soundControll.soundControll(soundIcon);
 		super.update(dt);
 		if ((ballsAlive == 0 || Math.floor(time) % 10 == 0) && !added) {
 			added = true;
@@ -204,7 +204,8 @@ class GameState extends State {
 
 	function powerUpVsPlayer(aPowerUp:ICollider, aPlayerChar:ICollider) {
 		var powerUp:PowerUp = (cast aPowerUp.userData);
-		if (powerUp.get_powerUpType() > 8) {
+		trace(powerUp.get_powerUpType() + " power up type");
+		if (powerUp.get_powerUpType() > 6) {
 			playerChar.add_damage();
 		} else {
 			playerChar.add_speed();

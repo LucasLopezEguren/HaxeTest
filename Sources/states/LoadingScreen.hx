@@ -11,12 +11,12 @@ class LoadingScreen extends State {
 
     override function load(resources:Resources) {
         resources.add(new ImageLoader(Assets.images.titleName));
-		// resources.add(new SoundLoader("background"));
+		resources.add(new SoundLoader("background"));
     }
 
     override function init() {
-        // SM.musicVolume(1/2);
-        // SM.playMusic("background");
+        SM.playMusic("background");
+        SM.musicVolume(1/100);
         startGame();
     }
 

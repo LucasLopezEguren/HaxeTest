@@ -106,7 +106,7 @@ Main.main = function() {
 	var windowsOptions = new kha_WindowOptions("Defend Antathaan",0,0,500,720,null,true,1,0);
 	var frameBufferOptions = new kha_FramebufferOptions();
 	kha_System.start(new kha_SystemOptions("Defend Antathaan",500,720,windowsOptions,frameBufferOptions),function(w) {
-		new com_framework_Simulation(states_IntroScreen,500,720);
+		new com_framework_Simulation(states_LoadingScreen,500,720);
 	});
 };
 Math.__name__ = "Math";
@@ -5764,6 +5764,46 @@ com_soundLib_SoundManager.playFx = function(sound,loop) {
 	}
 	return null;
 };
+com_soundLib_SoundManager.playMusic = function(soundName,loop) {
+	if(loop == null) {
+		loop = true;
+	}
+	var _this = com_soundLib_SoundManager.map;
+	if(!(__map_reserved[soundName] != null ? _this.existsReserved(soundName) : _this.h.hasOwnProperty(soundName))) {
+		throw new js__$Boot_HaxeError("Sound not found " + soundName);
+	}
+	if(com_soundLib_SoundManager.music != null) {
+		com_soundLib_SoundManager.music.stop();
+	}
+	com_soundLib_SoundManager.musicName = soundName;
+	if(!com_soundLib_SoundManager.musicMuted) {
+		var _this1 = com_soundLib_SoundManager.map;
+		var sound = __map_reserved[soundName] != null ? _this1.getReserved(soundName) : _this1.h[soundName];
+		if(sound.compressedData != null) {
+			com_soundLib_SoundManager.music = kha_audio2_Audio1.stream(sound,loop);
+		} else {
+			com_soundLib_SoundManager.music = kha_audio2_Audio1.play(sound,loop);
+		}
+	}
+};
+com_soundLib_SoundManager.muteMusic = function() {
+	com_soundLib_SoundManager.musicMuted = true;
+	if(com_soundLib_SoundManager.music != null) {
+		com_soundLib_SoundManager.musicPosition = com_soundLib_SoundManager.music.get_position();
+		com_soundLib_SoundManager.music.pause();
+	}
+};
+com_soundLib_SoundManager.musicVolume = function(vol) {
+	if(com_soundLib_SoundManager.music != null) {
+		com_soundLib_SoundManager.music.set_volume(vol);
+	}
+};
+com_soundLib_SoundManager.unMuteMusic = function() {
+	com_soundLib_SoundManager.musicMuted = false;
+	if(com_soundLib_SoundManager.music != null) {
+		com_soundLib_SoundManager.music.play();
+	}
+};
 com_soundLib_SoundManager.reset = function() {
 	com_soundLib_SoundManager.map = new haxe_ds_StringMap();
 };
@@ -6065,7 +6105,7 @@ var gameObjects_PowerUp = function(x,y,powerUpCollision,layer) {
 	com_framework_utils_Entity.call(this);
 	this.display = new com_gEngine_display_Sprite(kha_Assets.images.naviName);
 	this.powerUpType = Math.floor(Math.random() * 10);
-	if(this.powerUpType <= 8) {
+	if(this.powerUpType < 7) {
 		this.more = true;
 		this.display.colorMultiplication(1,1,1,1);
 	} else {
@@ -6154,6 +6194,27 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 	}
 	,__class__: gameObjects_PowerUp
 });
+var gameObjects_SoundController = function() {
+	this.music = true;
+};
+$hxClasses["gameObjects.SoundController"] = gameObjects_SoundController;
+gameObjects_SoundController.__name__ = "gameObjects.SoundController";
+gameObjects_SoundController.prototype = {
+	soundControll: function(soundIcon) {
+		if(com_framework_utils_Input.i.isKeyCodePressed(77)) {
+			if(this.music) {
+				com_soundLib_SoundManager.muteMusic();
+				soundIcon.colorMultiplication(1,0,0,1);
+				this.music = false;
+			} else {
+				com_soundLib_SoundManager.unMuteMusic();
+				soundIcon.colorMultiplication(1,1,1,1);
+				this.music = true;
+			}
+		}
+	}
+	,__class__: gameObjects_SoundController
+};
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = "haxe.IMap";
@@ -10614,6 +10675,24 @@ kha_audio2_Audio.wakeChannels = function() {
 		channel.wake();
 	}
 };
+kha_audio2_Audio.stream = function(sound,loop) {
+	if(loop == null) {
+		loop = false;
+	}
+	var element = window.document.createElement("audio");
+	var blob = new Blob([sound.compressedData.b.bufferValue],{ type : "audio/ogg"});
+	element.src = URL.createObjectURL(blob);
+	element.loop = loop;
+	var channel = new kha_js_AEAudioChannel(element,loop);
+	if(kha_SystemImpl.mobileAudioPlaying) {
+		channel.play();
+		return channel;
+	} else {
+		var virtualChannel = new kha_audio2_VirtualStreamChannel(channel,loop);
+		kha_audio2_Audio.virtualChannels.push(virtualChannel);
+		return virtualChannel;
+	}
+};
 var kha_audio2_Audio1 = function() { };
 $hxClasses["kha.audio2.Audio1"] = kha_audio2_Audio1;
 kha_audio2_Audio1.__name__ = "kha.audio2.Audio1";
@@ -10745,6 +10824,48 @@ kha_audio2_Audio1.play = function(sound,loop) {
 		return null;
 	}
 };
+kha_audio2_Audio1._playAgain = function(channel) {
+	var _g = 0;
+	while(_g < 32) {
+		var i = _g++;
+		if(kha_audio2_Audio1.soundChannels[i] == channel) {
+			kha_audio2_Audio1.soundChannels[i] = null;
+		}
+	}
+	var _g1 = 0;
+	while(_g1 < 32) {
+		var i1 = _g1++;
+		if(kha_audio2_Audio1.soundChannels[i1] == null || kha_audio2_Audio1.soundChannels[i1].get_finished() || kha_audio2_Audio1.soundChannels[i1] == channel) {
+			kha_audio2_Audio1.soundChannels[i1] = channel;
+			break;
+		}
+	}
+};
+kha_audio2_Audio1.stream = function(sound,loop) {
+	if(loop == null) {
+		loop = false;
+	}
+	var hardwareChannel = kha_audio2_Audio.stream(sound,loop);
+	if(hardwareChannel != null) {
+		return hardwareChannel;
+	}
+	var channel = new kha_audio2_StreamChannel(sound.compressedData,loop);
+	var foundChannel = false;
+	var _g = 0;
+	while(_g < 32) {
+		var i = _g++;
+		if(kha_audio2_Audio1.streamChannels[i] == null || kha_audio2_Audio1.streamChannels[i].get_finished()) {
+			kha_audio2_Audio1.streamChannels[i] = channel;
+			foundChannel = true;
+			break;
+		}
+	}
+	if(foundChannel) {
+		return channel;
+	} else {
+		return null;
+	}
+};
 var kha_audio2_AudioChannel = function(looping) {
 	this.looping = false;
 	this.stopped = false;
@@ -10787,8 +10908,26 @@ kha_audio2_AudioChannel.prototype = {
 		}
 		while(requestedSamplesIndex < requestedLength) requestedSamples[requestedSamplesIndex++] = 0;
 	}
+	,play: function() {
+		this.paused = false;
+		this.stopped = false;
+		kha_audio2_Audio1._playAgain(this);
+	}
+	,pause: function() {
+		this.paused = true;
+	}
+	,stop: function() {
+		this.myPosition = 0;
+		this.stopped = true;
+	}
+	,get_position: function() {
+		return this.myPosition / kha_audio2_Audio.samplesPerSecond / 2;
+	}
 	,get_volume: function() {
 		return this.myVolume;
+	}
+	,set_volume: function(value) {
+		return this.myVolume = value;
 	}
 	,get_finished: function() {
 		return this.stopped;
@@ -10888,8 +11027,26 @@ kha_audio2_ResamplingAudioChannel.prototype = $extend(kha_audio2_AudioChannel.pr
 		}
 		while(requestedSamplesIndex < requestedLength) requestedSamples[requestedSamplesIndex++] = 0;
 	}
+	,play: function() {
+		this.paused = false;
+		this.stopped = false;
+		kha_audio2_Audio1._playAgain(this);
+	}
+	,pause: function() {
+		this.paused = true;
+	}
+	,stop: function() {
+		this.myPosition = 0;
+		this.stopped = true;
+	}
+	,get_position: function() {
+		return this.myPosition / this.sampleRate / 2;
+	}
 	,get_volume: function() {
 		return this.myVolume;
+	}
+	,set_volume: function(value) {
+		return this.myVolume = value;
 	}
 	,get_finished: function() {
 		return this.stopped;
@@ -10930,8 +11087,23 @@ kha_audio2_StreamChannel.prototype = {
 			}
 		}
 	}
+	,play: function() {
+		this.paused = false;
+	}
+	,pause: function() {
+		this.paused = true;
+	}
+	,stop: function() {
+		this.atend = true;
+	}
+	,get_position: function() {
+		return this.reader.get_currentMillisecond() / 1000.0;
+	}
 	,get_volume: function() {
 		return this.myVolume;
+	}
+	,set_volume: function(value) {
+		return this.myVolume = value;
 	}
 	,get_finished: function() {
 		return this.atend;
@@ -10969,8 +11141,43 @@ kha_audio2_VirtualStreamChannel.prototype = {
 		}
 		this.lastTickTime = now;
 	}
+	,play: function() {
+		if(kha_SystemImpl.mobileAudioPlaying) {
+			this.aeChannel.play();
+		} else {
+			this.updatePosition();
+			this.mode = 2;
+		}
+	}
+	,pause: function() {
+		if(kha_SystemImpl.mobileAudioPlaying) {
+			this.aeChannel.pause();
+		} else {
+			this.updatePosition();
+			this.mode = 1;
+		}
+	}
+	,stop: function() {
+		if(kha_SystemImpl.mobileAudioPlaying) {
+			this.aeChannel.stop();
+		} else {
+			this.updatePosition();
+			this.mode = 0;
+		}
+	}
 	,get_length: function() {
 		return this.aeChannel.get_length();
+	}
+	,get_position: function() {
+		if(kha_SystemImpl.mobileAudioPlaying) {
+			return this.aeChannel.get_position();
+		} else {
+			this.updatePosition();
+			return this.lastPosition;
+		}
+	}
+	,set_volume: function(value) {
+		return this.aeChannel.set_volume(value);
 	}
 	,__class__: kha_audio2_VirtualStreamChannel
 };
@@ -19507,6 +19714,22 @@ kha_js_AEAudioChannel.prototype = {
 		this.stopped = false;
 		this.element.play();
 	}
+	,pause: function() {
+		try {
+			this.element.pause();
+		} catch( e ) {
+			haxe_Log.trace(((e) instanceof js__$Boot_HaxeError) ? e.val : e,{ fileName : "kha/js/AEAudioChannel.hx", lineNumber : 26, className : "kha.js.AEAudioChannel", methodName : "pause"});
+		}
+	}
+	,stop: function() {
+		try {
+			this.element.pause();
+			this.element.currentTime = 0;
+			this.stopped = true;
+		} catch( e ) {
+			haxe_Log.trace(((e) instanceof js__$Boot_HaxeError) ? e.val : e,{ fileName : "kha/js/AEAudioChannel.hx", lineNumber : 37, className : "kha.js.AEAudioChannel", methodName : "stop"});
+		}
+	}
 	,get_length: function() {
 		if(isFinite(this.element.duration)) {
 			return this.element.duration;
@@ -19514,8 +19737,14 @@ kha_js_AEAudioChannel.prototype = {
 			return Infinity;
 		}
 	}
+	,get_position: function() {
+		return this.element.currentTime;
+	}
 	,set_position: function(value) {
 		return this.element.currentTime = value;
+	}
+	,set_volume: function(value) {
+		return this.element.volume = value;
 	}
 	,__class__: kha_js_AEAudioChannel
 };
@@ -19780,6 +20009,40 @@ kha_js_MobileWebAudioChannel.prototype = {
 			this.startTime = kha_js_MobileWebAudio._context.currentTime;
 			this.source.start();
 		}
+	}
+	,pause: function() {
+		var wasStopped = this.paused || this.stopped;
+		this.pauseTime = kha_js_MobileWebAudio._context.currentTime - this.startTime;
+		this.paused = true;
+		if(wasStopped) {
+			return;
+		}
+		this.source.stop();
+	}
+	,stop: function() {
+		var wasStopped = this.paused || this.stopped;
+		this.paused = false;
+		this.stopped = true;
+		if(wasStopped) {
+			return;
+		}
+		this.source.stop();
+	}
+	,get_length: function() {
+		return this.source.buffer.duration;
+	}
+	,get_position: function() {
+		if(this.stopped) {
+			return this.get_length();
+		}
+		if(this.paused) {
+			return this.pauseTime;
+		} else {
+			return kha_js_MobileWebAudio._context.currentTime - this.startTime;
+		}
+	}
+	,set_volume: function(value) {
+		return this.gain.gain.value = value;
 	}
 	,__class__: kha_js_MobileWebAudioChannel
 };
@@ -20659,6 +20922,7 @@ var states_GameState = function(character,level,score,time,playerChar) {
 	this.luckHelper = 0;
 	this.added = false;
 	this.isDebug = false;
+	this.soundControll = new gameObjects_SoundController();
 	this.ballsAlive = 0;
 	this.time = 0;
 	this.score = 0;
@@ -20723,6 +20987,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,update: function(dt) {
 		this.time += dt;
+		this.soundControll.soundControll(this.soundIcon);
 		com_framework_utils_State.prototype.update.call(this,dt);
 		if((this.ballsAlive == 0 || Math.floor(this.time) % 10 == 0) && !this.added) {
 			this.added = true;
@@ -20797,7 +21062,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,powerUpVsPlayer: function(aPowerUp,aPlayerChar) {
 		var powerUp = aPowerUp.userData;
-		if(powerUp.get_powerUpType() > 8) {
+		haxe_Log.trace(powerUp.get_powerUpType() + " power up type",{ fileName : "states/GameState.hx", lineNumber : 207, className : "states.GameState", methodName : "powerUpVsPlayer"});
+		if(powerUp.get_powerUpType() > 6) {
 			this.playerChar.add_damage();
 		} else {
 			this.playerChar.add_speed();
@@ -20845,6 +21111,7 @@ var states_IntroScreen = function() {
 	this.more = false;
 	this.isDrawn = false;
 	this.changeScreen = false;
+	this.soundControll = new gameObjects_SoundController();
 	com_framework_utils_State.call(this);
 };
 $hxClasses["states.IntroScreen"] = states_IntroScreen;
@@ -20926,6 +21193,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			this.selectedCharacter = "femalePlayer";
 			this.startGame();
 		}
+		this.sound();
 		if(com_framework_utils_Input.i.isKeyCodePressed(13) && !this.changeScreen) {
 			this.changeScreen = true;
 			this.pressStart.removeFromParent();
@@ -21012,11 +21280,38 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			this.pressStart.setColorMultiply(1,0.823529411764705843,0,this.transcparency);
 		}
 	}
+	,sound: function() {
+		this.soundControll.soundControll(this.soundIcon);
+	}
 	,startGame: function() {
 		var playerChar = new gameObjects_Player(250,650,this.selectedCharacter);
 		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar));
 	}
 	,__class__: states_IntroScreen
+});
+var states_LoadingScreen = function() {
+	com_framework_utils_State.call(this);
+};
+$hxClasses["states.LoadingScreen"] = states_LoadingScreen;
+states_LoadingScreen.__name__ = "states.LoadingScreen";
+states_LoadingScreen.__super__ = com_framework_utils_State;
+states_LoadingScreen.prototype = $extend(com_framework_utils_State.prototype,{
+	load: function(resources) {
+		resources.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.titleName));
+		resources.add(new com_loading_basicResources_SoundLoader("background"));
+	}
+	,init: function() {
+		com_soundLib_SoundManager.playMusic("background");
+		com_soundLib_SoundManager.musicVolume(0.01);
+		this.startGame();
+	}
+	,update: function(dt) {
+		com_framework_utils_State.prototype.update.call(this,dt);
+	}
+	,startGame: function() {
+		this.changeState(new states_IntroScreen());
+	}
+	,__class__: states_LoadingScreen
 });
 var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,currentLevel) {
 	this.time = 0;
@@ -21109,7 +21404,9 @@ com_collision_platformer_CollisionEngine.colliders = [];
 com_framework_utils_Perlin.PERMUTATIONS = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
 com_gEngine_GEngine.drawCount = 0;
 com_gEngine_GEngine.extraInfo = "";
+com_soundLib_SoundManager.musicPosition = 0;
 com_soundLib_SoundManager.soundMuted = false;
+com_soundLib_SoundManager.musicMuted = false;
 haxe_Unserializer.DEFAULT_RESOLVER = new haxe__$Unserializer_DefaultResolver();
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe_io_FPHelper.helper = new DataView(new ArrayBuffer(8));

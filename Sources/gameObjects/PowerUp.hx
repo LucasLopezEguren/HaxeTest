@@ -31,7 +31,7 @@ class PowerUp extends Entity {
 		super();
 		display = new Sprite(Assets.images.naviName);
 		powerUpType = Math.floor(Math.random() * 10);
-		if (powerUpType <= 8) {
+		if (powerUpType < 7) {
 			more = true;
 			display.colorMultiplication(1, 1, 1, 1);
 		} else {
