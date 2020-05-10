@@ -1,25 +1,15 @@
 package gameObjects;
 
-import kha.Color;
 import kha.Assets;
 import com.gEngine.display.Text;
 import com.gEngine.display.Stage;
 import com.gEngine.display.Layer;
 import com.framework.utils.Entity;
 import com.gEngine.GEngine;
-import com.framework.utils.Random;
-import com.gEngine.helper.Screen;
 import kha.math.FastVector2;
 import com.gEngine.display.Sprite;
-import com.collision.platformer.Sides;
 import com.collision.platformer.CollisionGroup;
-import GlobalGameData.GGD;
 import com.collision.platformer.CollisionBox;
-import com.collision.platformer.CollisionEngine;
-import com.loading.basicResources.ImageLoader;
-import com.loading.Resources;
-import gameObjects.PowerUp;
-import com.framework.utils.State;
 
 class Ball extends Entity {
 
@@ -66,6 +56,9 @@ class Ball extends Entity {
 		if (x + collision.width > screenWidth) {
 			x = screenWidth - collision.width - 10;
 		}
+		if (x < 0) {
+			x = 1;
+		}
 
 		collision.x = x;
 		collision.y = y;
@@ -86,7 +79,7 @@ class Ball extends Entity {
 		super.update(dt);
 		time += dt;
 		velocity.y += GRAVITY * dt;
-		if (collision.x < 0 || collision.x + collision.width > screenWidth) {
+		if (collision.x < 5 || collision.x + collision.width > screenWidth) {
 			velocity.x *= -1;
 		}
 		collision.x += velocity.x * dt;

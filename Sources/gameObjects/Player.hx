@@ -1,6 +1,5 @@
 package gameObjects;
 
-import com.framework.Simulation;
 import com.gEngine.display.Layer;
 import kha.input.KeyCode;
 import com.framework.utils.Input;
@@ -54,6 +53,11 @@ class Player extends Entity {
 		gun.set_damage(Math.ceil(stats[1]));
 	}
 
+	var mouseMovment:Bool = false;
+	public function setMouseMove() {
+		mouseMovment = true;
+	}
+
 	override function update(dt:Float):Void {
 		if (isDead()) {
 			return;
@@ -62,8 +66,11 @@ class Player extends Entity {
 		super.update(dt);
 		collision.velocityX = 0;
 		collision.velocityY = 0;
+		if (Input.i.isKeyCodePressed(KeyCode.P)) {
+			mouseMovment = !mouseMovment;
+		}
 		movement(collision, speed);
-		if (Input.i.isKeyCodePressed(KeyCode.A)) {
+		if (Input.i.isKeyCodePressed(KeyCode.A) || Input.i.isMousePressed()) {
 			gun.shoot(x, y - height * 0.75, 0, -1);
 			display.offsetY = -15;
 			display.timeline.playAnimation("attack_", false);
@@ -72,14 +79,23 @@ class Player extends Entity {
 
 	function movement(collision:CollisionBox, speed:Float) {
 		display.offsetY = -5;
-		if (Input.i.isKeyCodeDown(KeyCode.Left)) {
-			if (collision.x > 0) {
+		if (mouseMovment) {
+			if (Input.i.getMouseX() < collision.x - 10){
 				collision.velocityX = -speed;
+			} else if (Input.i.getMouseX() > collision.x + 10){
+				collision.velocityX = speed;
 			}
 		}
-		if (Input.i.isKeyCodeDown(KeyCode.Right)) {
-			if (collision.x < 500 - collision.width) {
-				collision.velocityX = speed;
+		if (!mouseMovment) {
+			if (Input.i.isKeyCodeDown(KeyCode.Left)) {
+				if (collision.x > 0) {
+					collision.velocityX = -speed;
+				}
+			}
+			if (Input.i.isKeyCodeDown(KeyCode.Right)) {
+				if (collision.x < 500 - collision.width) {
+					collision.velocityX = speed;
+				}
 			}
 		}
 	}

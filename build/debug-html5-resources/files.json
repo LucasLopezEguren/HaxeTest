@@ -268,7 +268,7 @@
 				"femalePlayer.png"
 			],
 			"file_sizes": [
-				27208
+				31095
 			],
 			"type": "image",
 			"original_width": 381,
@@ -280,7 +280,7 @@
 				"femalePlayer.xml"
 			],
 			"file_sizes": [
-				3359
+				3485
 			],
 			"type": "blob"
 		},
@@ -540,7 +540,7 @@
 				"malePlayer.png"
 			],
 			"file_sizes": [
-				33061
+				35809
 			],
 			"type": "image",
 			"original_width": 381,
@@ -552,7 +552,7 @@
 				"malePlayer.xml"
 			],
 			"file_sizes": [
-				3486
+				3612
 			],
 			"type": "blob"
 		},

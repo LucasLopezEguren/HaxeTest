@@ -27,4 +27,5 @@
     <SubTexture name="walk_6" x="262" y="63" width="60" height="60" frameX="0" frameY="0" frameWidth="60" fr4meHeight="60"/>
     <SubTexture name="walk_7" x="262" y="121" width="60" height="60" frameX="0" frameY="0" frameWidth="60" fr4meHeight="60"/>
     <SubTexture name="walk_8" x="7" y="268" width="60" height="60" frameX="0" frameY="0" frameWidth="60" fr4meHeight="60"/>
+    <SubTexture name="selected" x="320" y="0" width="60" height="60" frameX="0" frameY="0" frameWidth="60" fr4meHeight="60"/>
 </TextureAtlas>

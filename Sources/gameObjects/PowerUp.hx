@@ -1,8 +1,8 @@
 package gameObjects;
 
+import com.gEngine.display.Text;
 import kha.Assets;
 import com.soundLib.SoundManager.SM;
-import com.loading.basicResources.SoundLoader;
 import com.gEngine.display.Layer;
 import kha.math.FastVector2;
 import com.gEngine.display.Sprite;
@@ -26,6 +26,10 @@ class PowerUp extends Entity {
 	var more:Bool;
 	var startedX:Float;
 	var layer:Layer;
+	var floatingText:Text;
+	var textLifeTime:Float = 1;
+	var textCurrentTime:Float = 0;
+	var textTime:Bool;
 
 	public function new(x:Float, y:Float, powerUpCollision:CollisionGroup, layer:Layer) {
 		super();
@@ -60,11 +64,32 @@ class PowerUp extends Entity {
 		SM.playFx(Assets.sounds.fairyName, false);
 	}
 
-	override function die() {
-		super.die();
+	public function fairyDie() {
 		display.removeFromParent();
 		heyListen.removeFromParent();
 		collision.removeFromParent();
+		floatingText = new Text(Assets.fonts.PixelOperator8_BoldName);
+		floatingText.x = collision.x;
+		floatingText.y = collision.y - 50;
+		floatingText.scaleX = floatingText.scaleY = 1/3;
+		if (powerUpType < 7) {
+			floatingText.text = "Speed Up";
+		} else {
+			floatingText.text = "Damage Up";
+		}
+		textTime = true;
+		layer.addChild(floatingText);
+	}
+
+	override function die() {
+		super.die();
+		if (textTime) {
+			floatingText.removeFromParent();
+		} else {
+			display.removeFromParent();
+			heyListen.removeFromParent();
+			collision.removeFromParent();
+		}
 	}
 
 	public function get_powerUpType():Int {
@@ -77,6 +102,14 @@ class PowerUp extends Entity {
 		collision.update(dt);
 		super.update(dt);
 		currentTime += dt;
+		if (textTime) {
+			trace ("Test time");
+			textCurrentTime += dt;
+			floatingText.setColorMultiply(Math.random(), Math.random(), Math.random(), 1);
+			if (textCurrentTime >= textLifeTime) {
+				die();
+			}
+		}
 		if (collision.x <= startedX - 20 || collision.x >= startedX + 20) {
 			more = !more;
 		}
@@ -103,11 +136,12 @@ class PowerUp extends Entity {
 			collision.x = 10;
 			if (velocity.x != 0) {
 				velocity.x *= -1;
+				more = !more;
 			}
 		}
 		display.x = collision.x;
 		display.y = collision.y;
-		if (currentTime % 2 < 1 && velocity.y == 0 && !soundPlayed) {
+		if (currentTime % 2 < 1 && velocity.y == 0 && !soundPlayed && !textTime) {
 			soundPlayed = true;
 			heyListen.y = display.y - 10;
 			heyListen.x = display.x - 15;

@@ -1,12 +1,10 @@
 package states;
 
 import com.gEngine.display.Sprite;
-import kha.Assets;
 import com.loading.basicResources.ImageLoader;
 import com.soundLib.SoundManager.SM;
 import com.loading.basicResources.SoundLoader;
 import com.loading.Resources;
-import com.framework.utils.State;
 import com.gEngine.helper.RectangleDisplay;
 import com.framework.Simulation;
 import com.framework.utils.State;
@@ -66,7 +64,7 @@ class LoadingScreen extends State {
 		if (allLoaded) {
 			Simulation.i.manualLoad = true;
 			SM.playMusic("background");
-			SM.musicVolume(1 / 100);
+			SM.musicVolume(2 / 100);
 			startGame();
 		}
 	}

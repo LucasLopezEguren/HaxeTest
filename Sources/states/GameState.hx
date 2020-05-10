@@ -1,43 +1,44 @@
 package states;
 
-import com.gEngine.display.Sprite;
-import com.loading.basicResources.TilesheetLoader;
-import com.soundLib.SoundManager.SM;
-import gameObjects.SoundController;
-import com.loading.basicResources.SoundLoader;
-import levelObjects.LoopBackground;
-import kha.Color;
-import gameObjects.Ball;
-import kha.Canvas;
-import kha.Assets;
-import com.gEngine.GEngine;
-import com.loading.basicResources.FontLoader;
-import com.gEngine.display.Text;
-import gameObjects.Bullet;
-import com.collision.platformer.ICollider;
-import com.collision.platformer.CollisionGroup;
 import com.collision.platformer.CollisionEngine;
-import com.loading.basicResources.ImageLoader;
-import GlobalGameData.GGD;
-import kha.input.KeyCode;
+import com.collision.platformer.CollisionGroup;
+import com.collision.platformer.ICollider;
+import com.gEngine.display.StaticLayer;
+import com.gEngine.display.Sprite;
 import com.framework.utils.Input;
 import com.gEngine.display.Layer;
-import gameObjects.Player;
-import gameObjects.PowerUp;
-import com.loading.basicResources.JoinAtlas;
-import com.loading.basicResources.SparrowLoader;
-import com.loading.Resources;
 import com.framework.utils.State;
-import com.gEngine.display.StaticLayer;
+import com.gEngine.display.Text;
+import com.gEngine.GEngine;
 import com.loading.basicResources.SpriteSheetLoader;
+import com.loading.basicResources.SparrowLoader;
+import com.loading.basicResources.ImageLoader;
+import com.loading.basicResources.SoundLoader;
+import com.loading.basicResources.FontLoader;
+import com.loading.basicResources.JoinAtlas;
+import com.loading.Resources;
+import kha.input.KeyCode;
+import kha.Assets;
+import kha.Canvas;
+import kha.Color;
+import levelObjects.LoopBackground;
+import gameObjects.SoundController;
+import gameObjects.PowerUp;
+import gameObjects.Bullet;
+import gameObjects.Player;
+import gameObjects.Ball;
+import GlobalGameData.GGD;
 
 class GameState extends State {
 	var character:String;
 	var allBallsHp:Array<Int> = new Array<Int>();
 	var currentLevel:Int;
+	var withMouse:Bool;
+	var time:Float = 0;
 
-	public function new(character:String, level:Int, score:Int, time:Float, playerChar:Player) {
+	public function new(character:String, level:Int, score:Int, time:Float, playerChar:Player, withMouse:Bool) {
 		super();
+		this.withMouse = withMouse;
 		currentLevel = level;
 		this.time = time;
 		this.score = score;
@@ -67,7 +68,6 @@ class GameState extends State {
 	var timeDisplay:Text;
 	var score:Int = 0;
 	var hudLayer:Layer;
-	var time:Float = 0;
 	var survivedTime:String;
 	var ballsAlive:Int = 0;
 	var allBalls:Array<Ball>;
@@ -87,7 +87,7 @@ class GameState extends State {
 
 		soundIcon = new Sprite(Assets.images.naviName);
 		soundIcon.x = 470;
-		soundIcon.y = 690;
+		soundIcon.y = 45;
 		soundIcon.scaleX = 1 / 2;
 		soundIcon.scaleY = 1 / 2;
 		simulationLayer.addChild(soundIcon);
@@ -104,16 +104,29 @@ class GameState extends State {
 		stage.addChild(hudLayer);
 
 		scoreDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
-		scoreDisplay.x = GEngine.virtualWidth / 2 - 105;
+		scoreDisplay.x = GEngine.virtualWidth / 2 - 50;
 		scoreDisplay.y = 30;
+		scoreDisplay.scaleX = scoreDisplay.scaleY = 1 / 2;
 		scoreDisplay.text = "0";
 		hudLayer.addChild(scoreDisplay);
 		timeDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
-		timeDisplay.x = GEngine.virtualWidth / 2 - 75;
-		timeDisplay.y = 80;
+		timeDisplay.x = GEngine.virtualWidth - 90;
+		timeDisplay.scaleX = timeDisplay.scaleY = 1 / 2;
+		timeDisplay.y = 30;
 		hudLayer.addChild(timeDisplay);
 		allBalls = new Array<Ball>();
+
+		var levelDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
+		levelDisplay.x = 20;
+		levelDisplay.y = 30;
+		levelDisplay.text = "Level " + currentLevel;
+		levelDisplay.scaleX = levelDisplay.scaleY = 1 / 2;
+		hudLayer.addChild(levelDisplay);
+		if (withMouse) {
+			playerChar.setMouseMove();
+		}
 		levelCreator();
+	
 	}
 
 	var isDebug:Bool = false;
@@ -127,7 +140,7 @@ class GameState extends State {
 			added = true;
 			if (allBallsHp.length == 0 && ballsAlive == 0) {
 				if (finish(dt)) {
-					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel));
+					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel, withMouse));
 				}
 			} else {
 				if (allBallsHp.length > 0) {
@@ -199,18 +212,17 @@ class GameState extends State {
 
 	function playerVsBall(aPlayerChar:ICollider, aBall:ICollider) {
 		playerChar.die();
-		changeState(new GameOver("" + score, survivedTime, character));
+		changeState(new GameOver("" + score, survivedTime, character, currentLevel));
 	}
 
 	function powerUpVsPlayer(aPowerUp:ICollider, aPlayerChar:ICollider) {
 		var powerUp:PowerUp = (cast aPowerUp.userData);
-		trace(powerUp.get_powerUpType() + " power up type");
 		if (powerUp.get_powerUpType() > 6) {
 			playerChar.add_damage();
 		} else {
 			playerChar.add_speed();
 		}
-		powerUp.die();
+		powerUp.fairyDie();
 	}
 
 	inline function ballCreator(hpMax:Int):Ball {

@@ -16,10 +16,12 @@ class SoundController {
         if (Input.i.isKeyCodePressed(KeyCode.M)){
             if (music) {
                 SM.muteMusic();
+                SM.muteSound();
                 soundIcon.colorMultiplication (1, 0, 0, 1);
                 music = false;
             } else {
                 SM.unMuteMusic();
+                SM.unMuteSound();
                 soundIcon.colorMultiplication (1, 1, 1, 1);
                 music = true;
             }
