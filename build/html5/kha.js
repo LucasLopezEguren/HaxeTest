@@ -6170,52 +6170,6 @@ gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 	}
 	,__class__: gameObjects_Bullet
 });
-var gameObjects_FloatingText = function(text,x,y,layer) {
-	this.blue = 0;
-	this.green = 0;
-	this.red = 0;
-	this.currentTime = 0;
-	this.lifeTime = 1;
-	com_framework_utils_Entity.call(this);
-	this.display = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
-	this.display.set_text(text);
-	this.display.x = x;
-	this.display.y = y;
-	this.display.scaleX = 0.333333333333333315;
-	this.display.scaleY = 0.333333333333333315;
-	this.red = Math.random();
-	this.green = Math.random();
-	this.blue = Math.random();
-	this.display.setColorMultiply(this.red,this.green,this.blue,1);
-	layer.addChild(this.display);
-};
-$hxClasses["gameObjects.FloatingText"] = gameObjects_FloatingText;
-gameObjects_FloatingText.__name__ = "gameObjects.FloatingText";
-gameObjects_FloatingText.__super__ = com_framework_utils_Entity;
-gameObjects_FloatingText.prototype = $extend(com_framework_utils_Entity.prototype,{
-	display: null
-	,lifeTime: null
-	,currentTime: null
-	,red: null
-	,green: null
-	,blue: null
-	,die: function() {
-		com_framework_utils_Entity.prototype.die.call(this);
-		this.display.removeFromParent();
-	}
-	,update: function(dt) {
-		com_framework_utils_Entity.prototype.update.call(this,dt);
-		this.currentTime += dt;
-		haxe_Log.trace(this.currentTime,{ fileName : "gameObjects/FloatingText.hx", lineNumber : 40, className : "gameObjects.FloatingText", methodName : "update"});
-		if(this.currentTime >= this.lifeTime) {
-			this.die();
-		}
-	}
-	,render: function() {
-		com_framework_utils_Entity.prototype.render.call(this);
-	}
-	,__class__: gameObjects_FloatingText
-});
 var gameObjects_Gun = function() {
 	this.damage = 1;
 	com_framework_utils_Entity.call(this);
@@ -6284,6 +6238,9 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.gun.set_damage(Math.ceil(stats[1]));
 	}
 	,mouseMovment: null
+	,setMouseMove: function() {
+		this.mouseMovment = true;
+	}
 	,update: function(dt) {
 		if(this.isDead()) {
 			return;
@@ -6392,6 +6349,8 @@ gameObjects_Player.prototype = $extend(com_framework_utils_Entity.prototype,{
 });
 var gameObjects_PowerUp = function(x,y,powerUpCollision,layer) {
 	this.soundPlayed = false;
+	this.textCurrentTime = 0;
+	this.textLifeTime = 1;
 	this.currentTime = 0;
 	this.lifeTime = 10;
 	this.powerUpType = 0;
@@ -6437,11 +6396,35 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,more: null
 	,startedX: null
 	,layer: null
-	,die: function() {
-		com_framework_utils_Entity.prototype.die.call(this);
+	,floatingText: null
+	,textLifeTime: null
+	,textCurrentTime: null
+	,textTime: null
+	,fairyDie: function() {
 		this.display.removeFromParent();
 		this.heyListen.removeFromParent();
 		this.collision.removeFromParent();
+		this.floatingText = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		this.floatingText.x = this.collision.x;
+		this.floatingText.y = this.collision.y - 50;
+		this.floatingText.scaleX = this.floatingText.scaleY = 0.333333333333333315;
+		if(this.powerUpType < 7) {
+			this.floatingText.set_text("Speed Up");
+		} else {
+			this.floatingText.set_text("Damage Up");
+		}
+		this.textTime = true;
+		this.layer.addChild(this.floatingText);
+	}
+	,die: function() {
+		com_framework_utils_Entity.prototype.die.call(this);
+		if(this.textTime) {
+			this.floatingText.removeFromParent();
+		} else {
+			this.display.removeFromParent();
+			this.heyListen.removeFromParent();
+			this.collision.removeFromParent();
+		}
 	}
 	,get_powerUpType: function() {
 		return this.powerUpType;
@@ -6451,6 +6434,14 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.currentTime += dt;
+		if(this.textTime) {
+			haxe_Log.trace("Test time",{ fileName : "gameObjects/PowerUp.hx", lineNumber : 106, className : "gameObjects.PowerUp", methodName : "update"});
+			this.textCurrentTime += dt;
+			this.floatingText.setColorMultiply(Math.random(),Math.random(),Math.random(),1);
+			if(this.textCurrentTime >= this.textLifeTime) {
+				this.die();
+			}
+		}
 		if(this.collision.x <= this.startedX - 20 || this.collision.x >= this.startedX + 20) {
 			this.more = !this.more;
 		}
@@ -6482,7 +6473,7 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 		this.display.x = this.collision.x;
 		this.display.y = this.collision.y;
-		if(this.currentTime % 2 < 1 && this.velocity.y == 0 && !this.soundPlayed) {
+		if(this.currentTime % 2 < 1 && this.velocity.y == 0 && !this.soundPlayed && !this.textTime) {
 			this.soundPlayed = true;
 			this.heyListen.y = this.display.y - 10;
 			this.heyListen.x = this.display.x - 15;
@@ -8214,7 +8205,7 @@ var kha__$Assets_ImageList = function() {
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrowName = "arrow";
 	this.arrow = null;
-	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [127442], original_width : 500, files : ["Antathaan.png"], type : "image"};
+	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [715283], original_width : 500, files : ["Antathaan.png"], type : "image"};
 	this.AntathaanName = "Antathaan";
 	this.Antathaan = null;
 };
@@ -21133,13 +21124,13 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 			this.playDeadAnimation();
 		}
 		com_framework_utils_State.prototype.update.call(this,dt);
-		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
+		if(com_framework_utils_Input.i.isKeyCodePressed(13) || com_framework_utils_Input.i.isMousePressed()) {
 			this.changeState(new states_IntroScreen());
 		}
 	}
 	,__class__: states_GameOver
 });
-var states_GameState = function(character,level,score,time,playerChar) {
+var states_GameState = function(character,level,score,time,playerChar,withMouse) {
 	this.timeToFinish = 3;
 	this.luckHelper = 0;
 	this.added = false;
@@ -21150,6 +21141,7 @@ var states_GameState = function(character,level,score,time,playerChar) {
 	this.time = 0;
 	this.allBallsHp = [];
 	com_framework_utils_State.call(this);
+	this.withMouse = withMouse;
 	this.currentLevel = level;
 	this.time = time;
 	this.score = score;
@@ -21163,6 +21155,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	character: null
 	,allBallsHp: null
 	,currentLevel: null
+	,withMouse: null
 	,time: null
 	,load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
@@ -21200,7 +21193,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.stage.addChild(this.simulationLayer);
 		this.soundIcon = new com_gEngine_display_Sprite(kha_Assets.images.naviName);
 		this.soundIcon.x = 470;
-		this.soundIcon.y = 690;
+		this.soundIcon.y = 45;
 		this.soundIcon.scaleX = 0.5;
 		this.soundIcon.scaleY = 0.5;
 		this.simulationLayer.addChild(this.soundIcon);
@@ -21230,6 +21223,9 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		levelDisplay.set_text("Level " + this.currentLevel);
 		levelDisplay.scaleX = levelDisplay.scaleY = 0.5;
 		this.hudLayer.addChild(levelDisplay);
+		if(this.withMouse) {
+			this.playerChar.setMouseMove();
+		}
 		this.levelCreator();
 	}
 	,isDebug: null
@@ -21242,7 +21238,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			this.added = true;
 			if(this.allBallsHp.length == 0 && this.ballsAlive == 0) {
 				if(this.finish(dt)) {
-					this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.currentLevel));
+					this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.currentLevel,this.withMouse));
 				}
 			} else if(this.allBallsHp.length > 0) {
 				var hpMax = this.allBallsHp.pop();
@@ -21310,12 +21306,10 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var powerUp = aPowerUp.userData;
 		if(powerUp.get_powerUpType() > 6) {
 			this.playerChar.add_damage();
-			new gameObjects_FloatingText("Damage up",this.playerChar.get_x(),this.playerChar.get_y() - 75,this.simulationLayer);
 		} else {
 			this.playerChar.add_speed();
-			new gameObjects_FloatingText("Speed up",this.playerChar.get_x(),this.playerChar.get_y() - 75,this.simulationLayer);
 		}
-		powerUp.die();
+		powerUp.fairyDie();
 	}
 	,levelCreator: function() {
 		var randomGenerator = -1;
@@ -21355,6 +21349,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,__class__: states_GameState
 });
 var states_IntroScreen = function() {
+	this.withMouse = false;
 	this.selected = false;
 	this.transcparency = 0;
 	this.more = false;
@@ -21542,6 +21537,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						this.selectedCharacter = "malePlayer";
 						this.hans.timeline.playAnimation("attack_");
 						if(com_framework_utils_Input.i.isMousePressed()) {
+							this.withMouse = true;
 							this.startGame();
 						}
 					} else {
@@ -21571,6 +21567,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						this.selected = false;
 						this.selectedCharacter = "femalePlayer";
 						if(com_framework_utils_Input.i.isMousePressed()) {
+							this.withMouse = true;
 							this.startGame();
 						}
 					} else {
@@ -21674,9 +21671,10 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			this.leftLine.scaleY = this.rightLine.scaleY = 0;
 		}
 	}
+	,withMouse: null
 	,startGame: function() {
 		var playerChar = new gameObjects_Player(250,650,this.selectedCharacter);
-		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar));
+		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar,this.withMouse));
 	}
 	,__class__: states_IntroScreen
 });
@@ -21793,11 +21791,12 @@ states_LoadingScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,__class__: states_LoadingScreen
 });
-var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,currentLevel) {
+var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,currentLevel,withMouse) {
 	this.more = false;
 	this.timeSurvived = 0;
 	com_framework_utils_State.call(this);
 	this.nextLevel = currentLevel + 1;
+	this.withMouse = withMouse;
 	this.score = score;
 	this.timeSurvived = timeSurvived;
 	this.sprite = sprite;
@@ -21815,6 +21814,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,simulationLayer: null
 	,playerStats: null
 	,nextLevel: null
+	,withMouse: null
 	,load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
 		atlas.add(new com_loading_basicResources_ImageLoader("stageComplete"));
@@ -21855,7 +21855,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,more: null
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
-		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
+		if(com_framework_utils_Input.i.isKeyCodePressed(13) || com_framework_utils_Input.i.isMousePressed()) {
 			this.startNextLevel();
 		}
 		if(this.transcparency <= 0 || this.transcparency >= 1) {
@@ -21871,7 +21871,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,startNextLevel: function() {
 		var playerChar = new gameObjects_Player(250,650,this.sprite);
 		playerChar.setStats(this.playerStats);
-		this.changeState(new states_GameState(this.sprite,this.nextLevel,this.score,this.timeSurvived,playerChar));
+		this.changeState(new states_GameState(this.sprite,this.nextLevel,this.score,this.timeSurvived,playerChar,this.withMouse));
 	}
 	,__class__: states_SuccessScreen
 });

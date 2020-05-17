@@ -37,7 +37,7 @@ class Ball extends Entity {
 		hpTotal = maxHp;
 		screenWidth = GEngine.i.width;
 		screenHeight = GEngine.i.height;
-		ball = new Sprite("ball");
+		ball = new Sprite(Assets.images.ballName);
         var size = Math.random();
 		ball.scaleX = size * (maxHp % 3) + 1;
 		ball.scaleY = size * (maxHp % 3) + 1;
@@ -52,7 +52,7 @@ class Ball extends Entity {
 		collision.userData = this;
 		collisions.add(collision);
 		collision.width = RADIO * 2 * (ball.scaleX);
-		collision.height = RADIO * 2 * (ball.scaleX);
+		collision.height = RADIO * 2 * (ball.scaleY);
 		if (x + collision.width > screenWidth) {
 			x = screenWidth - collision.width - 10;
 		}
@@ -66,7 +66,7 @@ class Ball extends Entity {
 		hpDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
 		hpDisplay.text = hp + "";
 		hpDisplay.setColorMultiply(0, 0, 0, 1);
-		hpDisplay.x = -10;
+		hpDisplay.x = -13;
 		hpDisplay.y = -13;
 		hpLayer.addChild(hpDisplay);
 		hpLayer.rotation = 0;
@@ -77,6 +77,7 @@ class Ball extends Entity {
 	override function update(dt:Float) {
 		collision.update(dt);
 		super.update(dt);
+		trace('frame: ' + ball.timeline.currentFrame);
 		time += dt;
 		velocity.y += GRAVITY * dt;
 		if (collision.x < 5 || collision.x + collision.width > screenWidth) {
@@ -87,6 +88,7 @@ class Ball extends Entity {
 		if (collision.y + collision.width >= screenHeight && velocity.y > 0) {
 			velocity.y *= -1;
 		}
+
 		hpLayer.rotation += (Math.abs(velocity.x) / (velocity.x * 10)) * (Math.abs(velocity.x) / (25 * hpTotal));
 		collision.velocityY = velocity.y;
 		collision.velocityX = velocity.x;

@@ -6262,7 +6262,7 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.hpTotal = maxHp;
 	this.screenWidth = com_gEngine_GEngine.get_i().width;
 	this.screenHeight = com_gEngine_GEngine.get_i().height;
-	this.ball = new com_gEngine_display_Sprite("ball");
+	this.ball = new com_gEngine_display_Sprite(kha_Assets.images.ballName);
 	var size = Math.random();
 	this.ball.scaleX = size * (maxHp % 3) + 1;
 	this.ball.scaleY = size * (maxHp % 3) + 1;
@@ -6277,7 +6277,7 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.collision.userData = this;
 	collisions.add(this.collision);
 	this.collision.width = 40 * this.ball.scaleX;
-	this.collision.height = 40 * this.ball.scaleX;
+	this.collision.height = 40 * this.ball.scaleY;
 	if(x + this.collision.width > this.screenWidth) {
 		x = this.screenWidth - this.collision.width - 10;
 	}
@@ -6290,7 +6290,7 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.hpDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 	this.hpDisplay.set_text(this.hp + "");
 	this.hpDisplay.setColorMultiply(0,0,0,1);
-	this.hpDisplay.x = -10;
+	this.hpDisplay.x = -13;
 	this.hpDisplay.y = -13;
 	this.hpLayer.addChild(this.hpDisplay);
 	this.hpLayer.set_rotation(0);
@@ -6317,6 +6317,7 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,update: function(dt) {
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
+		haxe_Log.trace("frame: " + this.ball.timeline.currentFrame,{ fileName : "gameObjects/Ball.hx", lineNumber : 80, className : "gameObjects.Ball", methodName : "update"});
 		this.time += dt;
 		this.velocity.y += 500 * dt;
 		if(this.collision.x < 5 || this.collision.x + this.collision.width > this.screenWidth) {
@@ -6685,7 +6686,6 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.currentTime += dt;
 		if(this.textTime) {
-			haxe_Log.trace("Test time",{ fileName : "gameObjects/PowerUp.hx", lineNumber : 106, className : "gameObjects.PowerUp", methodName : "update"});
 			this.textCurrentTime += dt;
 			this.floatingText.setColorMultiply(Math.random(),Math.random(),Math.random(),1);
 			if(this.textCurrentTime >= this.textLifeTime) {
@@ -8471,6 +8471,8 @@ var kha__$Assets_ImageList = function() {
 	this.forestDescription = { name : "forest", original_height : 720, file_sizes : [64059], original_width : 500, files : ["forest.jpg"], type : "image"};
 	this.forestName = "forest";
 	this.forest = null;
+	this.fireballDescription = { name : "fireball", original_height : 92, file_sizes : [20645], original_width : 399, files : ["fireball.png"], type : "image"};
+	this.fireball = null;
 	this.femalePlayerDescription = { name : "femalePlayer", original_height : 327, file_sizes : [31095], original_width : 381, files : ["femalePlayer.png"], type : "image"};
 	this.femalePlayer = null;
 	this.ballDescription = { name : "ball", original_height : 40, file_sizes : [469], original_width : 40, files : ["ball.png"], type : "image"};
@@ -8479,7 +8481,11 @@ var kha__$Assets_ImageList = function() {
 	this.arrowDescription = { name : "arrow", original_height : 67, file_sizes : [1505], original_width : 19, files : ["arrow.png"], type : "image"};
 	this.arrowName = "arrow";
 	this.arrow = null;
-	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [127442], original_width : 500, files : ["Antathaan.png"], type : "image"};
+	this._12Description = { name : "_12", original_height : 92, file_sizes : [58068], original_width : 399, files : ["12.png"], type : "image"};
+	this._12 = null;
+	this._1Description = { name : "_1", original_height : 100, file_sizes : [58331], original_width : 400, files : ["1.png"], type : "image"};
+	this._1 = null;
+	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [715283], original_width : 500, files : ["Antathaan.png"], type : "image"};
 	this.AntathaanName = "Antathaan";
 	this.Antathaan = null;
 };
@@ -8492,6 +8498,10 @@ kha__$Assets_ImageList.prototype = {
 	,Antathaan: null
 	,AntathaanName: null
 	,AntathaanDescription: null
+	,_1: null
+	,_1Description: null
+	,_12: null
+	,_12Description: null
 	,arrow: null
 	,arrowName: null
 	,arrowDescription: null
@@ -8500,6 +8510,8 @@ kha__$Assets_ImageList.prototype = {
 	,ballDescription: null
 	,femalePlayer: null
 	,femalePlayerDescription: null
+	,fireball: null
+	,fireballDescription: null
 	,forest: null
 	,forestName: null
 	,forestDescription: null

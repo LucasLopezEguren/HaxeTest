@@ -6,7 +6,7 @@
 				"Antathaan.png"
 			],
 			"file_sizes": [
-				127442
+				715283
 			],
 			"type": "image",
 			"original_width": 500,
@@ -61,6 +61,30 @@
 				18596
 			],
 			"type": "font"
+		},
+		{
+			"name": "_1",
+			"files": [
+				"1.png"
+			],
+			"file_sizes": [
+				58331
+			],
+			"type": "image",
+			"original_width": 400,
+			"original_height": 100
+		},
+		{
+			"name": "_12",
+			"files": [
+				"12.png"
+			],
+			"file_sizes": [
+				58068
+			],
+			"type": "image",
+			"original_width": 399,
+			"original_height": 92
 		},
 		{
 			"name": "alpha_vert",
@@ -317,6 +341,18 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "fireball",
+			"files": [
+				"fireball.png"
+			],
+			"file_sizes": [
+				20645
+			],
+			"type": "image",
+			"original_width": 399,
+			"original_height": 92
 		},
 		{
 			"name": "forest",

@@ -53,7 +53,7 @@ class GameState extends State {
 		atlas.add(new ImageLoader(Assets.images.hey_listenName));
 		atlas.add(new ImageLoader(Assets.images.arrowName));
 		atlas.add(new FontLoader(Assets.fonts.PixelOperator8_BoldName, 30));
-		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47, 0, [new Sequence("Idle", [0, 1, 2, 3, 4])]));
+		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47, 0, [new Sequence("Idle", [0, 1, 2, 3, 4])]));		
 		atlas.add(new ImageLoader(Assets.images.ballName));
 		resources.add(new SoundLoader(Assets.sounds.fairyName));
 		resources.add(new SoundLoader(Assets.sounds.heyListenName));

@@ -103,7 +103,6 @@ class PowerUp extends Entity {
 		super.update(dt);
 		currentTime += dt;
 		if (textTime) {
-			trace ("Test time");
 			textCurrentTime += dt;
 			floatingText.setColorMultiply(Math.random(), Math.random(), Math.random(), 1);
 			if (textCurrentTime >= textLifeTime) {
