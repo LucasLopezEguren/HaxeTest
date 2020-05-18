@@ -27,13 +27,14 @@ class LoopBackground extends Entity {
 
 	override function update(dt:Float) {
 		super.update(dt);
-
-		var x = Math.floor(camera.screenToWorldX(-10) / tileWidth);
-		var y = Math.floor(camera.screenToWorldY(-10) / tileHeight);
+		var screenToWorld = camera.screenToWorld(-10, -10);
+		var xInTiles = Math.floor(screenToWorld.x / tileWidth);
+		var yInTiles = Math.floor(screenToWorld.y / tileHeight);
 		var counter:Int = 0;
 		for (tile in sprites) {
-			tile.x = Std.int(x + (counter % 7)) * tileWidth;
-			tile.y = (y + Std.int(counter / 7)) * tileHeight;
+			tile.x = Std.int(xInTiles + (counter % 7)) * tileWidth;
+			tile.y = (yInTiles + Std.int(counter / 7)) * (tileHeight);
+
 			++counter;
 		}
 	}
