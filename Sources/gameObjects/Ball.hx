@@ -11,10 +11,12 @@ import com.gEngine.display.Sprite;
 import com.collision.platformer.CollisionGroup;
 import com.collision.platformer.CollisionBox;
 
+/* @author Lucas (181830) */
 class Ball extends Entity {
 
 	private static inline var GRAVITY:Float = 500;
 	private static inline var RADIO = 20;
+	private static inline var SPDY = -175;
 
 	var ball:Sprite;
 	var velocity:FastVector2;
@@ -31,7 +33,7 @@ class Ball extends Entity {
 	var hpDisplay:Text;
 	var time:Float;
 
-	public function new(stage:Stage, x:Float, y:Float, spdX:Float, spdY:Float, collisions:CollisionGroup, maxHp:Int) {
+	public function new(stage:Stage, x:Float, y:Float, spdX:Float, collisions:CollisionGroup, maxHp:Int) {
 		super();
 		hp = maxHp;
 		hpTotal = maxHp;
@@ -43,7 +45,7 @@ class Ball extends Entity {
 		ball.scaleY = size * (maxHp % 3) + 1;
 		var ballLayer = new Layer();
 		ballLayer.addChild(ball);
-		velocity = new FastVector2(spdX, spdY);
+		velocity = new FastVector2(spdX, SPDY);
 		colorRed = Math.random();
 		colorBlue = Math.random();
 		colorGreen = Math.random();
@@ -77,7 +79,6 @@ class Ball extends Entity {
 	override function update(dt:Float) {
 		collision.update(dt);
 		super.update(dt);
-		trace('frame: ' + ball.timeline.currentFrame);
 		time += dt;
 		velocity.y += GRAVITY * dt;
 		if (collision.x < 5 || collision.x + collision.width > screenWidth) {

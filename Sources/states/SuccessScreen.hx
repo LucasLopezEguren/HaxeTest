@@ -1,6 +1,7 @@
 package states;
 
 import gameObjects.Player;
+import GlobalGameData;
 import kha.Color;
 import kha.Assets;
 import kha.input.KeyCode;
@@ -16,6 +17,7 @@ import com.loading.basicResources.FontLoader;
 import com.loading.basicResources.ImageLoader;
 import com.loading.basicResources.SparrowLoader;
 
+/* @author Lucas (181830) */
 class SuccessScreen extends State {
 	var score:Int;
 	var sprite:String;
@@ -24,12 +26,11 @@ class SuccessScreen extends State {
 	var display:Sprite;
 	var simulationLayer:Layer;
 	var playerStats:Array<Float>;
-	var nextLevel:Int;
 	var withMouse:Bool;
 
-	public function new(score:Int, timeSurvived:Float, sprite:String, playerStats:Array<Float>, currentLevel:Int, withMouse:Bool) {
+	public function new(score:Int, timeSurvived:Float, sprite:String, playerStats:Array<Float>, withMouse:Bool) {
 		super();
-		this.nextLevel = currentLevel + 1;
+		GlobalGameData.levelCompleted();
 		this.withMouse = withMouse;
 		this.score = score;
 		this.timeSurvived = timeSurvived;
@@ -63,16 +64,18 @@ class SuccessScreen extends State {
 		stage.addChild(image);
 
 		var scoreDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
-		scoreDisplay.text = "Your score is " + score;
+		scoreDisplay.text = "YOUR SCORE IS " + score;
 		scoreDisplay.x = (GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5) - 7;
 		scoreDisplay.y = GEngine.virtualHeight / 2 - 30;
-		scoreDisplay.color = Color.Yellow;
+		scoreDisplay.setColorMultiply(2/3, 2/3, 0, 1);
 		stage.addChild(scoreDisplay);
 
 		pressContinue = new Text(Assets.fonts.PixelOperator8_BoldName);
-		pressContinue.text = "press enter";
+		pressContinue.text = "PRESS ENTER";
+		pressContinue.scaleX = 2/3;
+		pressContinue.scaleY = 2/3;
 		pressContinue.y = 660;
-		pressContinue.x = 250 - (pressContinue.width() / 2);
+		pressContinue.x = 250 - (pressContinue.width() / 3);
 		stage.addChild(pressContinue);
 	}
 
@@ -88,6 +91,7 @@ class SuccessScreen extends State {
 
 	override function update(dt:Float) {
 		super.update(dt);
+		GlobalGameData.soundControllWithoutIcon();
 		if (Input.i.isKeyCodePressed(KeyCode.Return) || Input.i.isMousePressed()) {
 			startNextLevel();
 		}
@@ -99,12 +103,12 @@ class SuccessScreen extends State {
 		} else {
 			transcparency -= 1 / 40;
 		}
-		pressContinue.setColorMultiply(1, 1, 0, transcparency);
+		pressContinue.setColorMultiply(2/3, 2/3, 0, transcparency);
 	}
 
 	function startNextLevel() {
 		var playerChar:Player = new Player(250, 650, sprite);
 		playerChar.setStats(playerStats);
-		changeState(new GameState(sprite, nextLevel, score, timeSurvived, playerChar, withMouse));
+		changeState(new GameState(sprite, score, timeSurvived, playerChar, withMouse));
 	}
 }

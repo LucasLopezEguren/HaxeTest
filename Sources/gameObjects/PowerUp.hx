@@ -11,9 +11,10 @@ import com.collision.platformer.CollisionGroup;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
-/* @author Lucas */
+/* @author Lucas (181830) */
 class PowerUp extends Entity {
-	private static inline var gravity = 200;
+	private static inline var GRAVITY = 200;
+	private inline static var DMGUPCHANCE:Int = 7;
 
 	public var collision:CollisionBox;
 
@@ -35,7 +36,7 @@ class PowerUp extends Entity {
 		super();
 		display = new Sprite(Assets.images.naviName);
 		powerUpType = Math.floor(Math.random() * 10);
-		if (powerUpType < 7) {
+		if (powerUpType < DMGUPCHANCE) {
 			more = true;
 			display.colorMultiplication(1, 1, 1, 1);
 		} else {
@@ -120,7 +121,7 @@ class PowerUp extends Entity {
 		if (currentTime >= lifeTime) {
 			die();
 		}
-		velocity.y += gravity * dt;
+		velocity.y += GRAVITY * dt;
 		if (collision.y + collision.height >= 690 && velocity.y > 0) {
 			velocity.y = 0;
 			velocity.x = 0;
@@ -151,6 +152,10 @@ class PowerUp extends Entity {
 			soundPlayed = false;
 			heyListen.removeFromParent();
 		}
+	}
+
+	public function get_DmgUpChance():Int {
+		return DMGUPCHANCE;
 	}
 
 	override function render() {

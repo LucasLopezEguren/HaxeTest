@@ -8,7 +8,7 @@ import com.gEngine.display.Sprite;
 import kha.math.FastVector2;
 import com.framework.utils.Entity;
 
-/* @author Lucas */
+/* @author Lucas (181830) */
 class Player extends Entity {
 	private var speed:Float = 250;
 

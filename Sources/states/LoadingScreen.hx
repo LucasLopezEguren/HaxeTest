@@ -11,6 +11,7 @@ import com.framework.utils.State;
 import com.gEngine.GEngine;
 import kha.Assets;
 
+/* @author Lucas (181830) */
 class LoadingScreen extends State {
 	public function new() {
 		super();

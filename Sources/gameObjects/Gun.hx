@@ -3,7 +3,7 @@ package gameObjects;
 import com.framework.utils.Entity;
 import com.collision.platformer.CollisionGroup;
 
-/* @author Lucas */
+/* @author Lucas (181830) */
 class Gun extends Entity
 {
 	var damage:Int = 1;

@@ -6,7 +6,7 @@ import com.gEngine.display.Layer;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
-/* @author Lucas */
+/* @author Lucas (181830) */
 class FloatingText extends Entity {
 	var display:Text;
 	var lifeTime:Float = 1;

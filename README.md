@@ -1,7 +1,8 @@
-   # HaxeTest
+   # Defend Antathaan
 
 Mute press M
-Shoot with A
 Quick game with Q
-Select character with mouse and click
-Move with arrows
+Select character with mouse and click to play with mouse
+Use arrows and enter to play with keyboard
+   Shoot with A
+   Move with arrows

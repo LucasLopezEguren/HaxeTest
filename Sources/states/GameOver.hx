@@ -1,20 +1,21 @@
 package states;
 
 import kha.Color;
-import com.loading.basicResources.JoinAtlas;
+import kha.Assets;
+import kha.input.KeyCode;
 import com.gEngine.GEngine;
 import com.gEngine.display.Text;
 import com.gEngine.display.Sprite;
-import kha.Assets;
-import com.loading.basicResources.FontLoader;
 import com.gEngine.display.Layer;
-import com.loading.basicResources.SparrowLoader;
-import kha.input.KeyCode;
 import com.framework.utils.Input;
-import com.loading.basicResources.ImageLoader;
-import com.loading.Resources;
 import com.framework.utils.State;
+import com.loading.Resources;
+import com.loading.basicResources.JoinAtlas;
+import com.loading.basicResources.FontLoader;
+import com.loading.basicResources.SparrowLoader;
+import com.loading.basicResources.ImageLoader;
 
+/* @author Lucas */
 class GameOver extends State {
 	var score:String;
 	var sprite:String;
@@ -30,6 +31,7 @@ class GameOver extends State {
 		this.score = score;
 		this.timeSurvived = timeSurvived;
 		this.sprite = sprite;
+		GlobalGameData.resetLevel();
 	}
 
 	override function load(resources:Resources) {
@@ -46,7 +48,7 @@ class GameOver extends State {
 		stage.addChild(simulationLayer);
 		display = new Sprite(sprite);
 		display.x = 170;
-		display.y = ((720 / 4) * 3) - 35;
+		display.y = ((720 / 4) * 3) - 60;
 		display.scaleX = 3;
 		display.scaleY = 3;
 		display.timeline.playAnimation("idle", false);
@@ -59,16 +61,16 @@ class GameOver extends State {
 		var levelDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
 		scoreDisplay.text = "You scored " + score;
 		scoreDisplay.x = (GEngine.virtualWidth / 2 - (scoreDisplay.width() * 0.5) * (2 / 3)) - 7;
-		scoreDisplay.y = GEngine.virtualHeight / 2 + 50;
-		scoreDisplay.color = Color.Orange;
-		levelDisplay.text = "Level " + level;
+		scoreDisplay.y = GEngine.virtualHeight / 2 + 60;
+		scoreDisplay.setColorMultiply(100 / 255, 20 / 255, 100 / 255, 1);
+		levelDisplay.text = "LEVEL " + level;
 		levelDisplay.x = (GEngine.virtualWidth / 2 - levelDisplay.width() * 0.5) - 7;
 		levelDisplay.y = GEngine.virtualHeight / 2;
-		levelDisplay.color = Color.Orange;
+		levelDisplay.setColorMultiply(100 / 255, 20 / 255, 100 / 255, 1);
 		timeDisplay.text = "Survived for " + timeSurvived;
 		timeDisplay.x = GEngine.virtualWidth / 2 - (timeDisplay.width() * 0.5) * (2 / 3);
-		timeDisplay.y = GEngine.virtualHeight / 2 + 80;
-		timeDisplay.color = Color.Orange;
+		timeDisplay.y = GEngine.virtualHeight / 2 + 90;
+		timeDisplay.setColorMultiply(100 / 255, 20 / 255, 100 / 255, 1);
 		timeDisplay.scaleX = timeDisplay.scaleY = 2 / 3;
 		scoreDisplay.scaleX = scoreDisplay.scaleY = 2 / 3;
 
@@ -85,6 +87,7 @@ class GameOver extends State {
 	}
 
 	override function update(dt:Float) {
+		GlobalGameData.soundControllWithoutIcon();
 		if (display.timeline.currentAnimation != "death_") {
 			playDeadAnimation();
 		}

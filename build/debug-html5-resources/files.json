@@ -63,6 +63,18 @@
 			"type": "font"
 		},
 		{
+			"name": "Screen_Shot_2020_05_09_at_02_35_37",
+			"files": [
+				"Screen Shot 2020-05-09 at 02.35.37.png"
+			],
+			"file_sizes": [
+				31454
+			],
+			"type": "image",
+			"original_width": 380,
+			"original_height": 52
+		},
+		{
 			"name": "_1",
 			"files": [
 				"1.png"
@@ -588,7 +600,7 @@
 				"malePlayer.xml"
 			],
 			"file_sizes": [
-				3612
+				3485
 			],
 			"type": "blob"
 		},
@@ -1434,6 +1446,18 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "selectCharacterBoard",
+			"files": [
+				"selectCharacterBoard.png"
+			],
+			"file_sizes": [
+				36621
+			],
+			"type": "image",
+			"original_width": 260,
+			"original_height": 99
 		},
 		{
 			"name": "shInverseMask_frag",

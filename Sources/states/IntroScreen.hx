@@ -17,15 +17,16 @@ import com.gEngine.GEngine;
 import kha.Assets;
 import kha.input.KeyCode;
 import gameObjects.Player;
-import gameObjects.SoundController;
 import levelObjects.LoopBackground;
 
+/* @author Lucas (181830) */
 class IntroScreen extends State {
 	override function load(resources:Resources) {
 		var atlas:JoinAtlas = new JoinAtlas(1024, 1024);
 		atlas.add(new SparrowLoader("femalePlayer", "femalePlayer_xml"));
 		atlas.add(new SparrowLoader("malePlayer", "malePlayer_xml"));
 		atlas.add(new ImageLoader(Assets.images.AntathaanName));
+		atlas.add(new ImageLoader(Assets.images.selectCharacterBoardName));
 		atlas.add(new FontLoader(Assets.fonts.PixelOperator8_BoldName, 30));
 		atlas.add(new FontLoader(Assets.fonts.MiddleAgesName, 30));
 		atlas.add(new SpriteSheetLoader(Assets.images.naviName, 50, 47, 0, [new Sequence("Idle", [0, 1, 2, 3, 4])]));
@@ -46,14 +47,16 @@ class IntroScreen extends State {
 	var title:Sprite;
 	var pressStart:Text;
 	var soundIcon:Sprite;
-	var soundControll:SoundController = new SoundController();
 	var selectedBg:RectangleDisplay;
-    var topLine:RectangleDisplay;
-    var leftLine:RectangleDisplay;
-    var rightLine:RectangleDisplay;
-    var bottomLine:RectangleDisplay;
+	var topLine:RectangleDisplay;
+	var leftLine:RectangleDisplay;
+	var rightLine:RectangleDisplay;
+	var bottomLine:RectangleDisplay;
+	var selectCharacterBoard:Sprite;
+	var hansBoard:Sprite;
+	var lilaBoard:Sprite;
 
-    function createSelectedBg() {
+	function createSelectedBg() {
 		selectedBg = new RectangleDisplay();
 		topLine = new RectangleDisplay();
 		leftLine = new RectangleDisplay();
@@ -64,20 +67,20 @@ class IntroScreen extends State {
 		selectedBg.scaleY = 0;
 		selectedBg.y = 490;
 
-		topLine.colorMultiplication(1, 210 / 255, 0, 1/2);
-		leftLine.colorMultiplication(1, 210 / 255, 0, 1/2);
-		rightLine.colorMultiplication(1, 210 / 255, 0, 1/2);
-		bottomLine.colorMultiplication(1, 210 / 255, 0, 1/2);
+		topLine.colorMultiplication(2 / 3, 2 / 3, 0, 1 / 2);
+		leftLine.colorMultiplication(2 / 3, 2 / 3, 0, 1 / 2);
+		rightLine.colorMultiplication(2 / 3, 2 / 3, 0, 1 / 2);
+		bottomLine.colorMultiplication(2 / 3, 2 / 3, 0, 1 / 2);
 		topLine.scaleX = bottomLine.scaleX = 0;
 		topLine.scaleY = bottomLine.scaleY = 0;
 		leftLine.scaleX = rightLine.scaleX = 0;
 		leftLine.scaleY = rightLine.scaleY = 0;
-        leftLine.y = rightLine.y = topLine.y = 488;
-        bottomLine.y = 708;
-    }
+		leftLine.y = rightLine.y = topLine.y = 488;
+		bottomLine.y = 708;
+	}
 
 	override function init() {
-        createSelectedBg();
+		createSelectedBg();
 
 		soundIcon = new Sprite(Assets.images.naviName);
 		soundIcon.x = 470;
@@ -88,7 +91,6 @@ class IntroScreen extends State {
 		background = new LoopBackground("Antathaan", simulationLayer, stage.defaultCamera());
 		stage.addChild(simulationLayer);
 		simulationLayer.addChild(soundIcon);
-		simulationLayer.addChild(selectedBg);
 
 		title = new Sprite("title");
 		title.scaleX = 12 / 25;
@@ -112,10 +114,30 @@ class IntroScreen extends State {
 
 		hudLayer = new StaticLayer();
 		stage.addChild(hudLayer);
-		selectCharacter = new Text(Assets.fonts.MiddleAgesName);
-		selectCharacter.text = "select character";
-		selectCharacter.y = 170;
-		selectCharacter.x = 250 - (selectCharacter.width() / 2);
+		selectCharacter = new Text(Assets.fonts.PixelOperator8_BoldName);
+		selectCharacter.text = "SELECT CHARACTER";
+		selectCharacter.y = 426;
+		selectCharacter.x = 248 - (selectCharacter.width() / 4);
+		selectCharacter.scaleX = 1 / 2;
+		selectCharacter.scaleY = 1 / 2;
+
+		selectCharacterBoard = new Sprite(Assets.images.selectCharacterBoardName);
+		selectCharacterBoard.scaleY = 1 / 2;
+		selectCharacterBoard.y = 409;
+		selectCharacterBoard.x = 250 - (selectCharacterBoard.width() / 2);
+
+		hansBoard = new Sprite(Assets.images.selectCharacterBoardName);
+		hansBoard.scaleY = 0;
+		hansBoard.scaleX = 0;
+		hansBoard.y = 670;
+		hansBoard.x = 90;
+
+		lilaBoard = new Sprite(Assets.images.selectCharacterBoardName);
+		lilaBoard.scaleY = 0;
+		lilaBoard.scaleX = 0;
+		lilaBoard.y = 670;
+		lilaBoard.x = 315;
+
 		male = new Text(Assets.fonts.MiddleAgesName);
 		female = new Text(Assets.fonts.MiddleAgesName);
 		male.text = "Hans";
@@ -124,25 +146,28 @@ class IntroScreen extends State {
 		female.text = "Lila";
 		female.y = 670;
 		female.x = 335;
-		pressStart = new Text(Assets.fonts.MiddleAgesName);
-		pressStart.text = "press enter to play";
+		pressStart = new Text(Assets.fonts.PixelOperator8_BoldName);
+		pressStart.text = "PRESS ENTER TO PLAY";
+		pressStart.scaleX = 1 / 2;
+		pressStart.scaleY = 1 / 2;
 		pressStart.y = 660;
-		pressStart.x = 250 - (pressStart.width() / 2);
+		pressStart.x = 250 - (pressStart.width() / 4);
 		lila.timeline.frameRate = 1 / 10;
 		hans.timeline.frameRate = 1 / 10;
 
-		male.setColorMultiply(1, 210 / 255, 0, 1);
-		female.setColorMultiply(1, 210 / 255, 0, 1);
-		pressStart.setColorMultiply(1, 210 / 255, 0, 1);
-		selectCharacter.setColorMultiply(1, 210 / 255, 0, 1);
+		male.setColorMultiply(9 / 10, 9 / 10, 9 / 10, 1);
+		female.setColorMultiply(9 / 10, 9 / 10, 9 / 10, 1);
+		pressStart.setColorMultiply(9 / 10, 9 / 10, 9 / 10, 1);
+		selectCharacter.setColorMultiply(9 / 10, 9 / 10, 9 / 10, 1);
 
 		hudLayer.addChild(pressStart);
-
+		hudLayer.addChild(lilaBoard);
+		hudLayer.addChild(hansBoard);
+		hudLayer.addChild(selectedBg);
 		hudLayer.addChild(topLine);
 		hudLayer.addChild(leftLine);
 		hudLayer.addChild(bottomLine);
 		hudLayer.addChild(rightLine);
-
 	}
 
 	var changeScreen:Bool = false;
@@ -158,7 +183,7 @@ class IntroScreen extends State {
 			selectedCharacter = "femalePlayer";
 			startGame();
 		}
-		sound();
+		GlobalGameData.soundControll(soundIcon);
 		if ((Input.i.isKeyCodePressed(KeyCode.Return) || Input.i.isMousePressed()) && !changeScreen) {
 			changeScreen = true;
 			pressStart.removeFromParent();
@@ -171,8 +196,13 @@ class IntroScreen extends State {
 					isDrawn = true;
 					simulationLayer.addChild(lila);
 					simulationLayer.addChild(hans);
+					hansBoard.scaleY = 1 / 3;
+					hansBoard.scaleX = 9 / 25;
+					lilaBoard.scaleY = 1 / 3;
+					lilaBoard.scaleX = 1 / 3;
 					hudLayer.addChild(male);
 					hudLayer.addChild(female);
+					hudLayer.addChild(selectCharacterBoard);
 					hudLayer.addChild(selectCharacter);
 				} else {
 					if (Input.i.isKeyCodePressed(KeyCode.Left)) {
@@ -222,55 +252,56 @@ class IntroScreen extends State {
 			} else {
 				transcparency -= 1 / 40;
 			}
-			pressStart.setColorMultiply(1, 210 / 255, 0, transcparency);
+			pressStart.setColorMultiply(1, 191 / 255, 57 / 255, transcparency);
 		}
 	}
 
 	static inline function mouseOverHans():Bool {
-		return (Input.i.getMouseX() > 60 && Input.i.getMouseX() < 190) && (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 670);
+		return (Input.i.getMouseX() > 68 && Input.i.getMouseX() < (68 + 150)) && (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 713);
 	}
 
 	static inline function mouseOverLila():Bool {
-		return (Input.i.getMouseX() > ((500 / 9) * 5) && Input.i.getMouseX() < (((500 / 9) * 5) + 180))
-			&& (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 670);
+		return (Input.i.getMouseX() > 288 && Input.i.getMouseX() < (288 + 150))
+			&& (Input.i.getMouseY() > 490 && Input.i.getMouseY() < 713);
 	}
 
 	function sound() {
-		soundControll.soundControll(soundIcon);
+		GlobalGameData.soundControll(soundIcon);
 	}
 
 	function backgroundCharacter() {
 		selectedBg.scaleX = 140;
 		selectedBg.scaleY = 218;
-        topLine.scaleX = bottomLine.scaleX = 145;
+		topLine.scaleX = bottomLine.scaleX = 145;
 		topLine.scaleY = bottomLine.scaleY = 5;
 		leftLine.scaleX = rightLine.scaleX = 5;
 		leftLine.scaleY = rightLine.scaleY = 223;
 		if (selectedCharacter == "femalePlayer") {
-            hans.timeline.playAnimation("walk_");
+			hans.timeline.playAnimation("walk_");
 			selectedBg.x = 290;
-            topLine.x = leftLine.x = bottomLine.x = 288;
-            rightLine.x = 430;
-            lila.timeline.playAnimation("selected");
+			topLine.x = leftLine.x = bottomLine.x = 288;
+			rightLine.x = 430;
+			lila.timeline.playAnimation("selected");
 		} else if (selectedCharacter == "malePlayer") {
-            lila.timeline.playAnimation("walk_");
+			lila.timeline.playAnimation("walk_");
 			selectedBg.x = 70;
-            topLine.x = leftLine.x = bottomLine.x = 68;
-            rightLine.x = 210;
-            hans.timeline.playAnimation("selected");
+			topLine.x = leftLine.x = bottomLine.x = 68;
+			rightLine.x = 210;
+			hans.timeline.playAnimation("selected");
 		} else {
 			selectedBg.scaleX = 1;
 			selectedBg.scaleY = 1;
-            topLine.scaleX = bottomLine.scaleX = 0;
-            topLine.scaleY = bottomLine.scaleY = 0;
-            leftLine.scaleX = rightLine.scaleX = 0;
-            leftLine.scaleY = rightLine.scaleY = 0;
+			topLine.scaleX = bottomLine.scaleX = 0;
+			topLine.scaleY = bottomLine.scaleY = 0;
+			leftLine.scaleX = rightLine.scaleX = 0;
+			leftLine.scaleY = rightLine.scaleY = 0;
 		}
 	}
 
 	var withMouse:Bool = false;
+
 	function startGame() {
-		var playerChar:Player = new Player(250, 650, selectedCharacter);
-		changeState(new GameState(selectedCharacter, 1, 0, 0, playerChar, withMouse));
+		var playerChar:Player = new Player(GEngine.i.width / 2, 650, selectedCharacter);
+		changeState(new GameState(selectedCharacter, 0, 0, playerChar, withMouse));
 	}
 }

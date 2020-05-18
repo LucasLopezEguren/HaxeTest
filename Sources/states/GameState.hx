@@ -22,24 +22,22 @@ import kha.Assets;
 import kha.Canvas;
 import kha.Color;
 import levelObjects.LoopBackground;
-import gameObjects.SoundController;
 import gameObjects.PowerUp;
 import gameObjects.Bullet;
 import gameObjects.Player;
 import gameObjects.Ball;
 import GlobalGameData.GGD;
 
+/* @author Lucas (181830) */
 class GameState extends State {
 	var character:String;
 	var allBallsHp:Array<Int> = new Array<Int>();
-	var currentLevel:Int;
 	var withMouse:Bool;
 	var time:Float = 0;
 
-	public function new(character:String, level:Int, score:Int, time:Float, playerChar:Player, withMouse:Bool) {
+	public function new(character:String, score:Int, time:Float, playerChar:Player, withMouse:Bool) {
 		super();
 		this.withMouse = withMouse;
-		currentLevel = level;
 		this.time = time;
 		this.score = score;
 		this.playerChar = playerChar;
@@ -71,7 +69,6 @@ class GameState extends State {
 	var survivedTime:String;
 	var ballsAlive:Int = 0;
 	var allBalls:Array<Ball>;
-	var soundControll:SoundController = new SoundController();
 	var soundIcon:Sprite;
 
 	override function init() {
@@ -109,6 +106,7 @@ class GameState extends State {
 		scoreDisplay.scaleX = scoreDisplay.scaleY = 1 / 2;
 		scoreDisplay.text = "0";
 		hudLayer.addChild(scoreDisplay);
+
 		timeDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
 		timeDisplay.x = GEngine.virtualWidth - 90;
 		timeDisplay.scaleX = timeDisplay.scaleY = 1 / 2;
@@ -119,7 +117,7 @@ class GameState extends State {
 		var levelDisplay = new Text(Assets.fonts.PixelOperator8_BoldName);
 		levelDisplay.x = 20;
 		levelDisplay.y = 30;
-		levelDisplay.text = "Level " + currentLevel;
+		levelDisplay.text = "Level " + GlobalGameData.level;
 		levelDisplay.scaleX = levelDisplay.scaleY = 1 / 2;
 		hudLayer.addChild(levelDisplay);
 		if (withMouse) {
@@ -134,13 +132,13 @@ class GameState extends State {
 
 	override function update(dt:Float) {
 		time += dt;
-		soundControll.soundControll(soundIcon);
+		GlobalGameData.soundControll(soundIcon);
 		super.update(dt);
 		if ((ballsAlive == 0 || Math.floor(time) % 10 == 0) && !added) {
 			added = true;
 			if (allBallsHp.length == 0 && ballsAlive == 0) {
 				if (finish(dt)) {
-					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), currentLevel, withMouse));
+					changeState(new SuccessScreen(score, time, character, playerChar.get_Stats(), withMouse));
 				}
 			} else {
 				if (allBallsHp.length > 0) {
@@ -191,14 +189,13 @@ class GameState extends State {
 			if (ball.get_hpTotal() <= 1) {
 				ballsAlive = ballsAlive - 1;
 			} else {
+				var speedX:Float = 125 + (Math.abs(ball.get_speedX()));
 				var childBall1:Ball = new Ball(stage, ball.get_x()
-					+ (10 * ball.get_hpTotal()), ball.get_y(), 125
-					+ (Math.abs(ball.get_speedX())), -175,
+					+ (10 * ball.get_hpTotal()), ball.get_y(), speedX,
 					enemyCollisions, ball.get_hpTotal()
 					- 1);
 				var childBall2:Ball = new Ball(stage, ball.get_x()
-					- (10 * ball.get_hpTotal()), ball.get_y(), -125
-					- (Math.abs(ball.get_speedX())), -175,
+					- (10 * ball.get_hpTotal()), ball.get_y(), -speedX,
 					enemyCollisions, ball.get_hpTotal()
 					- 1);
 				addChild(childBall1);
@@ -212,12 +209,12 @@ class GameState extends State {
 
 	function playerVsBall(aPlayerChar:ICollider, aBall:ICollider) {
 		playerChar.die();
-		changeState(new GameOver("" + score, survivedTime, character, currentLevel));
+		changeState(new GameOver("" + score, survivedTime, character, GlobalGameData.level));
 	}
 
 	function powerUpVsPlayer(aPowerUp:ICollider, aPlayerChar:ICollider) {
 		var powerUp:PowerUp = (cast aPowerUp.userData);
-		if (powerUp.get_powerUpType() > 6) {
+		if (powerUp.get_powerUpType() > powerUp.get_DmgUpChance()) {
 			playerChar.add_damage();
 		} else {
 			playerChar.add_speed();
@@ -228,16 +225,16 @@ class GameState extends State {
 	inline function ballCreator(hpMax:Int):Ball {
 		var xSpeed:Int = Math.floor(Math.random() * 2);
 		if (xSpeed < 1) {
-			xSpeed = -50 - currentLevel;
+			xSpeed = -50 - GlobalGameData.level;
 		} else {
-			xSpeed = 50 + currentLevel;
+			xSpeed = 50 + GlobalGameData.level;
 		}
-		return new Ball(stage, ((Math.random() * 450) + 15), ((Math.random() * 200) + 15), xSpeed, 0, enemyCollisions, hpMax);
+		return new Ball(stage, ((Math.random() * (GEngine.virtualWidth / 4)) + 15), ((Math.random() * 200) + 15), xSpeed, enemyCollisions, hpMax);
 	}
 
 	function levelCreator() {
 		var randomGenerator:Int = -1;
-		var difficulty:Int = (currentLevel + (currentLevel * 2));
+		var difficulty:Int = (GlobalGameData.level + (GlobalGameData.level * 2));
 		var retry:Bool = true;
 		while (difficulty > 0) {
 			retry = true;
@@ -245,7 +242,7 @@ class GameState extends State {
 			difficulty--;
 			while (retry || randomGenerator < 0) {
 				randomGenerator = Math.floor(Math.random() * (allBallsHp.length + 1));
-				if (randomGenerator == allBallsHp.length || allBallsHp[randomGenerator] < (3 + Math.floor((currentLevel / 3)))) {
+				if (randomGenerator == allBallsHp.length || allBallsHp[randomGenerator] < (3 + Math.floor((GlobalGameData.level / 3)))) {
 					retry = false;
 				}
 			}

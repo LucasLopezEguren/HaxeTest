@@ -9,6 +9,7 @@ import com.framework.utils.State;
 import com.gEngine.GEngine;
 import kha.Assets;
 
+/* @author Lucas (181830) */
 class LoadingBar extends State {
 
 	override function load(resources:Resources) {

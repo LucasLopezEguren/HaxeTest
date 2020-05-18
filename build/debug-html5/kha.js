@@ -41,6 +41,31 @@ GlobalGameData.destroy = function() {
 	GlobalGameData.simulationLayer = null;
 	GlobalGameData.camera = null;
 };
+GlobalGameData.levelCompleted = function() {
+	GlobalGameData.level++;
+};
+GlobalGameData.resetLevel = function() {
+	GlobalGameData.level = 1;
+};
+GlobalGameData.soundControll = function(soundIcon) {
+	GlobalGameData.soundControllWithoutIcon();
+	if(com_soundLib_SoundManager.musicMuted) {
+		soundIcon.colorMultiplication(1,0,0,1);
+	} else {
+		soundIcon.colorMultiplication(1,1,1,1);
+	}
+};
+GlobalGameData.soundControllWithoutIcon = function() {
+	if(com_framework_utils_Input.i.isKeyCodePressed(77)) {
+		if(com_soundLib_SoundManager.musicMuted) {
+			com_soundLib_SoundManager.unMuteMusic();
+			com_soundLib_SoundManager.unMuteSound();
+		} else {
+			com_soundLib_SoundManager.muteMusic();
+			com_soundLib_SoundManager.muteSound();
+		}
+	}
+};
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = "HxOverrides";
@@ -6256,7 +6281,7 @@ com_soundLib_SoundManager.unMuteMusic = function() {
 com_soundLib_SoundManager.reset = function() {
 	com_soundLib_SoundManager.map = new haxe_ds_StringMap();
 };
-var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
+var gameObjects_Ball = function(stage,x,y,spdX,collisions,maxHp) {
 	com_framework_utils_Entity.call(this);
 	this.hp = maxHp;
 	this.hpTotal = maxHp;
@@ -6268,7 +6293,7 @@ var gameObjects_Ball = function(stage,x,y,spdX,spdY,collisions,maxHp) {
 	this.ball.scaleY = size * (maxHp % 3) + 1;
 	var ballLayer = new com_gEngine_display_Layer();
 	ballLayer.addChild(this.ball);
-	this.velocity = new kha_math_FastVector2(spdX,spdY);
+	this.velocity = new kha_math_FastVector2(spdX,-175);
 	this.colorRed = Math.random();
 	this.colorBlue = Math.random();
 	this.colorGreen = Math.random();
@@ -6317,7 +6342,6 @@ gameObjects_Ball.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,update: function(dt) {
 		this.collision.update(dt);
 		com_framework_utils_Entity.prototype.update.call(this,dt);
-		haxe_Log.trace("frame: " + this.ball.timeline.currentFrame,{ fileName : "gameObjects/Ball.hx", lineNumber : 80, className : "gameObjects.Ball", methodName : "update"});
 		this.time += dt;
 		this.velocity.y += 500 * dt;
 		if(this.collision.x < 5 || this.collision.x + this.collision.width > this.screenWidth) {
@@ -6735,35 +6759,14 @@ gameObjects_PowerUp.prototype = $extend(com_framework_utils_Entity.prototype,{
 			this.heyListen.removeFromParent();
 		}
 	}
+	,get_DmgUpChance: function() {
+		return 7;
+	}
 	,render: function() {
 		com_framework_utils_Entity.prototype.render.call(this);
 	}
 	,__class__: gameObjects_PowerUp
 });
-var gameObjects_SoundController = function() {
-	this.music = true;
-};
-$hxClasses["gameObjects.SoundController"] = gameObjects_SoundController;
-gameObjects_SoundController.__name__ = "gameObjects.SoundController";
-gameObjects_SoundController.prototype = {
-	music: null
-	,soundControll: function(soundIcon) {
-		if(com_framework_utils_Input.i.isKeyCodePressed(77)) {
-			if(this.music) {
-				com_soundLib_SoundManager.muteMusic();
-				com_soundLib_SoundManager.muteSound();
-				soundIcon.colorMultiplication(1,0,0,1);
-				this.music = false;
-			} else {
-				com_soundLib_SoundManager.unMuteMusic();
-				com_soundLib_SoundManager.unMuteSound();
-				soundIcon.colorMultiplication(1,1,1,1);
-				this.music = true;
-			}
-		}
-	}
-	,__class__: gameObjects_SoundController
-};
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = "haxe.IMap";
@@ -8458,6 +8461,9 @@ var kha__$Assets_ImageList = function() {
 	this.title = null;
 	this.stageCompleteDescription = { name : "stageComplete", original_height : 382, file_sizes : [83563], original_width : 942, files : ["stageComplete.png"], type : "image"};
 	this.stageComplete = null;
+	this.selectCharacterBoardDescription = { name : "selectCharacterBoard", original_height : 99, file_sizes : [36621], original_width : 260, files : ["selectCharacterBoard.png"], type : "image"};
+	this.selectCharacterBoardName = "selectCharacterBoard";
+	this.selectCharacterBoard = null;
 	this.naviDescription = { name : "navi", original_height : 50, file_sizes : [8819], original_width : 250, files : ["navi.png"], type : "image"};
 	this.naviName = "navi";
 	this.navi = null;
@@ -8485,6 +8491,8 @@ var kha__$Assets_ImageList = function() {
 	this._12 = null;
 	this._1Description = { name : "_1", original_height : 100, file_sizes : [58331], original_width : 400, files : ["1.png"], type : "image"};
 	this._1 = null;
+	this.Screen_Shot_2020_05_09_at_02_35_37Description = { name : "Screen_Shot_2020_05_09_at_02_35_37", original_height : 52, file_sizes : [31454], original_width : 380, files : ["Screen Shot 2020-05-09 at 02.35.37.png"], type : "image"};
+	this.Screen_Shot_2020_05_09_at_02_35_37 = null;
 	this.AntathaanDescription = { name : "Antathaan", original_height : 720, file_sizes : [715283], original_width : 500, files : ["Antathaan.png"], type : "image"};
 	this.AntathaanName = "Antathaan";
 	this.Antathaan = null;
@@ -8498,6 +8506,8 @@ kha__$Assets_ImageList.prototype = {
 	,Antathaan: null
 	,AntathaanName: null
 	,AntathaanDescription: null
+	,Screen_Shot_2020_05_09_at_02_35_37: null
+	,Screen_Shot_2020_05_09_at_02_35_37Description: null
 	,_1: null
 	,_1Description: null
 	,_12: null
@@ -8525,6 +8535,9 @@ kha__$Assets_ImageList.prototype = {
 	,navi: null
 	,naviName: null
 	,naviDescription: null
+	,selectCharacterBoard: null
+	,selectCharacterBoardName: null
+	,selectCharacterBoardDescription: null
 	,stageComplete: null
 	,stageCompleteDescription: null
 	,title: null
@@ -8561,7 +8574,7 @@ kha__$Assets_SoundList.prototype = {
 	,__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
-	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3612], files : ["malePlayer.xml"], type : "blob"};
+	this.malePlayer_xmlDescription = { name : "malePlayer_xml", file_sizes : [3485], files : ["malePlayer.xml"], type : "blob"};
 	this.malePlayer_xml = null;
 	this.femalePlayer_xmlDescription = { name : "femalePlayer_xml", file_sizes : [3485], files : ["femalePlayer.xml"], type : "blob"};
 	this.femalePlayer_xml = null;
@@ -22246,6 +22259,7 @@ var states_GameOver = function(score,timeSurvived,sprite,level) {
 	this.score = score;
 	this.timeSurvived = timeSurvived;
 	this.sprite = sprite;
+	GlobalGameData.resetLevel();
 };
 $hxClasses["states.GameOver"] = states_GameOver;
 states_GameOver.__name__ = "states.GameOver";
@@ -22270,7 +22284,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		this.stage.addChild(this.simulationLayer);
 		this.display = new com_gEngine_display_Sprite(this.sprite);
 		this.display.x = 170;
-		this.display.y = 505.;
+		this.display.y = 480.;
 		this.display.scaleX = 3;
 		this.display.scaleY = 3;
 		this.display.timeline.playAnimation("idle",false);
@@ -22283,16 +22297,16 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		var levelDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 		scoreDisplay.set_text("You scored " + this.score);
 		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 * 0.66666666666666663 - 7;
-		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 50;
-		scoreDisplay.set_color(-23296);
-		levelDisplay.set_text("Level " + this.level);
+		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 60;
+		scoreDisplay.setColorMultiply(0.392156862745098034,0.0784313725490196,0.392156862745098034,1);
+		levelDisplay.set_text("LEVEL " + this.level);
 		levelDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - levelDisplay.width() * 0.5 - 7;
 		levelDisplay.y = com_gEngine_GEngine.virtualHeight / 2;
-		levelDisplay.set_color(-23296);
+		levelDisplay.setColorMultiply(0.392156862745098034,0.0784313725490196,0.392156862745098034,1);
 		timeDisplay.set_text("Survived for " + this.timeSurvived);
 		timeDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - timeDisplay.width() * 0.5 * 0.66666666666666663;
-		timeDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 80;
-		timeDisplay.set_color(-23296);
+		timeDisplay.y = com_gEngine_GEngine.virtualHeight / 2 + 90;
+		timeDisplay.setColorMultiply(0.392156862745098034,0.0784313725490196,0.392156862745098034,1);
 		timeDisplay.scaleX = timeDisplay.scaleY = 0.66666666666666663;
 		scoreDisplay.scaleX = scoreDisplay.scaleY = 0.66666666666666663;
 		this.stage.addChild(scoreDisplay);
@@ -22306,6 +22320,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 		this.display.timeline.playAnimation("death_",false);
 	}
 	,update: function(dt) {
+		GlobalGameData.soundControllWithoutIcon();
 		if(this.display.timeline.currentAnimation != "death_") {
 			this.playDeadAnimation();
 		}
@@ -22316,19 +22331,17 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,__class__: states_GameOver
 });
-var states_GameState = function(character,level,score,time,playerChar,withMouse) {
+var states_GameState = function(character,score,time,playerChar,withMouse) {
 	this.timeToFinish = 3;
 	this.luckHelper = 0;
 	this.added = false;
 	this.isDebug = false;
-	this.soundControll = new gameObjects_SoundController();
 	this.ballsAlive = 0;
 	this.score = 0;
 	this.time = 0;
 	this.allBallsHp = [];
 	com_framework_utils_State.call(this);
 	this.withMouse = withMouse;
-	this.currentLevel = level;
 	this.time = time;
 	this.score = score;
 	this.playerChar = playerChar;
@@ -22340,7 +22353,6 @@ states_GameState.__super__ = com_framework_utils_State;
 states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	character: null
 	,allBallsHp: null
-	,currentLevel: null
 	,withMouse: null
 	,time: null
 	,load: function(resources) {
@@ -22367,7 +22379,6 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,survivedTime: null
 	,ballsAlive: null
 	,allBalls: null
-	,soundControll: null
 	,soundIcon: null
 	,init: function() {
 		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
@@ -22406,7 +22417,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var levelDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
 		levelDisplay.x = 20;
 		levelDisplay.y = 30;
-		levelDisplay.set_text("Level " + this.currentLevel);
+		levelDisplay.set_text("Level " + GlobalGameData.level);
 		levelDisplay.scaleX = levelDisplay.scaleY = 0.5;
 		this.hudLayer.addChild(levelDisplay);
 		if(this.withMouse) {
@@ -22418,23 +22429,23 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,added: null
 	,update: function(dt) {
 		this.time += dt;
-		this.soundControll.soundControll(this.soundIcon);
+		GlobalGameData.soundControll(this.soundIcon);
 		com_framework_utils_State.prototype.update.call(this,dt);
 		if((this.ballsAlive == 0 || Math.floor(this.time) % 10 == 0) && !this.added) {
 			this.added = true;
 			if(this.allBallsHp.length == 0 && this.ballsAlive == 0) {
 				if(this.finish(dt)) {
-					this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.currentLevel,this.withMouse));
+					this.changeState(new states_SuccessScreen(this.score,this.time,this.character,this.playerChar.get_Stats(),this.withMouse));
 				}
 			} else if(this.allBallsHp.length > 0) {
 				var hpMax = this.allBallsHp.pop();
 				var xSpeed = Math.floor(Math.random() * 2);
 				if(xSpeed < 1) {
-					xSpeed = -50 - this.currentLevel;
+					xSpeed = -50 - GlobalGameData.level;
 				} else {
-					xSpeed = 50 + this.currentLevel;
+					xSpeed = 50 + GlobalGameData.level;
 				}
-				var ball = new gameObjects_Ball(this.stage,Math.random() * 450 + 15,Math.random() * 200 + 15,xSpeed,0,this.enemyCollisions,hpMax);
+				var ball = new gameObjects_Ball(this.stage,Math.random() * (com_gEngine_GEngine.virtualWidth / 4) + 15,Math.random() * 200 + 15,xSpeed,this.enemyCollisions,hpMax);
 				this.addChild(ball);
 				this.ballsAlive++;
 			}
@@ -22478,8 +22489,9 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			if(ball.get_hpTotal() <= 1) {
 				this.ballsAlive -= 1;
 			} else {
-				var childBall1 = new gameObjects_Ball(this.stage,ball.get_x() + 10 * ball.get_hpTotal(),ball.get_y(),125 + Math.abs(ball.get_speedX()),-175,this.enemyCollisions,ball.get_hpTotal() - 1);
-				var childBall2 = new gameObjects_Ball(this.stage,ball.get_x() - 10 * ball.get_hpTotal(),ball.get_y(),-125 - Math.abs(ball.get_speedX()),-175,this.enemyCollisions,ball.get_hpTotal() - 1);
+				var speedX = 125 + Math.abs(ball.get_speedX());
+				var childBall1 = new gameObjects_Ball(this.stage,ball.get_x() + 10 * ball.get_hpTotal(),ball.get_y(),speedX,this.enemyCollisions,ball.get_hpTotal() - 1);
+				var childBall2 = new gameObjects_Ball(this.stage,ball.get_x() - 10 * ball.get_hpTotal(),ball.get_y(),-speedX,this.enemyCollisions,ball.get_hpTotal() - 1);
 				this.addChild(childBall1);
 				this.addChild(childBall2);
 				this.ballsAlive += 1;
@@ -22490,11 +22502,11 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,playerVsBall: function(aPlayerChar,aBall) {
 		this.playerChar.die();
-		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character,this.currentLevel));
+		this.changeState(new states_GameOver("" + this.score,this.survivedTime,this.character,GlobalGameData.level));
 	}
 	,powerUpVsPlayer: function(aPowerUp,aPlayerChar) {
 		var powerUp = aPowerUp.userData;
-		if(powerUp.get_powerUpType() > 6) {
+		if(powerUp.get_powerUpType() > powerUp.get_DmgUpChance()) {
 			this.playerChar.add_damage();
 		} else {
 			this.playerChar.add_speed();
@@ -22503,7 +22515,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,levelCreator: function() {
 		var randomGenerator = -1;
-		var difficulty = this.currentLevel + this.currentLevel * 2;
+		var difficulty = GlobalGameData.level + GlobalGameData.level * 2;
 		var retry = true;
 		while(difficulty > 0) {
 			retry = true;
@@ -22511,7 +22523,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			--difficulty;
 			while(retry || randomGenerator < 0) {
 				randomGenerator = Math.floor(Math.random() * (this.allBallsHp.length + 1));
-				if(randomGenerator == this.allBallsHp.length || this.allBallsHp[randomGenerator] < 3 + Math.floor(this.currentLevel / 3)) {
+				if(randomGenerator == this.allBallsHp.length || this.allBallsHp[randomGenerator] < 3 + Math.floor(GlobalGameData.level / 3)) {
 					retry = false;
 				}
 			}
@@ -22545,7 +22557,6 @@ var states_IntroScreen = function() {
 	this.more = false;
 	this.isDrawn = false;
 	this.changeScreen = false;
-	this.soundControll = new gameObjects_SoundController();
 	com_framework_utils_State.call(this);
 };
 $hxClasses["states.IntroScreen"] = states_IntroScreen;
@@ -22557,6 +22568,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_SparrowLoader("femalePlayer","femalePlayer_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("malePlayer","malePlayer_xml"));
 		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.AntathaanName));
+		atlas.add(new com_loading_basicResources_ImageLoader(kha_Assets.images.selectCharacterBoardName));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.PixelOperator8_BoldName,30));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts.MiddleAgesName,30));
 		atlas.add(new com_loading_basicResources_SpriteSheetLoader(kha_Assets.images.naviName,50,47,0,[new com_loading_basicResources_Sequence("Idle",[0,1,2,3,4])]));
@@ -22575,12 +22587,14 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,title: null
 	,pressStart: null
 	,soundIcon: null
-	,soundControll: null
 	,selectedBg: null
 	,topLine: null
 	,leftLine: null
 	,rightLine: null
 	,bottomLine: null
+	,selectCharacterBoard: null
+	,hansBoard: null
+	,lilaBoard: null
 	,createSelectedBg: function() {
 		this.selectedBg = new com_gEngine_helper_RectangleDisplay();
 		this.topLine = new com_gEngine_helper_RectangleDisplay();
@@ -22613,7 +22627,6 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.background = new levelObjects_LoopBackground("Antathaan",this.simulationLayer,this.stage.cameras[0]);
 		this.stage.addChild(this.simulationLayer);
 		this.simulationLayer.addChild(this.soundIcon);
-		this.simulationLayer.addChild(this.selectedBg);
 		this.title = new com_gEngine_display_Sprite("title");
 		this.title.scaleX = 0.48;
 		this.title.scaleY = 0.48;
@@ -22636,11 +22649,28 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.lila.timeline.playAnimation("walk_",true);
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.hudLayer);
-		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.MiddleAgesName);
-		this.selectCharacter.set_text("select character");
-		this.selectCharacter.y = 170;
-		var tmp2 = this.selectCharacter.width() / 2;
-		this.selectCharacter.x = 250 - tmp2;
+		this.selectCharacter = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		this.selectCharacter.set_text("SELECT CHARACTER");
+		this.selectCharacter.y = 426;
+		var tmp2 = this.selectCharacter.width() / 4;
+		this.selectCharacter.x = 248 - tmp2;
+		this.selectCharacter.scaleX = 0.5;
+		this.selectCharacter.scaleY = 0.5;
+		this.selectCharacterBoard = new com_gEngine_display_Sprite(kha_Assets.images.selectCharacterBoardName);
+		this.selectCharacterBoard.scaleY = 0.5;
+		this.selectCharacterBoard.y = 409;
+		var tmp3 = this.selectCharacterBoard.width() / 2;
+		this.selectCharacterBoard.x = 250 - tmp3;
+		this.hansBoard = new com_gEngine_display_Sprite(kha_Assets.images.selectCharacterBoardName);
+		this.hansBoard.scaleY = 0;
+		this.hansBoard.scaleX = 0;
+		this.hansBoard.y = 670;
+		this.hansBoard.x = 90;
+		this.lilaBoard = new com_gEngine_display_Sprite(kha_Assets.images.selectCharacterBoardName);
+		this.lilaBoard.scaleY = 0;
+		this.lilaBoard.scaleX = 0;
+		this.lilaBoard.y = 670;
+		this.lilaBoard.x = 315;
 		this.male = new com_gEngine_display_Text(kha_Assets.fonts.MiddleAgesName);
 		this.female = new com_gEngine_display_Text(kha_Assets.fonts.MiddleAgesName);
 		this.male.set_text("Hans");
@@ -22649,18 +22679,23 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		this.female.set_text("Lila");
 		this.female.y = 670;
 		this.female.x = 335;
-		this.pressStart = new com_gEngine_display_Text(kha_Assets.fonts.MiddleAgesName);
-		this.pressStart.set_text("press enter to play");
+		this.pressStart = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
+		this.pressStart.set_text("PRESS ENTER TO PLAY");
+		this.pressStart.scaleX = 0.5;
+		this.pressStart.scaleY = 0.5;
 		this.pressStart.y = 660;
-		var tmp3 = this.pressStart.width() / 2;
-		this.pressStart.x = 250 - tmp3;
+		var tmp4 = this.pressStart.width() / 4;
+		this.pressStart.x = 250 - tmp4;
 		this.lila.timeline.frameRate = 0.1;
 		this.hans.timeline.frameRate = 0.1;
-		this.male.setColorMultiply(1,0.823529411764705843,0,1);
-		this.female.setColorMultiply(1,0.823529411764705843,0,1);
-		this.pressStart.setColorMultiply(1,0.823529411764705843,0,1);
-		this.selectCharacter.setColorMultiply(1,0.823529411764705843,0,1);
+		this.male.setColorMultiply(0.9,0.9,0.9,1);
+		this.female.setColorMultiply(0.9,0.9,0.9,1);
+		this.pressStart.setColorMultiply(0.9,0.9,0.9,1);
+		this.selectCharacter.setColorMultiply(0.9,0.9,0.9,1);
 		this.hudLayer.addChild(this.pressStart);
+		this.hudLayer.addChild(this.lilaBoard);
+		this.hudLayer.addChild(this.hansBoard);
+		this.hudLayer.addChild(this.selectedBg);
 		this.hudLayer.addChild(this.topLine);
 		this.hudLayer.addChild(this.leftLine);
 		this.hudLayer.addChild(this.bottomLine);
@@ -22677,7 +22712,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			this.selectedCharacter = "femalePlayer";
 			this.startGame();
 		}
-		this.sound();
+		GlobalGameData.soundControll(this.soundIcon);
 		if((com_framework_utils_Input.i.isKeyCodePressed(13) || com_framework_utils_Input.i.isMousePressed()) && !this.changeScreen) {
 			this.changeScreen = true;
 			this.pressStart.removeFromParent();
@@ -22690,8 +22725,13 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 					this.isDrawn = true;
 					this.simulationLayer.addChild(this.lila);
 					this.simulationLayer.addChild(this.hans);
+					this.hansBoard.scaleY = 0.333333333333333315;
+					this.hansBoard.scaleX = 0.36;
+					this.lilaBoard.scaleY = 0.333333333333333315;
+					this.lilaBoard.scaleX = 0.333333333333333315;
 					this.hudLayer.addChild(this.male);
 					this.hudLayer.addChild(this.female);
+					this.hudLayer.addChild(this.selectCharacterBoard);
 					this.hudLayer.addChild(this.selectCharacter);
 				} else {
 					if(com_framework_utils_Input.i.isKeyCodePressed(37)) {
@@ -22705,9 +22745,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 					var tmp;
 					var tmp1;
 					var _this = com_framework_utils_Input.i;
-					if(_this.mousePosition.x * _this.screenScale.x > 60) {
+					if(_this.mousePosition.x * _this.screenScale.x > 68) {
 						var _this1 = com_framework_utils_Input.i;
-						tmp1 = _this1.mousePosition.x * _this1.screenScale.x < 190;
+						tmp1 = _this1.mousePosition.x * _this1.screenScale.x < 218;
 					} else {
 						tmp1 = false;
 					}
@@ -22715,7 +22755,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						var _this2 = com_framework_utils_Input.i;
 						if(_this2.mousePosition.y * _this2.screenScale.y > 490) {
 							var _this3 = com_framework_utils_Input.i;
-							tmp = _this3.mousePosition.y * _this3.screenScale.y < 670;
+							tmp = _this3.mousePosition.y * _this3.screenScale.y < 713;
 						} else {
 							tmp = false;
 						}
@@ -22736,9 +22776,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 					var tmp2;
 					var tmp3;
 					var _this4 = com_framework_utils_Input.i;
-					if(_this4.mousePosition.x * _this4.screenScale.x > 277.777777777777771) {
+					if(_this4.mousePosition.x * _this4.screenScale.x > 288) {
 						var _this5 = com_framework_utils_Input.i;
-						tmp3 = _this5.mousePosition.x * _this5.screenScale.x < 457.777777777777771;
+						tmp3 = _this5.mousePosition.x * _this5.screenScale.x < 438;
 					} else {
 						tmp3 = false;
 					}
@@ -22746,7 +22786,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						var _this6 = com_framework_utils_Input.i;
 						if(_this6.mousePosition.y * _this6.screenScale.y > 490) {
 							var _this7 = com_framework_utils_Input.i;
-							tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 670;
+							tmp2 = _this7.mousePosition.y * _this7.screenScale.y < 713;
 						} else {
 							tmp2 = false;
 						}
@@ -22767,9 +22807,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 					var tmp5;
 					var tmp6;
 					var _this8 = com_framework_utils_Input.i;
-					if(_this8.mousePosition.x * _this8.screenScale.x > 60) {
+					if(_this8.mousePosition.x * _this8.screenScale.x > 68) {
 						var _this9 = com_framework_utils_Input.i;
-						tmp6 = _this9.mousePosition.x * _this9.screenScale.x < 190;
+						tmp6 = _this9.mousePosition.x * _this9.screenScale.x < 218;
 					} else {
 						tmp6 = false;
 					}
@@ -22777,7 +22817,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						var _this10 = com_framework_utils_Input.i;
 						if(_this10.mousePosition.y * _this10.screenScale.y > 490) {
 							var _this11 = com_framework_utils_Input.i;
-							tmp5 = _this11.mousePosition.y * _this11.screenScale.y < 670;
+							tmp5 = _this11.mousePosition.y * _this11.screenScale.y < 713;
 						} else {
 							tmp5 = false;
 						}
@@ -22788,9 +22828,9 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 						var tmp7;
 						var tmp8;
 						var _this12 = com_framework_utils_Input.i;
-						if(_this12.mousePosition.x * _this12.screenScale.x > 277.777777777777771) {
+						if(_this12.mousePosition.x * _this12.screenScale.x > 288) {
 							var _this13 = com_framework_utils_Input.i;
-							tmp8 = _this13.mousePosition.x * _this13.screenScale.x < 457.777777777777771;
+							tmp8 = _this13.mousePosition.x * _this13.screenScale.x < 438;
 						} else {
 							tmp8 = false;
 						}
@@ -22798,7 +22838,7 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 							var _this14 = com_framework_utils_Input.i;
 							if(_this14.mousePosition.y * _this14.screenScale.y > 490) {
 								var _this15 = com_framework_utils_Input.i;
-								tmp7 = _this15.mousePosition.y * _this15.screenScale.y < 670;
+								tmp7 = _this15.mousePosition.y * _this15.screenScale.y < 713;
 							} else {
 								tmp7 = false;
 							}
@@ -22827,11 +22867,8 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 			} else {
 				this.transcparency -= 0.025;
 			}
-			this.pressStart.setColorMultiply(1,0.823529411764705843,0,this.transcparency);
+			this.pressStart.setColorMultiply(1,0.749019607843137258,0.223529411764705893,this.transcparency);
 		}
-	}
-	,sound: function() {
-		this.soundControll.soundControll(this.soundIcon);
 	}
 	,backgroundCharacter: function() {
 		this.selectedBg.scaleX = 140;
@@ -22863,8 +22900,8 @@ states_IntroScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,withMouse: null
 	,startGame: function() {
-		var playerChar = new gameObjects_Player(250,650,this.selectedCharacter);
-		this.changeState(new states_GameState(this.selectedCharacter,1,0,0,playerChar,this.withMouse));
+		var playerChar = new gameObjects_Player(com_gEngine_GEngine.get_i().width / 2,650,this.selectedCharacter);
+		this.changeState(new states_GameState(this.selectedCharacter,0,0,playerChar,this.withMouse));
 	}
 	,__class__: states_IntroScreen
 });
@@ -22981,11 +23018,11 @@ states_LoadingScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,__class__: states_LoadingScreen
 });
-var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,currentLevel,withMouse) {
+var states_SuccessScreen = function(score,timeSurvived,sprite,playerStats,withMouse) {
 	this.more = false;
 	this.timeSurvived = 0;
 	com_framework_utils_State.call(this);
-	this.nextLevel = currentLevel + 1;
+	GlobalGameData.levelCompleted();
 	this.withMouse = withMouse;
 	this.score = score;
 	this.timeSurvived = timeSurvived;
@@ -23003,7 +23040,6 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,display: null
 	,simulationLayer: null
 	,playerStats: null
-	,nextLevel: null
 	,withMouse: null
 	,load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
@@ -23029,15 +23065,17 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		image.scaleY = 0.5;
 		this.stage.addChild(image);
 		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
-		scoreDisplay.set_text("Your score is " + this.score);
+		scoreDisplay.set_text("YOUR SCORE IS " + this.score);
 		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5 - 7;
 		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 2 - 30;
-		scoreDisplay.set_color(-256);
+		scoreDisplay.setColorMultiply(0.66666666666666663,0.66666666666666663,0,1);
 		this.stage.addChild(scoreDisplay);
 		this.pressContinue = new com_gEngine_display_Text(kha_Assets.fonts.PixelOperator8_BoldName);
-		this.pressContinue.set_text("press enter");
+		this.pressContinue.set_text("PRESS ENTER");
+		this.pressContinue.scaleX = 0.66666666666666663;
+		this.pressContinue.scaleY = 0.66666666666666663;
 		this.pressContinue.y = 660;
-		var tmp = this.pressContinue.width() / 2;
+		var tmp = this.pressContinue.width() / 3;
 		this.pressContinue.x = 250 - tmp;
 		this.stage.addChild(this.pressContinue);
 	}
@@ -23045,6 +23083,7 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 	,more: null
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
+		GlobalGameData.soundControllWithoutIcon();
 		if(com_framework_utils_Input.i.isKeyCodePressed(13) || com_framework_utils_Input.i.isMousePressed()) {
 			this.startNextLevel();
 		}
@@ -23056,12 +23095,12 @@ states_SuccessScreen.prototype = $extend(com_framework_utils_State.prototype,{
 		} else {
 			this.transcparency -= 0.025;
 		}
-		this.pressContinue.setColorMultiply(1,1,0,this.transcparency);
+		this.pressContinue.setColorMultiply(0.66666666666666663,0.66666666666666663,0,this.transcparency);
 	}
 	,startNextLevel: function() {
 		var playerChar = new gameObjects_Player(250,650,this.sprite);
 		playerChar.setStats(this.playerStats);
-		this.changeState(new states_GameState(this.sprite,this.nextLevel,this.score,this.timeSurvived,playerChar,this.withMouse));
+		this.changeState(new states_GameState(this.sprite,this.score,this.timeSurvived,playerChar,this.withMouse));
 	}
 	,__class__: states_SuccessScreen
 });
@@ -23087,6 +23126,7 @@ Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function()
 	return String(this.val);
 }});
 js_Boot.__toStr = ({ }).toString;
+GlobalGameData.level = 1;
 Xml.Element = 0;
 Xml.PCData = 1;
 Xml.CData = 2;

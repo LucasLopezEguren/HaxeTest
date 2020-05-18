@@ -7,7 +7,6 @@
     <SubTexture name="death_2" x="188" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
     <SubTexture name="death_3" x="250" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
     <SubTexture name="death_4" x="312" y="267" width="62" height="60" frameX="0" frameY="0" frameWidth="62" frameHeight="60"/>
-    <SubTexture name="death_5" x="313" y="190" width="62" height="69" frameX="0" frameY="0" frameWidth="62" frameHeight="69"/>
     <SubTexture name="attack_0" x="64" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
     <SubTexture name="attack_1" x="129" y="0" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>
     <SubTexture name="attack_2" x="129" y="69" width="64" height="69" frameX="0" frameY="0" frameWidth="64" fr4meHeight="69"/>

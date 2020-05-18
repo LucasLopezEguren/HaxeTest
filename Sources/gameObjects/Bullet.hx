@@ -6,7 +6,7 @@ import GlobalGameData.GGD;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
-/* @author Lucas */
+/* @author Lucas (181830) */
 class Bullet extends Entity {
 	public var collision:CollisionBox;
 
